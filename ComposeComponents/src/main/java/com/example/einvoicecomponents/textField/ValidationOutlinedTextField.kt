@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.common.models.ValidationResult
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +24,7 @@ fun ValidationOutlinedTextField(
     onValueChange: (String) -> Unit,
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
+    testTag: String = label,
 ) {
     val value by valueState.collectAsState()
     val validation by validationState.collectAsState()
@@ -32,7 +34,7 @@ fun ValidationOutlinedTextField(
             onValueChange = onValueChange,
             label = { Text("$label*") },
             isError = validation is ValidationResult.Invalid,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag(testTag),
             trailingIcon = {
                 ValidationTrailingIcon(validation)
             },

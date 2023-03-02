@@ -9,6 +9,7 @@ import com.example.auth.domain.RegisterUseCase
 import com.example.common.models.Result
 import com.example.functions.snackbar.BaseSnackBarManager
 import com.example.functions.snackbar.SnackBarManager
+import kotlinx.coroutines.delay
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.scope.Scope
 import org.koin.dsl.module

@@ -1,5 +1,6 @@
 package com.example.auth.register
 
+import android.location.Geocoder
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,6 +29,7 @@ import com.example.common.models.ValidationResult
 import com.example.einvoicecomponents.OneTimeEventButton
 import com.example.einvoicecomponents.textField.ValidationPasswordTextField
 import com.example.einvoicecomponents.textField.ValidationOutlinedTextField
+import com.example.models.auth.Location
 import com.example.models.auth.UserType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,9 +41,14 @@ fun RegisterScreen(
     logo: Any,
     onRegistered: () -> Unit,
     onLoginClick: () -> Unit,
-    onLocationRequested: () -> Unit
+    onLocationRequested: () -> Unit,
+    lat: Double = 0.0,
+    lng: Double = 0.0,
 ) {
     val viewModel: RegisterViewModel by viewModel()
+    if (lat != 0.0 && lng != 0.0) {
+        viewModel.setLocation(Location(lat, lng))
+    }
 
     RegisterScreenContent(
         logo = logo,
@@ -66,10 +73,11 @@ fun RegisterScreen(
         onSetMedicalPrescriptionPath = viewModel::setMedicalPrescriptionPath,
         onSetIdCardPath = viewModel::setIdProofPath,
         onSetSalaryProofPath = viewModel::setSalaryProofPath,
-        registerButtonEnable = viewModel.enableRegister,
+        registerButtonEnable = viewModel.isRegisterEnabled,
         loading = viewModel.isLoading,
         onRegisterButtonClick = { viewModel.register(onRegistered) },
         onLoginClick = onLoginClick,
+        location = viewModel.location
     )
 }
 
@@ -93,6 +101,7 @@ private fun RegisterScreenContent(
     onPhoneValueChange: (String) -> Unit,
     userType: StateFlow<UserType>,
     onUserTypeChange: (UserType) -> Unit,
+    location: StateFlow<Location>,
     onLocationRequested: () -> Unit,
     onSetMedicalPrescriptionPath: (String) -> Unit,
     onSetIdCardPath: (String) -> Unit,
@@ -113,7 +122,9 @@ private fun RegisterScreenContent(
     ) {
         AsyncImage(
             model = logo,
-            modifier = Modifier.height(300.dp).fillMaxWidth(),
+            modifier = Modifier
+                .height(300.dp)
+                .fillMaxWidth(),
             imageLoader = imageLoader,
             contentDescription = null,
             contentScale = ContentScale.Fit
@@ -125,7 +136,7 @@ private fun RegisterScreenContent(
             label = "Email",
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            onValueChange = onEmailValueChange
+            onValueChange = onEmailValueChange,
         )
 
         ValidationPasswordTextField(
@@ -159,19 +170,7 @@ private fun RegisterScreenContent(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
         )
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Location", style = MaterialTheme.typography.headlineSmall)
-            IconButton(onClick = onLocationRequested) {
-                Icon(
-                    imageVector = Icons.Default.LocationOn,
-                    contentDescription = "Location"
-                )
-            }
-        }
+        LocationRow(location, onLocationRequested)
 
         UserTypeRow(userType, onUserTypeChange)
         ReceiverAdditionalInfo(
@@ -193,6 +192,30 @@ private fun RegisterScreenContent(
         }
     }
 
+}
+
+@Composable
+private fun LocationRow(locationStateFlow: StateFlow<Location>, onLocationRequested: () -> Unit) {
+    val location by locationStateFlow.collectAsState()
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text("Location", style = MaterialTheme.typography.headlineSmall)
+        IconButton(onClick = onLocationRequested) {
+            Icon(
+                imageVector = Icons.Default.LocationOn,
+                contentDescription = "Location"
+            )
+        }
+    }
+    if (location.latitude == 0.0 || location.longitude == 0.0) return
+    val context = LocalContext.current
+    val address =
+        Geocoder(context).getFromLocation(location.latitude, location.longitude, 1)?.firstOrNull()
+    if (address?.locality != null)
+        Text(address.locality)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -264,33 +287,36 @@ private fun UploadFileHandler(onSetFilePath: (String) -> Unit, label: String) {
 @Preview
 @Composable
 fun RegisterScreenPreview() {
-    RegisterScreenContent(
-        username = MutableStateFlow("mohamed"),
-        usernameValidation = MutableStateFlow(ValidationResult.Empty),
-        onUsernameValueChange = {},
-        email = MutableStateFlow(""),
-        emailValidation = MutableStateFlow(ValidationResult.Empty),
-        onEmailValueChange = {},
-        password = MutableStateFlow(""),
-        passwordValidation = MutableStateFlow(ValidationResult.Empty),
-        onPasswordValueChange = {},
-        confirmPassword = MutableStateFlow(""),
-        confirmPasswordValidation = MutableStateFlow(ValidationResult.Empty),
-        onConfirmPasswordValueChange = {},
-        phone = MutableStateFlow(""),
-        phoneValidation = MutableStateFlow(ValidationResult.Empty),
-        onPhoneValueChange = {},
-        userType = MutableStateFlow(UserType.Receiver),
-        onUserTypeChange = {},
-        onLocationRequested = {},
-        onSetMedicalPrescriptionPath = {},
-        onSetIdCardPath = {},
-        onSetSalaryProofPath = {},
-        registerButtonEnable = MutableStateFlow(true),
-        loading = MutableStateFlow(false),
-        onRegisterButtonClick = {},
-        imageLoader = LocalContext.current.let { ImageLoader.Builder(it).build() },
-        logo = Unit,
-        onLoginClick = {}
-    )
+    Surface {
+        RegisterScreenContent(
+            username = MutableStateFlow("mohamed"),
+            usernameValidation = MutableStateFlow(ValidationResult.Empty),
+            onUsernameValueChange = {},
+            email = MutableStateFlow(""),
+            emailValidation = MutableStateFlow(ValidationResult.Empty),
+            onEmailValueChange = {},
+            password = MutableStateFlow(""),
+            passwordValidation = MutableStateFlow(ValidationResult.Empty),
+            onPasswordValueChange = {},
+            confirmPassword = MutableStateFlow(""),
+            confirmPasswordValidation = MutableStateFlow(ValidationResult.Empty),
+            onConfirmPasswordValueChange = {},
+            phone = MutableStateFlow(""),
+            phoneValidation = MutableStateFlow(ValidationResult.Empty),
+            onPhoneValueChange = {},
+            userType = MutableStateFlow(UserType.Receiver),
+            onUserTypeChange = {},
+            onLocationRequested = {},
+            onSetMedicalPrescriptionPath = {},
+            onSetIdCardPath = {},
+            onSetSalaryProofPath = {},
+            registerButtonEnable = MutableStateFlow(true),
+            loading = MutableStateFlow(false),
+            onRegisterButtonClick = {},
+            imageLoader = LocalContext.current.let { ImageLoader.Builder(it).build() },
+            logo = Unit,
+            onLoginClick = {},
+            location = MutableStateFlow(Location(0.0, 0.0))
+        )
+    }
 }

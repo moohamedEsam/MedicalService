@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -25,6 +26,7 @@ fun ValidationPasswordTextField(
     modifier: Modifier = Modifier,
     label: String = "Password",
     leadingIcon: @Composable (() -> Unit)? = null,
+    testTag: String = label,
 ) {
     val value by valueState.collectAsState()
     val validation by validationState.collectAsState()
@@ -53,7 +55,7 @@ fun ValidationPasswordTextField(
             },
             singleLine = true,
             visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag(testTag),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             maxLines = 1
         )

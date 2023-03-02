@@ -92,20 +92,18 @@ private fun LoginScreenContent(
                 valueState = email,
                 validationState = emailValidation,
                 label = "Email",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("email"),
+                modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                onValueChange = onEmailValueChange
+                onValueChange = onEmailValueChange,
+                testTag = "email"
             )
 
             ValidationPasswordTextField(
                 valueState = password,
                 validationState = passwordValidation,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("password"),
+                modifier = Modifier.fillMaxWidth(),
                 onValueChange = onPasswordValueChange,
+                testTag = "password"
             )
 
             OneTimeEventButton(

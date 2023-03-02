@@ -57,8 +57,20 @@ class RegisterViewModel(
     private val _medicalPrescriptionPath = MutableStateFlow("")
     private val _salaryProofPath = MutableStateFlow("")
     private val _idProofPath = MutableStateFlow("")
+    private val receiverValidations = combine(
+        _medicalPrescriptionPath,
+        userType,
+        _salaryProofPath,
+        _idProofPath
+    ) { medicalPrescriptionPath, userType, salaryProofPath, idProofPath ->
+        if (userType != UserType.Receiver) return@combine ValidationResult.Valid
+        if (medicalPrescriptionPath.isBlank()) ValidationResult.Invalid("Medical prescription is required")
+        else if (salaryProofPath.isBlank()) ValidationResult.Invalid("Salary proof is required")
+        else if (idProofPath.isBlank()) ValidationResult.Invalid("ID proof is required")
+        else ValidationResult.Valid
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ValidationResult.Empty)
 
-    val enableRegister = combine(
+    val isRegisterEnabled = combine(
         emailValidationResult,
         passwordValidationResult,
         usernameValidationResult,
@@ -68,13 +80,9 @@ class RegisterViewModel(
         validations.all { it is ValidationResult.Valid }
     }.combine(location) { validations, location ->
         validations && location.latitude != 0.0 && location.longitude != 0.0
-    }/*.combine(_medicalPrescriptionPath) { validations, medicalPrescriptionPath ->
-        validations && medicalPrescriptionPath.isNotBlank()
-    }.combine(_salaryProofPath) { validations, salaryProofPath ->
-        validations && salaryProofPath.isNotBlank()
-    }.combine(_idProofPath) { validations, idProofPath ->
-        validations && idProofPath.isNotBlank()
-    }*/.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
+    }.combine(receiverValidations) { validations, receiverValidations ->
+        validations && receiverValidations is ValidationResult.Valid
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
