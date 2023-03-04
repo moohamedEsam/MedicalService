@@ -51,9 +51,12 @@ dependencies {
     implementation(libs.koin.compose)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.iconsExtended)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.accompanist.pager)
 
     implementation(project(":auth"))
     implementation(project(":mapLocation"))
     implementation(project(":common"))
     implementation(project(":ComposeComponents"))
+    implementation(project(":model"))
 }

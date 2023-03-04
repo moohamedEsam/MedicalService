@@ -34,6 +34,7 @@ import com.example.models.auth.UserType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.androidx.compose.get
+import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.compose.viewModel
 
 @Composable
@@ -44,8 +45,8 @@ fun RegisterScreen(
     onLocationRequested: () -> Unit,
     lat: Double = 0.0,
     lng: Double = 0.0,
+    viewModel: RegisterViewModel = koinViewModel()
 ) {
-    val viewModel: RegisterViewModel by viewModel()
     if (lat != 0.0 && lng != 0.0) {
         viewModel.setLocation(Location(lat, lng))
     }

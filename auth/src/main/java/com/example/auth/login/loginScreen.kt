@@ -24,6 +24,7 @@ import com.example.einvoicecomponents.textField.ValidationPasswordTextField
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.androidx.compose.get
+import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.compose.viewModel
 
 @Composable
@@ -31,9 +32,9 @@ fun LoginScreen(
     logo: Any,
     onLoggedIn: () -> Unit,
     onRegisterClick: () -> Unit,
-    imageLoader: ImageLoader = get()
+    imageLoader: ImageLoader = get(),
+    viewModel: LoginViewModel = koinViewModel()
 ) {
-    val viewModel: LoginViewModel by viewModel()
 
     LoginScreenContent(
         logo = logo,

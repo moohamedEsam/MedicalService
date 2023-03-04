@@ -11,6 +11,10 @@ import com.example.maplocation.latKey
 import com.example.maplocation.lngKey
 import com.example.maplocation.mapScreen
 import com.example.maplocation.navigateToMapScreen
+import com.example.medicalservice.presentation.disease.diseaseScreen
+import com.example.medicalservice.presentation.disease.navigateToDiseaseScreen
+import com.example.medicalservice.presentation.medicine.medicineDetailsScreen
+import com.example.medicalservice.presentation.medicine.navigateToMedicineDetailsScreen
 
 @Composable
 fun MedicalServiceNavGraph(
@@ -40,6 +44,14 @@ fun MedicalServiceNavGraph(
             onRegistered = {},
             onLoginClick = navHostController::popBackStack,
             onLocationRequested = navHostController::navigateToMapScreen
+        )
+
+        medicineDetailsScreen(
+            onDiseaseClick = navHostController::navigateToDiseaseScreen
+        )
+
+        diseaseScreen(
+            onMedicineClick = navHostController::navigateToMedicineDetailsScreen
         )
     }
 }

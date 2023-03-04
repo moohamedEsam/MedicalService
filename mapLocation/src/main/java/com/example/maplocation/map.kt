@@ -31,14 +31,15 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.compose.viewModel
 
 @Composable
 fun MapScreen(
+    viewModel: MapViewModel = koinViewModel(),
     onLocationPicked: (LatLng) -> Unit = {}
 ) {
     val cameraPosition = rememberCameraPositionState()
-    val viewModel: MapViewModel by viewModel()
     val address by viewModel.address.collectAsState()
     val context = LocalContext.current
     val locationPermission = rememberLauncherForActivityResult(

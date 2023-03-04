@@ -17,27 +17,17 @@ import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 
-class LoginScreenTest : KoinTest {
+class LoginScreenTest{
 
     @get:Rule
     val composeTestRule = createComposeRule()
 
     @Before
     fun setUp() {
-        startKoin {
-            modules(
-                listOf(
-                    module {
-                        viewModel {
-                            LoginViewModel(
-                                loginUseCase = { Result.Success(Unit) },
-                                snackBarManager = FakeSnackBarManager()
-                            )
-                        }
-                    }
-                )
-            )
-        }
+        val loginViewModel = LoginViewModel(
+            loginUseCase = { Result.Success(Unit) },
+            snackBarManager = FakeSnackBarManager()
+        )
 
         composeTestRule.setContent {
             val context = LocalContext.current
@@ -45,7 +35,8 @@ class LoginScreenTest : KoinTest {
                 logo = "",
                 onLoggedIn = {},
                 onRegisterClick = {},
-                imageLoader = ImageLoader.Builder(context).build()
+                imageLoader = ImageLoader.Builder(context).build(),
+                viewModel = loginViewModel
             )
         }
     }
@@ -66,7 +57,7 @@ class LoginScreenTest : KoinTest {
 
     @After
     fun tearDown() {
-        stopKoin()
+
     }
 
 }
