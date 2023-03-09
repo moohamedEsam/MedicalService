@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.compose.material.iconsExtended)
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.flowlayout)
 
     implementation(project(":auth"))
     implementation(project(":mapLocation"))
