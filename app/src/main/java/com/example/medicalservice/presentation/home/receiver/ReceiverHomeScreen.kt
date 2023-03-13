@@ -108,7 +108,7 @@ private fun LazyListScope.receiverHomeScreenBody(
         )
     }
 
-    transactionsList(user.recentTransactions, onMedicineClick)
+    transactionsList(user.recentTransactions) { } //todo add transaction sheet
 }
 
 

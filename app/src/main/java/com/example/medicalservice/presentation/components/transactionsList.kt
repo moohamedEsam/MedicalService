@@ -24,7 +24,7 @@ import java.util.*
 
 fun LazyListScope.transactionsList(
     transactions: List<Transaction>,
-    onMedicineClick: (String) -> Unit
+    onTransactionClick: (Transaction) -> Unit
 ) {
     item {
         Text(text = "Recent Transactions", style = MaterialTheme.typography.headlineSmall)
@@ -33,7 +33,7 @@ fun LazyListScope.transactionsList(
     items(transactions) {
         TransactionItem(
             transaction = it,
-            onClick = { onMedicineClick(it.medicine.id) }
+            onClick = { onTransactionClick(it) }
         )
     }
 }

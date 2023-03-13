@@ -13,6 +13,8 @@ import com.example.maplocation.mapScreen
 import com.example.maplocation.navigateToMapScreen
 import com.example.medicalservice.presentation.disease.diseaseScreen
 import com.example.medicalservice.presentation.disease.navigateToDiseaseScreen
+import com.example.medicalservice.presentation.donation.donationScreen
+import com.example.medicalservice.presentation.donation.navigateToDonationScreen
 import com.example.medicalservice.presentation.home.donner.donnerHome
 import com.example.medicalservice.presentation.home.receiver.receiverHome
 import com.example.medicalservice.presentation.medicine.medicineDetailsScreen
@@ -63,7 +65,9 @@ fun MedicalServiceNavGraph(
 
         donnerHome(
             onMedicineClick = navHostController::navigateToMedicineDetailsScreen,
-            onDonateClick = {}
+            onDonateClick = navHostController::navigateToDonationScreen
         )
+
+        donationScreen()
     }
 }

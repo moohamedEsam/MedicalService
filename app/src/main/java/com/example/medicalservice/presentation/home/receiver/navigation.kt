@@ -4,7 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 
-const val ReceiverHomeRoute = "Home"
+const val ReceiverHomeRoute = "Home/Receiver"
 
 fun NavGraphBuilder.receiverHome(
     onDiseaseClick: (String) -> Unit,
