@@ -8,7 +8,9 @@ import com.example.models.empty
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
 
+@KoinViewModel
 class DiseaseViewModel(
     private val getDiseaseDetailsUseCase: GetDiseaseDetailsUseCase,
     private val diseaseId: String

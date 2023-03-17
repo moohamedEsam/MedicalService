@@ -28,6 +28,8 @@ import com.example.models.*
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.MainAxisAlignment
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.koin.androidx.compose.koinViewModel
 import kotlin.random.Random
 
@@ -52,7 +54,6 @@ fun DonnerHomeScreen(
             onDonateClick = onDonateClick,
             onMedicineClick = onMedicineClick
         )
-
         TransactionSheet(
             showTransactionDialog = showTransactionDialog,
             onMedicineClick = onMedicineClick,
@@ -60,7 +61,7 @@ fun DonnerHomeScreen(
                 .fillMaxWidth()
                 .fillMaxHeight(0.4f)
                 .align(Alignment.BottomCenter),
-            transaction = viewModel.transaction ?: return,
+            transactionState = viewModel.transaction,
             onDismiss = viewModel::onTransactionDialogDismiss
         )
     }
@@ -71,9 +72,11 @@ private fun TransactionSheet(
     showTransactionDialog: Boolean,
     onMedicineClick: (String) -> Unit,
     modifier: Modifier = Modifier,
-    transaction: Transaction,
+    transactionState: StateFlow<Transaction?>,
     onDismiss: () -> Unit
 ) {
+    val transaction by transactionState.collectAsState()
+    if (transaction == null) return
     AnimatedVisibility(
         visible = showTransactionDialog,
         enter = slideInVertically { it + 200 },
@@ -100,7 +103,7 @@ private fun TransactionSheet(
                 )
             }
             TransactionScreen(
-                transaction = transaction,
+                transaction = transaction!!,
                 onMedicineClick = onMedicineClick,
                 modifier = Modifier.padding(16.dp)
             )
@@ -275,7 +278,7 @@ private fun DonnerHomeScreenPreview() {
         TransactionSheet(
             showTransactionDialog = false,
             onMedicineClick = {},
-            transaction = Transaction.empty(),
+            transactionState = MutableStateFlow(Transaction.empty()),
             modifier = Modifier.align(Alignment.BottomStart),
             onDismiss = {}
         )

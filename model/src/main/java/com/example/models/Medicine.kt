@@ -1,5 +1,7 @@
 package com.example.models
 
+import java.util.UUID
+
 @kotlinx.serialization.Serializable
 data class Medicine(
     val name: String,
@@ -17,6 +19,6 @@ fun Medicine.Companion.empty() = Medicine(
     sideEffects = emptyList(),
     precautions = emptyList(),
     overDoes = "",
-    id = "",
+    id = UUID.randomUUID().toString(),
     description = "",
 )

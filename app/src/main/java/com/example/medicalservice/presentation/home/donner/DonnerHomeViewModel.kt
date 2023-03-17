@@ -3,15 +3,17 @@ package com.example.medicalservice.presentation.home.donner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.medicalservice.domain.GetCurrentUserUseCase
-import com.example.medicalservice.domain.GetMostNeededMedicineUseCase
+import com.example.medicalservice.domain.GetDonationRequestsUseCase
 import com.example.models.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
 
+@KoinViewModel
 class DonnerHomeViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val getMostNeededMedicineUseCase: GetMostNeededMedicineUseCase
+    private val getDonationRequestsUseCase: GetDonationRequestsUseCase
 ) : ViewModel() {
     private val _user: MutableStateFlow<User> = MutableStateFlow(User.emptyDonor())
     val user = _user.asStateFlow()
@@ -22,8 +24,8 @@ class DonnerHomeViewModel(
     private val _showTransactionDialog = MutableStateFlow(false)
     val showTransactionDialog = _showTransactionDialog.asStateFlow()
 
-    var transaction: Transaction? = null
-        private set
+    private val _transaction: MutableStateFlow<Transaction?> = MutableStateFlow(null)
+    val transaction = _transaction.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -31,12 +33,12 @@ class DonnerHomeViewModel(
         }
 
         viewModelScope.launch {
-            _mostNeededMedicine.value = getMostNeededMedicineUseCase()
+            _mostNeededMedicine.value = getDonationRequestsUseCase()
         }
     }
 
     fun onTransactionClick(transaction: Transaction) {
-        this.transaction = transaction
+        _transaction.value = transaction
         _showTransactionDialog.value = true
     }
 

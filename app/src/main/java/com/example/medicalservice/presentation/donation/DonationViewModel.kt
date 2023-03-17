@@ -8,7 +8,9 @@ import com.example.medicalservice.domain.GetMedicinesUseCase
 import com.example.models.MedicineView
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
 
+@KoinViewModel
 class DonationViewModel(
     private val getMedicinesUseCase: GetMedicinesUseCase
 ) : ViewModel() {

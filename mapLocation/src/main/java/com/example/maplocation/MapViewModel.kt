@@ -8,7 +8,9 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
 
+@KoinViewModel
 class MapViewModel : ViewModel() {
 
     private val _query = MutableStateFlow("")

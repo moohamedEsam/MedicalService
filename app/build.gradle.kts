@@ -2,6 +2,7 @@ import java.util.Properties
 plugins {
     id("einvoice.android.application")
     id("einvoice.android.application.compose")
+    alias(libs.plugins.ksp) apply true
 }
 
 android {
@@ -33,6 +34,17 @@ android {
     packagingOptions {
         resources.excludes += "META-INF/atomicfu.kotlin_module"
     }
+
+    sourceSets.getByName("main"){
+        java.srcDirs("../auth/build/generated/ksp/debug/kotlin")
+        java.srcDirs("../mapLocation/build/generated/ksp/debug/kotlin")
+        java.srcDirs("build/generated/ksp/debug/kotlin")
+    }
+
+    kotlinOptions{
+        freeCompilerArgs = listOf("-Xcontext-receivers")
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -54,6 +66,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.flowlayout)
+    implementation(libs.koin.annotations)
+    ksp(libs.koin.ksp.compiler)
 
     implementation(project(":auth"))
     implementation(project(":mapLocation"))

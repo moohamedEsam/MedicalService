@@ -54,10 +54,4 @@ class LoginScreenTest{
         composeTestRule.onNodeWithTag("password").performTextInput("password")
         composeTestRule.onNodeWithText("Login").assertIsEnabled()
     }
-
-    @After
-    fun tearDown() {
-
-    }
-
 }

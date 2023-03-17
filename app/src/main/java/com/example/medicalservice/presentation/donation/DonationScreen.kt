@@ -1,6 +1,7 @@
 package com.example.medicalservice.presentation.donation
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -41,7 +42,8 @@ fun DonationScreen(
         quantityValidationResult = viewModel.quantityValidationResult,
         onDonateClick = viewModel::onDonateClick,
         donateButtonEnabled = viewModel.isDonateEnabled,
-        isLoading = viewModel.isLoading
+        isLoading = viewModel.isLoading,
+        onSelectMedicine = viewModel::onMedicineSelected
     )
 }
 
@@ -49,6 +51,7 @@ fun DonationScreen(
 private fun DonationScreen(
     medicines: StateFlow<List<MedicineView>>,
     selectedMedicine: StateFlow<MedicineView?>,
+    onSelectMedicine: (MedicineView) -> Unit,
     quantity: StateFlow<String>,
     onQuantityChange: (String) -> Unit,
     quantityValidationResult: StateFlow<ValidationResult>,
@@ -66,7 +69,8 @@ private fun DonationScreen(
             selectedMedicine = selectedMedicine,
             modifier = Modifier
                 .heightIn(max = (LocalConfiguration.current.screenHeightDp / 3).dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            onSelectMedicine = onSelectMedicine
         )
 
         DonationBody(
@@ -85,6 +89,7 @@ private fun DonationScreen(
 private fun DonationHeader(
     medicines: StateFlow<List<MedicineView>>,
     selectedMedicine: StateFlow<MedicineView?>,
+    onSelectMedicine: (MedicineView) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Text(
@@ -94,25 +99,29 @@ private fun DonationHeader(
     OutlinedCard(
         modifier = modifier.animateContentSize()
     ) {
-        DonationHeaderBody(selectedMedicine, medicines)
+        DonationHeaderBody(selectedMedicine, medicines, onSelectMedicine)
     }
 }
 
 @Composable
 private fun DonationHeaderBody(
     selectedMedicineState: StateFlow<MedicineView?>,
-    medicines: StateFlow<List<MedicineView>>
+    medicines: StateFlow<List<MedicineView>>,
+    onSelectMedicine: (MedicineView) -> Unit
 ) {
     val selectedMedicine by selectedMedicineState.collectAsState()
     if (selectedMedicine != null)
         SelectedMedicineBox(selectedMedicine!!)
     else
-        MedicineList(medicines)
+        MedicineList(medicines, onSelectMedicine)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MedicineList(medicinesState: StateFlow<List<MedicineView>>) {
+private fun MedicineList(
+    medicinesState: StateFlow<List<MedicineView>>,
+    onSelectMedicine: (MedicineView) -> Unit
+) {
     val medicines by medicinesState.collectAsState()
     TextField(
         value = "",
@@ -136,7 +145,10 @@ private fun MedicineList(medicinesState: StateFlow<List<MedicineView>>) {
         items(medicines) { medicine ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onSelectMedicine(medicine) }
             ) {
                 Text(
                     text = medicine.name,
@@ -200,7 +212,7 @@ private fun ColumnScope.DonationBody(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text="Medicine Image", style = MaterialTheme.typography.bodyLarge)
+        Text(text = "Medicine Image", style = MaterialTheme.typography.bodyLarge)
         IconButton(onClick = { }) {
             Icon(
                 imageVector = Icons.Outlined.UploadFile,
@@ -238,5 +250,6 @@ private fun DonationScreenPreview() {
         quantityValidationResult = MutableStateFlow(ValidationResult.Valid),
         donateButtonEnabled = MutableStateFlow(false),
         isLoading = MutableStateFlow(false),
+        onSelectMedicine = {}
     )
 }

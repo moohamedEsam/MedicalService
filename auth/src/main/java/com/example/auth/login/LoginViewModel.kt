@@ -12,7 +12,9 @@ import com.example.models.auth.Credentials
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
 
+@KoinViewModel
 class LoginViewModel(
     private val loginUseCase: LoginUseCase,
     private val snackBarManager: SnackBarManager

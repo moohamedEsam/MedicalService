@@ -3,7 +3,6 @@ import com.android.build.gradle.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.*
@@ -15,10 +14,14 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("com.android.library")
                 apply("org.jetbrains.kotlin.android")
+                apply("com.google.devtools.ksp")
             }
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
                 defaultConfig.targetSdk = Versions.targetSdk
+                sourceSets.getByName("main"){
+                    java.srcDirs("src/main/kotlin")
+                }
             }
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
             configurations.configureEach {
@@ -33,6 +36,8 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 add("implementation", project(":common"))
                 add("implementation", libs.findLibrary("koin-core").get())
                 add("implementation", libs.findLibrary("koin-android").get())
+                add("implementation", libs.findLibrary("koin-annotations").get())
+                add("ksp", libs.findLibrary("koin-ksp-compiler").get())
                 add("androidTestImplementation", kotlin("test"))
                 add("testImplementation", kotlin("test"))
             }

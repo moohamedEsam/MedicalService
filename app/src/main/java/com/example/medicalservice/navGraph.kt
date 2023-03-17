@@ -13,9 +13,11 @@ import com.example.maplocation.mapScreen
 import com.example.maplocation.navigateToMapScreen
 import com.example.medicalservice.presentation.disease.diseaseScreen
 import com.example.medicalservice.presentation.disease.navigateToDiseaseScreen
+import com.example.medicalservice.presentation.diseasePrediction.diseasePrediction
 import com.example.medicalservice.presentation.donation.donationScreen
 import com.example.medicalservice.presentation.donation.navigateToDonationScreen
 import com.example.medicalservice.presentation.home.donner.donnerHome
+import com.example.medicalservice.presentation.home.donner.navigateToDonnerHomeScreen
 import com.example.medicalservice.presentation.home.receiver.receiverHome
 import com.example.medicalservice.presentation.medicine.medicineDetailsScreen
 import com.example.medicalservice.presentation.medicine.navigateToMedicineDetailsScreen
@@ -33,7 +35,7 @@ fun MedicalServiceNavGraph(
     ) {
         loginScreen(
             logo = R.drawable.meidcal_service,
-            onLoggedIn = {},
+            onLoggedIn = navHostController::navigateToDonnerHomeScreen,
             onRegisterClick = navHostController::navigateToRegisterScreen
         )
 
@@ -69,5 +71,10 @@ fun MedicalServiceNavGraph(
         )
 
         donationScreen()
+
+        diseasePrediction(
+            onMedicineClick = navHostController::navigateToMedicineDetailsScreen,
+            onDiseaseClick = navHostController::navigateToDiseaseScreen
+        )
     }
 }

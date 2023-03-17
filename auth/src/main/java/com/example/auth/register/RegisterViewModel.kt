@@ -15,7 +15,9 @@ import com.example.models.auth.Register
 import com.example.models.auth.UserType
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
 
+@KoinViewModel
 class RegisterViewModel(
     private val registerUseCase: RegisterUseCase,
     private val snackBarManager: SnackBarManager

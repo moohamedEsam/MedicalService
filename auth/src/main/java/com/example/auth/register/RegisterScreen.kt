@@ -45,7 +45,8 @@ fun RegisterScreen(
     onLocationRequested: () -> Unit,
     lat: Double = 0.0,
     lng: Double = 0.0,
-    viewModel: RegisterViewModel = koinViewModel()
+    viewModel: RegisterViewModel = koinViewModel(),
+    imageLoader: ImageLoader = get()
 ) {
     if (lat != 0.0 && lng != 0.0) {
         viewModel.setLocation(Location(lat, lng))
@@ -78,7 +79,8 @@ fun RegisterScreen(
         loading = viewModel.isLoading,
         onRegisterButtonClick = { viewModel.register(onRegistered) },
         onLoginClick = onLoginClick,
-        location = viewModel.location
+        location = viewModel.location,
+        imageLoader = imageLoader
     )
 }
 
