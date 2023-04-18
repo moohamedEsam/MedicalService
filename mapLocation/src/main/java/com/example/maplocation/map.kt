@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Geocoder
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -180,8 +181,11 @@ private fun LocationTextField(
     val geocoder by remember {
         mutableStateOf(Geocoder(context))
     }
+    LaunchedEffect(key1 = geocoder) {
+        viewModel.findByLocationName(geocoder)
+    }
     val query by viewModel.query.collectAsState()
-    val suggestions by viewModel.findByLocationName(geocoder).collectAsState(initial = emptyList())
+    val suggestions by viewModel.suggestions.collectAsState()
     var showSuggestions by remember {
         mutableStateOf(false)
     }

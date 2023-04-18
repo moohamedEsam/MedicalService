@@ -10,14 +10,20 @@ import com.example.common.validators.validatePassword
 import com.example.functions.snackbar.SnackBarManager
 import com.example.models.auth.Credentials
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 class LoginViewModel(
     private val loginUseCase: LoginUseCase,
-    private val snackBarManager: SnackBarManager
+    private val snackBarManager: SnackBarManager,
 ) : ViewModel(), SnackBarManager by snackBarManager {
     private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()

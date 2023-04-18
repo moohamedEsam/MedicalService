@@ -66,7 +66,12 @@ private fun DiseasePredictionScreenContent(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         SearchBar(queryState = query, onQueryChange = onQueryChange)
-        SymptomsList(symptomsState = symptoms, onSymptomSelected = onSymptomSelected)
+        SymptomsList(
+            symptomsState = symptoms,
+            onSymptomSelected = onSymptomSelected,
+            selectedSymptoms = selectedSymptoms
+        )
+
         SelectedSymptomsList(
             selectedSymptomsState = selectedSymptoms,
             onSymptomRemoved = onSymptomSelected
@@ -92,9 +97,11 @@ private fun DiseasePredictionScreenContent(
 @Composable
 private fun SymptomsList(
     symptomsState: StateFlow<List<Symptom>>,
-    onSymptomSelected: (Symptom) -> Unit
+    onSymptomSelected: (Symptom) -> Unit,
+    selectedSymptoms: StateFlow<Set<Symptom>>
 ) {
     val symptoms by symptomsState.collectAsState()
+    val selectedSymptoms by selectedSymptoms.collectAsState()
     val sortedSymptoms by remember {
         derivedStateOf {
             symptoms.sortedBy { it.name }
@@ -103,7 +110,11 @@ private fun SymptomsList(
     Text(text = "Symptoms", style = MaterialTheme.typography.headlineMedium)
     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         items(sortedSymptoms) { symptom ->
-            SuggestionChip(onClick = { onSymptomSelected(symptom) }, label = { Text(symptom.name) })
+            FilterChip(
+                onClick = { onSymptomSelected(symptom) },
+                label = { Text(symptom.name) },
+                selected = selectedSymptoms.contains(symptom)
+            )
         }
     }
 }
@@ -128,12 +139,13 @@ private fun SelectedSymptomsList(
 ) {
     val selectedSymptoms by selectedSymptomsState.collectAsState()
     Text(text = "Selected Symptoms", style = MaterialTheme.typography.headlineMedium)
-    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        items(selectedSymptoms.toList()) { symptom ->
-            FilterChip(
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(selectedSymptoms.toList().reversed()) { symptom ->
+            SuggestionChip(
                 onClick = { onSymptomRemoved(symptom) },
                 label = { Text(symptom.name) },
-                selected = true
             )
         }
     }

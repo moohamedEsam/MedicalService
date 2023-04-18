@@ -14,6 +14,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.common.models.ValidationResult
+import com.example.functions.DefaultTextFieldColor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -37,27 +38,24 @@ fun ValidationPasswordTextField(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            label = { Text(text = "$label*") },
             leadingIcon = leadingIcon,
             trailingIcon = {
                 IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                    if (isPasswordVisible)
-                        Icon(
-                            imageVector = Icons.Default.VisibilityOff,
-                            contentDescription = "Hide password"
-                        )
-                    else
-                        Icon(
-                            imageVector = Icons.Default.Visibility,
-                            contentDescription = "Show password"
-                        )
+                    Icon(
+                        imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        contentDescription = "Visibility",
+                    )
                 }
             },
+            placeholder = { Text(label) },
             singleLine = true,
             visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth().testTag(testTag),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(testTag),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            maxLines = 1
+            maxLines = 1,
+            colors = DefaultTextFieldColor()
         )
     }
 }
@@ -65,10 +63,12 @@ fun ValidationPasswordTextField(
 @Preview
 @Composable
 fun ValidationPasswordTextFieldPreview() {
-    ValidationPasswordTextField(
-        valueState = MutableStateFlow("123"),
-        validationState = MutableStateFlow(ValidationResult.Valid),
-        onValueChange = { },
-        label = "Password",
-    )
+    Surface {
+        ValidationPasswordTextField(
+            valueState = MutableStateFlow("123"),
+            validationState = MutableStateFlow(ValidationResult.Valid),
+            onValueChange = { },
+            label = "Password",
+        )
+    }
 }

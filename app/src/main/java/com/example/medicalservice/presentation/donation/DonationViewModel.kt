@@ -6,13 +6,15 @@ import com.example.common.models.ValidationResult
 import com.example.common.validators.validateNumber
 import com.example.medicalservice.domain.GetMedicinesUseCase
 import com.example.models.MedicineView
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 class DonationViewModel(
-    private val getMedicinesUseCase: GetMedicinesUseCase
+    private val getMedicinesUseCase: GetMedicinesUseCase,
+    private val coroutineExceptionHandler: CoroutineExceptionHandler
 ) : ViewModel() {
 
     private val _medicineQuery = MutableStateFlow("")
@@ -49,7 +51,7 @@ class DonationViewModel(
     val isLoading = _isLoading.asStateFlow()
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineExceptionHandler) {
             _medicines.value = getMedicinesUseCase()
         }
     }

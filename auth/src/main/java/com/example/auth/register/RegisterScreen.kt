@@ -18,13 +18,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.ImageLoader
-import coil.compose.AsyncImage
 import com.example.common.models.ValidationResult
 import com.example.einvoicecomponents.OneTimeEventButton
 import com.example.einvoicecomponents.textField.ValidationPasswordTextField
@@ -33,27 +30,22 @@ import com.example.models.auth.Location
 import com.example.models.auth.UserType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.koin.androidx.compose.get
 import org.koin.androidx.compose.koinViewModel
-import org.koin.androidx.compose.viewModel
 
 @Composable
 fun RegisterScreen(
-    logo: Any,
     onRegistered: () -> Unit,
     onLoginClick: () -> Unit,
     onLocationRequested: () -> Unit,
     lat: Double = 0.0,
     lng: Double = 0.0,
-    viewModel: RegisterViewModel = koinViewModel(),
-    imageLoader: ImageLoader = get()
+    viewModel: RegisterViewModel = koinViewModel()
 ) {
     if (lat != 0.0 && lng != 0.0) {
         viewModel.setLocation(Location(lat, lng))
     }
 
     RegisterScreenContent(
-        logo = logo,
         username = viewModel.username,
         usernameValidation = viewModel.usernameValidationResult,
         onUsernameValueChange = viewModel::setUsername,
@@ -71,6 +63,7 @@ fun RegisterScreen(
         onPhoneValueChange = viewModel::setPhone,
         userType = viewModel.userType,
         onUserTypeChange = viewModel::setUserType,
+        location = viewModel.location,
         onLocationRequested = onLocationRequested,
         onSetMedicalPrescriptionPath = viewModel::setMedicalPrescriptionPath,
         onSetIdCardPath = viewModel::setIdProofPath,
@@ -78,15 +71,12 @@ fun RegisterScreen(
         registerButtonEnable = viewModel.isRegisterEnabled,
         loading = viewModel.isLoading,
         onRegisterButtonClick = { viewModel.register(onRegistered) },
-        onLoginClick = onLoginClick,
-        location = viewModel.location,
-        imageLoader = imageLoader
+        onLoginClick = onLoginClick
     )
 }
 
 @Composable
 private fun RegisterScreenContent(
-    logo: Any,
     username: StateFlow<String>,
     usernameValidation: StateFlow<ValidationResult>,
     onUsernameValueChange: (String) -> Unit,
@@ -112,8 +102,7 @@ private fun RegisterScreenContent(
     registerButtonEnable: StateFlow<Boolean>,
     loading: StateFlow<Boolean>,
     onRegisterButtonClick: () -> Unit,
-    onLoginClick: () -> Unit,
-    imageLoader: ImageLoader = get()
+    onLoginClick: () -> Unit
 ) {
 
     Column(
@@ -123,23 +112,13 @@ private fun RegisterScreenContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        AsyncImage(
-            model = logo,
-            modifier = Modifier
-                .height(300.dp)
-                .fillMaxWidth(),
-            imageLoader = imageLoader,
-            contentDescription = null,
-            contentScale = ContentScale.Fit
-        )
-
         ValidationOutlinedTextField(
             valueState = email,
             validationState = emailValidation,
             label = "Email",
             modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             onValueChange = onEmailValueChange,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         )
 
         ValidationPasswordTextField(
@@ -309,17 +288,14 @@ fun RegisterScreenPreview() {
             onPhoneValueChange = {},
             userType = MutableStateFlow(UserType.Receiver),
             onUserTypeChange = {},
+            location = MutableStateFlow(Location(0.0, 0.0)),
             onLocationRequested = {},
             onSetMedicalPrescriptionPath = {},
             onSetIdCardPath = {},
             onSetSalaryProofPath = {},
             registerButtonEnable = MutableStateFlow(true),
             loading = MutableStateFlow(false),
-            onRegisterButtonClick = {},
-            imageLoader = LocalContext.current.let { ImageLoader.Builder(it).build() },
-            logo = Unit,
-            onLoginClick = {},
-            location = MutableStateFlow(Location(0.0, 0.0))
-        )
+            onRegisterButtonClick = {}
+        ) {}
     }
 }

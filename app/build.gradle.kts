@@ -43,7 +43,7 @@ android {
 
     kotlinOptions{
         freeCompilerArgs = listOf("-Xcontext-receivers")
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 }
 
@@ -64,10 +64,15 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.iconsExtended)
     debugImplementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.accompanist.pager)
-    implementation(libs.accompanist.flowlayout)
     implementation(libs.koin.annotations)
     ksp(libs.koin.ksp.compiler)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.auth)
+    implementation(libs.ktor.client.serialization)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.serialization)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.logging)
 
     implementation(project(":auth"))
     implementation(project(":mapLocation"))

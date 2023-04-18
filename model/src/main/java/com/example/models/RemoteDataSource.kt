@@ -1,7 +1,9 @@
-package com.example.auth.domain
+package com.example.models
 
 import com.example.common.models.Result
 import com.example.models.auth.Credentials
 import com.example.models.auth.Token
 
-fun interface LoginUseCase : suspend (Credentials) -> Result<Token>
+interface RemoteDataSource {
+    suspend fun login(credentials: Credentials): Result<Token>
+}

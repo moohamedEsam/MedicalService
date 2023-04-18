@@ -1,8 +1,12 @@
 package com.example.medicalservice.presentation.disease
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -13,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import com.example.models.DiseaseView
 import com.example.models.Medicine
 import com.example.models.headache
-import com.google.accompanist.pager.*
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -32,7 +35,7 @@ fun DiseaseScreen(
     )
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun DiseaseScreenContent(
     disease: DiseaseView,
@@ -80,8 +83,8 @@ private fun DiseaseScreenContent(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-@OptIn(ExperimentalPagerApi::class)
 private fun DiseaseContentPager(
     pages: List<String>,
     pagerState: PagerState,
@@ -91,9 +94,9 @@ private fun DiseaseContentPager(
 ) {
     HorizontalPager(
         modifier = modifier,
-        count = pages.size,
         state = pagerState,
-        itemSpacing = 8.dp
+        pageCount = pages.size,
+        pageSpacing = 8.dp
     ) { page: Int ->
         Column(
             modifier = Modifier

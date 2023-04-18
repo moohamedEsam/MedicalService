@@ -25,7 +25,6 @@ fun NavGraphBuilder.registerScreen(
             onRegistered = onRegistered,
             onLoginClick = onLoginClick,
             onLocationRequested = onLocationRequested,
-            logo = logo,
             lat = lat,
             lng = lng
         )

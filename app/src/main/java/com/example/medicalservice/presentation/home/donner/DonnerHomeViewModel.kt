@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.medicalservice.domain.GetCurrentUserUseCase
 import com.example.medicalservice.domain.GetDonationRequestsUseCase
 import com.example.models.*
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -13,7 +14,8 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class DonnerHomeViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val getDonationRequestsUseCase: GetDonationRequestsUseCase
+    private val getDonationRequestsUseCase: GetDonationRequestsUseCase,
+    coroutineExceptionHandler: CoroutineExceptionHandler
 ) : ViewModel() {
     private val _user: MutableStateFlow<User> = MutableStateFlow(User.emptyDonor())
     val user = _user.asStateFlow()
@@ -28,11 +30,11 @@ class DonnerHomeViewModel(
     val transaction = _transaction.asStateFlow()
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineExceptionHandler) {
             _user.value = getCurrentUserUseCase()
         }
 
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineExceptionHandler) {
             _mostNeededMedicine.value = getDonationRequestsUseCase()
         }
     }

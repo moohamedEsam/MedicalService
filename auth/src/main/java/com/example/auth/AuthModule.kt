@@ -3,6 +3,7 @@ package com.example.auth
 import com.example.auth.domain.LoginUseCase
 import com.example.auth.domain.RegisterUseCase
 import com.example.common.models.Result
+import com.example.models.RemoteDataSource
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Module
@@ -14,5 +15,5 @@ class AuthModule{
     fun registerUseCase() = RegisterUseCase { Result.Success(Unit) }
 
     @Factory
-    fun loginUseCase() = LoginUseCase { Result.Success(Unit) }
+    fun loginUseCase(repository: RemoteDataSource) = LoginUseCase(repository::login)
 }

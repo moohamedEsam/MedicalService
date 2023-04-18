@@ -1,12 +1,11 @@
 [versions]
-accompanist = "0.28.0"
 androidDesugarJdkLibs = "1.2.2"
-androidGradlePlugin = "7.4.1"
+androidGradlePlugin = "8.0.0"
 androidxActivity = "1.6.1"
 androidxAppCompat = "1.5.1"
 androidxBrowser = "1.4.0"
-androidxComposeBom = "2023.01.00"
-androidxComposeCompiler = "1.4.0-alpha02"
+androidxComposeBom = "2023.03.00"
+androidxComposeCompiler = "1.4.5"
 androidxComposeRuntimeTracing = "1.0.0-alpha01"
 androidxCore = "1.9.0"
 androidxCoreSplashscreen = "1.0.0"
@@ -36,11 +35,11 @@ koinCompose = "3.4.2"
 ktor = "2.1.3"
 jacoco = "0.8.7"
 junit4 = "4.13.2"
-kotlin = "1.7.21"
+kotlin = "1.8.20"
 kotlinxCoroutines = "1.6.4"
 kotlinxDatetime = "0.4.0"
 kotlinxSerializationJson = "1.4.1"
-ksp = "1.7.21-1.0.8"
+ksp = "1.8.20-1.0.10"
 lint = "30.3.1"
 protobuf = "3.21.12"
 protobufPlugin = "0.8.19"
@@ -54,10 +53,6 @@ googlePlayServicesLocation = "20.0.0"
 googleTruth = "1.1.3"
 
 [libraries]
-accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
-accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
-accompanist-testharness = { group = "com.google.accompanist", name = "accompanist-testharness", version.ref = "accompanist" }
-accompanist-pager = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanist" }
 android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }

@@ -6,6 +6,7 @@ import com.example.medicalservice.domain.GetAvailableSymptomsUseCase
 import com.example.medicalservice.domain.PredictDiseaseBySymptomsUseCase
 import com.example.models.DiseaseView
 import com.example.models.Symptom
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
@@ -13,7 +14,8 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class DiseasePredictionViewModel(
     private val getAvailableSymptomsUseCase: GetAvailableSymptomsUseCase,
-    private val predictDiseaseBySymptomsUseCase: PredictDiseaseBySymptomsUseCase
+    private val predictDiseaseBySymptomsUseCase: PredictDiseaseBySymptomsUseCase,
+    private val coroutineExceptionHandler: CoroutineExceptionHandler
 ) : ViewModel() {
     private val _symptoms = MutableStateFlow(emptyList<Symptom>())
     private val _query = MutableStateFlow("")
@@ -37,7 +39,7 @@ class DiseasePredictionViewModel(
     val isLoading = _isLoading.asStateFlow()
 
     init {
-        viewModelScope.launch { _symptoms.value = getAvailableSymptomsUseCase() }
+        viewModelScope.launch(coroutineExceptionHandler) { _symptoms.value = getAvailableSymptomsUseCase() }
     }
 
     fun onSymptomSelected(symptom: Symptom) {
@@ -51,7 +53,7 @@ class DiseasePredictionViewModel(
     }
 
     fun onPredictClick() {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineExceptionHandler) {
             _isLoading.value = true
             val symptomsEncoded = List(selectedSymptoms.value.size) { index ->
                 if (_symptoms.value[index] in selectedSymptoms.value) '1' else '0'

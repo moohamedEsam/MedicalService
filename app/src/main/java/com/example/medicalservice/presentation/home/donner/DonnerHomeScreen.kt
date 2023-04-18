@@ -25,9 +25,6 @@ import androidx.compose.ui.unit.dp
 import com.example.medicalservice.presentation.components.transactionsList
 import com.example.medicalservice.presentation.transaction.TransactionScreen
 import com.example.models.*
-import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
-import com.google.accompanist.flowlayout.FlowRow
-import com.google.accompanist.flowlayout.MainAxisAlignment
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.androidx.compose.koinViewModel
@@ -170,7 +167,7 @@ private fun LazyListScope.activeDonationList(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun DonationItem(
     donationRequest: DonationRequest,
@@ -203,10 +200,7 @@ private fun DonationItem(
             )
 
             FlowRow(
-                mainAxisSpacing = 8.dp,
-                crossAxisSpacing = 8.dp,
-                mainAxisAlignment = MainAxisAlignment.SpaceBetween,
-                crossAxisAlignment = FlowCrossAxisAlignment.Center,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(

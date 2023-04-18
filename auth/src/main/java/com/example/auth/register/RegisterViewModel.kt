@@ -13,6 +13,7 @@ import com.example.functions.snackbar.SnackBarManager
 import com.example.models.auth.Location
 import com.example.models.auth.Register
 import com.example.models.auth.UserType
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
@@ -20,7 +21,7 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class RegisterViewModel(
     private val registerUseCase: RegisterUseCase,
-    private val snackBarManager: SnackBarManager
+    private val snackBarManager: SnackBarManager,
 ) : ViewModel(), SnackBarManager by snackBarManager {
     private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
@@ -37,6 +38,7 @@ class RegisterViewModel(
     val confirmPasswordValidationResult =
         combine(confirmPassword, password) { confirmPassword, password ->
             if (confirmPassword != password) ValidationResult.Invalid("Passwords do not match")
+            if(password.isEmpty()) ValidationResult.Empty
             else ValidationResult.Valid
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ValidationResult.Empty)
 

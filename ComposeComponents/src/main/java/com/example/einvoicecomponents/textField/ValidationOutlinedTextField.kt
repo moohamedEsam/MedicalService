@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.common.models.ValidationResult
+import com.example.functions.DefaultTextFieldColor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -22,7 +23,6 @@ fun ValidationOutlinedTextField(
     modifier: Modifier = Modifier,
     leadingIcon: @Composable (() -> Unit)? = null,
     onValueChange: (String) -> Unit,
-    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     testTag: String = label,
 ) {
@@ -32,15 +32,14 @@ fun ValidationOutlinedTextField(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            label = { Text("$label*") },
             isError = validation is ValidationResult.Invalid,
-            modifier = Modifier.fillMaxWidth().testTag(testTag),
-            trailingIcon = {
-                ValidationTrailingIcon(validation)
-            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(testTag),
             leadingIcon = leadingIcon,
-            colors = colors,
+            placeholder = { Text(label) },
             keyboardOptions = keyboardOptions,
+            colors = DefaultTextFieldColor()
         )
     }
 }
@@ -48,10 +47,12 @@ fun ValidationOutlinedTextField(
 @Preview
 @Composable
 fun ValidationOutlinedTextFieldPreview() {
-    ValidationOutlinedTextField(
-        valueState = MutableStateFlow(""),
-        validationState = MutableStateFlow(ValidationResult.Valid),
-        label = "Email",
-        onValueChange = {}
-    )
+    Surface {
+        ValidationOutlinedTextField(
+            valueState = MutableStateFlow("mohamed"),
+            validationState = MutableStateFlow(ValidationResult.Valid),
+            label = "Email",
+            onValueChange = {}
+        )
+    }
 }

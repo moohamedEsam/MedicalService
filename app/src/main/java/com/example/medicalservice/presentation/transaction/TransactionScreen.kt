@@ -17,9 +17,6 @@ import androidx.compose.ui.window.Dialog
 import com.example.models.Medicine
 import com.example.models.Transaction
 import com.example.models.empty
-import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
-import com.google.accompanist.flowlayout.FlowRow
-import com.google.accompanist.flowlayout.MainAxisAlignment
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,13 +33,12 @@ fun TransactionScreen(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun TransactionHeader(transaction: Transaction) {
     FlowRow(
-        mainAxisSpacing = 8.dp,
-        crossAxisSpacing = 8.dp,
-        mainAxisAlignment = MainAxisAlignment.SpaceBetween,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         TransactionItem(
             label = "Sender:",
@@ -59,6 +55,7 @@ private fun TransactionHeader(transaction: Transaction) {
 
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun TransactionBody(
     transaction: Transaction,
@@ -69,11 +66,8 @@ private fun TransactionBody(
     }
 
     FlowRow(
-        mainAxisSpacing = 8.dp,
-        crossAxisSpacing = 8.dp,
-        mainAxisAlignment = MainAxisAlignment.SpaceBetween,
         modifier = Modifier.fillMaxWidth(),
-        crossAxisAlignment = FlowCrossAxisAlignment.Center
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         TransactionItem(
             label = "Medicine",
@@ -90,11 +84,8 @@ private fun TransactionBody(
         )
     }
     FlowRow(
-        mainAxisSpacing = 8.dp,
-        crossAxisSpacing = 8.dp,
-        mainAxisAlignment = MainAxisAlignment.SpaceBetween,
         modifier = Modifier.fillMaxWidth(),
-        crossAxisAlignment = FlowCrossAxisAlignment.Center
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(text = "Quantity: ${transaction.quantity}")
         Text(text = "Created At: ${simpleDateFormat.format(transaction.createdAt)}")

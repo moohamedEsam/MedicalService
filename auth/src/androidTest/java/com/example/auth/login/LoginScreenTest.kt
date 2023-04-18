@@ -6,7 +6,9 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import coil.ImageLoader
 import com.example.common.models.Result
 import com.example.functions.snackbar.FakeSnackBarManager
+import com.example.models.auth.Token
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.CoroutineExceptionHandler
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -25,8 +27,8 @@ class LoginScreenTest{
     @Before
     fun setUp() {
         val loginViewModel = LoginViewModel(
-            loginUseCase = { Result.Success(Unit) },
-            snackBarManager = FakeSnackBarManager()
+            loginUseCase = { Result.Success(Token("")) },
+            snackBarManager = FakeSnackBarManager(),
         )
 
         composeTestRule.setContent {

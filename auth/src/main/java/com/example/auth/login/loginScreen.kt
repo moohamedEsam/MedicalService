@@ -1,18 +1,25 @@
 package com.example.auth.login
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.R
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
@@ -25,7 +32,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.androidx.compose.get
 import org.koin.androidx.compose.koinViewModel
-import org.koin.androidx.compose.viewModel
 
 @Composable
 fun LoginScreen(
@@ -88,15 +94,21 @@ private fun LoginScreenContent(
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
         ) {
-
+            Text("Login", style = MaterialTheme.typography.headlineMedium)
             ValidationOutlinedTextField(
                 valueState = email,
                 validationState = emailValidation,
                 label = "Email",
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 onValueChange = onEmailValueChange,
-                testTag = "email"
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                testTag = "email",
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Email,
+                        contentDescription = null
+                    )
+                }
             )
 
             ValidationPasswordTextField(
@@ -106,7 +118,11 @@ private fun LoginScreenContent(
                 onValueChange = onPasswordValueChange,
                 testTag = "password"
             )
-
+            Text(
+                text = "Forgot password?",
+                modifier = Modifier.align(Alignment.End),
+                color = Color.Red
+            )
             OneTimeEventButton(
                 enabled = loginButtonEnable,
                 loading = loading,
@@ -116,9 +132,25 @@ private fun LoginScreenContent(
                 onClick = onLoginButtonClick,
                 label = "Login"
             )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Checkbox(checked = true, onCheckedChange = {})
+                Text("Remember me")
+            }
 
             TextButton(onClick = onRegisterClick) {
-                Text("Don't have an account? Register")
+                Text(
+                    buildAnnotatedString {
+                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.onSurface)) {
+                            append("Don't have an account? ")
+                        }
+
+                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+                            append("Register")
+                        }
+                    }
+                )
             }
         }
     }
@@ -128,18 +160,16 @@ private fun LoginScreenContent(
 @Preview
 @Composable
 fun LoginScreenContentPreview() {
-    //comment the image loader to see the preview
-    Box(
+    Surface(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
     ) {
         LoginScreenContent(
             logo = "",
             email = MutableStateFlow(""),
-            emailValidation = MutableStateFlow(ValidationResult.Empty),
+            emailValidation = MutableStateFlow(ValidationResult.Valid),
             onEmailValueChange = {},
             password = MutableStateFlow(""),
-            passwordValidation = MutableStateFlow(ValidationResult.Empty),
+            passwordValidation = MutableStateFlow(ValidationResult.Valid),
             onPasswordValueChange = {},
             loginButtonEnable = MutableStateFlow(true),
             onLoginButtonClick = {},
