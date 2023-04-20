@@ -3,6 +3,7 @@ plugins {
     id("einvoice.android.application")
     id("einvoice.android.application.compose")
     alias(libs.plugins.ksp) apply true
+    alias(libs.plugins.kotlin.serialization) apply true
 }
 
 android {

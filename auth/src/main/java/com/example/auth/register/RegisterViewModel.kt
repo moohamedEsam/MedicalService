@@ -38,7 +38,7 @@ class RegisterViewModel(
     val confirmPasswordValidationResult =
         combine(confirmPassword, password) { confirmPassword, password ->
             if (confirmPassword != password) ValidationResult.Invalid("Passwords do not match")
-            if(password.isEmpty()) ValidationResult.Empty
+            else if (password.isEmpty()) ValidationResult.Empty
             else ValidationResult.Valid
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ValidationResult.Empty)
 
@@ -57,6 +57,21 @@ class RegisterViewModel(
 
     private val _location = MutableStateFlow(Location(0.0, 0.0))
     val location = _location.asStateFlow()
+    private val locationValidationResult = location.map {
+        if (it.latitude == 0.0 || it.longitude == 0.0) ValidationResult.Invalid("Location is required")
+        else ValidationResult.Valid
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ValidationResult.Empty)
+
+    val progress = combine(
+        emailValidationResult,
+        passwordValidationResult,
+        confirmPasswordValidationResult,
+        usernameValidationResult,
+        phoneValidationResult,
+        locationValidationResult
+    ) { validations ->
+        validations.count { it is ValidationResult.Valid } / validations.size.toFloat()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), 0f)
 
     private val _medicalPrescriptionPath = MutableStateFlow("")
     private val _salaryProofPath = MutableStateFlow("")

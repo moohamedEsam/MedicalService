@@ -12,7 +12,7 @@ import org.koin.core.annotation.Module
 @ComponentScan
 class AuthModule{
     @Factory
-    fun registerUseCase() = RegisterUseCase { Result.Success(Unit) }
+    fun registerUseCase(repository: RemoteDataSource) = RegisterUseCase(repository::register)
 
     @Factory
     fun loginUseCase(repository: RemoteDataSource) = LoginUseCase(repository::login)

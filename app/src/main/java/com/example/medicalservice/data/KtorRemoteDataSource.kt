@@ -5,7 +5,9 @@ import com.example.common.models.Result
 import com.example.medicalservice.data.models.RemoteResponse
 import com.example.models.RemoteDataSource
 import com.example.models.auth.Credentials
+import com.example.models.auth.Register
 import com.example.models.auth.Token
+import com.example.models.auth.toNetworkRegister
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -21,6 +23,14 @@ class KtorRemoteDataSource(
     override suspend fun login(credentials: Credentials): Result<Token> = tryWrapper {
         val response = client.post(EndPoints.LOGIN) {
             setBody(credentials)
+            contentType(ContentType.Application.Json)
+        }
+        mapResponse(response.body())
+    }
+
+    override suspend fun register(register: Register): Result<Unit> = tryWrapper {
+        val response = client.post(EndPoints.REGISTER) {
+            setBody(register.toNetworkRegister())
             contentType(ContentType.Application.Json)
         }
         mapResponse(response.body())

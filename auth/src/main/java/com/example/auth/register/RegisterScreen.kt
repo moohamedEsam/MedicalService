@@ -1,51 +1,56 @@
 package com.example.auth.register
 
-import android.location.Geocoder
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Upload
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.ImageLoader
+import coil.compose.AsyncImage
 import com.example.common.models.ValidationResult
-import com.example.einvoicecomponents.OneTimeEventButton
-import com.example.einvoicecomponents.textField.ValidationPasswordTextField
-import com.example.einvoicecomponents.textField.ValidationOutlinedTextField
 import com.example.models.auth.Location
 import com.example.models.auth.UserType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.koin.androidx.compose.get
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RegisterScreen(
+    logo: Any,
     onRegistered: () -> Unit,
-    onLoginClick: () -> Unit,
     onLocationRequested: () -> Unit,
     lat: Double = 0.0,
     lng: Double = 0.0,
-    viewModel: RegisterViewModel = koinViewModel()
+    viewModel: RegisterViewModel = koinViewModel(),
+    imageLoader: ImageLoader = get()
 ) {
     if (lat != 0.0 && lng != 0.0) {
         viewModel.setLocation(Location(lat, lng))
     }
 
     RegisterScreenContent(
+        logo = logo,
         username = viewModel.username,
         usernameValidation = viewModel.usernameValidationResult,
         onUsernameValueChange = viewModel::setUsername,
@@ -65,18 +70,17 @@ fun RegisterScreen(
         onUserTypeChange = viewModel::setUserType,
         location = viewModel.location,
         onLocationRequested = onLocationRequested,
-        onSetMedicalPrescriptionPath = viewModel::setMedicalPrescriptionPath,
-        onSetIdCardPath = viewModel::setIdProofPath,
-        onSetSalaryProofPath = viewModel::setSalaryProofPath,
+        progress = viewModel.progress,
         registerButtonEnable = viewModel.isRegisterEnabled,
-        loading = viewModel.isLoading,
+        imageLoader = imageLoader,
         onRegisterButtonClick = { viewModel.register(onRegistered) },
-        onLoginClick = onLoginClick
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun RegisterScreenContent(
+    logo: Any,
     username: StateFlow<String>,
     usernameValidation: StateFlow<ValidationResult>,
     onUsernameValueChange: (String) -> Unit,
@@ -96,182 +100,214 @@ private fun RegisterScreenContent(
     onUserTypeChange: (UserType) -> Unit,
     location: StateFlow<Location>,
     onLocationRequested: () -> Unit,
-    onSetMedicalPrescriptionPath: (String) -> Unit,
-    onSetIdCardPath: (String) -> Unit,
-    onSetSalaryProofPath: (String) -> Unit,
+    progress: StateFlow<Float>,
     registerButtonEnable: StateFlow<Boolean>,
-    loading: StateFlow<Boolean>,
+    imageLoader: ImageLoader,
     onRegisterButtonClick: () -> Unit,
-    onLoginClick: () -> Unit
 ) {
+    val pagerState = rememberPagerState()
+    var pageToScroll by remember { mutableStateOf(pagerState.currentPage) }
+    LaunchedEffect(key1 = pageToScroll) { pagerState.animateScrollToPage(pageToScroll) }
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
-            .padding(8.dp)
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .padding(top = 8.dp)
     ) {
-        ValidationOutlinedTextField(
-            valueState = email,
-            validationState = emailValidation,
-            label = "Email",
-            modifier = Modifier.fillMaxWidth(),
-            onValueChange = onEmailValueChange,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+        ProgressIndicator(progress)
+        LogoImage(logo, imageLoader)
+        RegisterPager(
+            email = email,
+            emailValidation = emailValidation,
+            onEmailValueChange = onEmailValueChange,
+            username = username,
+            usernameValidation = usernameValidation,
+            onUsernameValueChange = onUsernameValueChange,
+            password = password,
+            passwordValidation = passwordValidation,
+            onPasswordValueChange = onPasswordValueChange,
+            confirmPassword = confirmPassword,
+            confirmPasswordValidation = confirmPasswordValidation,
+            onConfirmPasswordValueChange = onConfirmPasswordValueChange,
+            phone = phone,
+            phoneValidation = phoneValidation,
+            onPhoneValueChange = onPhoneValueChange,
+            userType = userType,
+            onUserTypeChange = onUserTypeChange,
+            location = location,
+            onLocationRequested = onLocationRequested,
+            pagerState = pagerState,
         )
-
-        ValidationPasswordTextField(
-            valueState = password,
-            validationState = passwordValidation,
-            modifier = Modifier.fillMaxWidth(),
-            onValueChange = onPasswordValueChange
+        RegisterActionRow(
+            pageToScroll = pageToScroll,
+            pagerState = pagerState,
+            onRegisterButtonClick = onRegisterButtonClick,
+            onPageChangeClick = { pageToScroll = it },
+            registerButtonEnabledState = registerButtonEnable
         )
-
-        ValidationPasswordTextField(
-            valueState = confirmPassword,
-            validationState = confirmPasswordValidation,
-            modifier = Modifier.fillMaxWidth(),
-            onValueChange = onConfirmPasswordValueChange,
-            label = "Confirm Password"
-        )
-
-        ValidationOutlinedTextField(
-            valueState = username,
-            validationState = usernameValidation,
-            label = "Username",
-            modifier = Modifier.fillMaxWidth(),
-            onValueChange = onUsernameValueChange
-        )
-
-        ValidationOutlinedTextField(
-            valueState = phone,
-            validationState = phoneValidation,
-            label = "Phone",
-            onValueChange = onPhoneValueChange,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-        )
-
-        LocationRow(location, onLocationRequested)
-
-        UserTypeRow(userType, onUserTypeChange)
-        ReceiverAdditionalInfo(
-            userTypeState = userType,
-            onSetMedicalPrescriptionPath = onSetMedicalPrescriptionPath,
-            onSetSalaryProofPath = onSetSalaryProofPath,
-            onSetIdCardPath = onSetIdCardPath
-        )
-        OneTimeEventButton(
-            enabled = registerButtonEnable,
-            loading = loading,
-            label = "Register",
-            onClick = onRegisterButtonClick,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        TextButton(onClick = onLoginClick) {
-            Text("Already have an account? Login")
-        }
     }
 
 }
 
 @Composable
-private fun LocationRow(locationStateFlow: StateFlow<Location>, onLocationRequested: () -> Unit) {
-    val location by locationStateFlow.collectAsState()
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+private fun RegisterActionRow(
+    pageToScroll: Int,
+    pagerState: PagerState,
+    registerButtonEnabledState: StateFlow<Boolean>,
+    onPageChangeClick: (Int) -> Unit,
+    onRegisterButtonClick: () -> Unit
+) {
+    val registerButtonEnabled by registerButtonEnabledState.collectAsStateWithLifecycle()
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text("Location", style = MaterialTheme.typography.headlineSmall)
-        IconButton(onClick = onLocationRequested) {
-            Icon(
-                imageVector = Icons.Default.LocationOn,
-                contentDescription = "Location"
+        AssistChip(
+            onClick = { onPageChangeClick(pageToScroll - 1) },
+            label = { Text("Previous") },
+            leadingIcon = { Icon(Icons.Default.ArrowBack, null) },
+            enabled = pagerState.currentPage != 0
+        )
+
+        if (pagerState.currentPage == RegisterPages.values().size - 1)
+            AssistChip(
+                onClick = onRegisterButtonClick,
+                label = { Text("Register") },
+                enabled = registerButtonEnabled
             )
-        }
-    }
-    if (location.latitude == 0.0 || location.longitude == 0.0) return
-    val context = LocalContext.current
-    val address =
-        Geocoder(context).getFromLocation(location.latitude, location.longitude, 1)?.firstOrNull()
-    if (address?.locality != null)
-        Text(address.locality)
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun UserTypeRow(
-    userTypeState: StateFlow<UserType>,
-    onUserTypeClick: (UserType) -> Unit
-) {
-    val userType by userTypeState.collectAsState()
-    Text("User Type", style = MaterialTheme.typography.headlineSmall)
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        UserType.values().forEach {
-            FilterChip(
-                onClick = { onUserTypeClick(it) },
-                selected = it == userType,
-                label = { Text(it.name) }
+        else
+            AssistChip(
+                onClick = { onPageChangeClick(pageToScroll + 1) },
+                label = { Text("Next") },
+                trailingIcon = { Icon(Icons.Default.ArrowForward, null) },
+                enabled = pagerState.currentPage != RegisterPages.values().size - 1
             )
-        }
     }
 }
 
 @Composable
-private fun ReceiverAdditionalInfo(
-    userTypeState: StateFlow<UserType>,
-    onSetMedicalPrescriptionPath: (String) -> Unit = {},
-    onSetSalaryProofPath: (String) -> Unit = {},
-    onSetIdCardPath: (String) -> Unit = {}
+@OptIn(ExperimentalFoundationApi::class)
+private fun RegisterPager(
+    email: StateFlow<String>,
+    emailValidation: StateFlow<ValidationResult>,
+    onEmailValueChange: (String) -> Unit,
+    username: StateFlow<String>,
+    usernameValidation: StateFlow<ValidationResult>,
+    onUsernameValueChange: (String) -> Unit,
+    password: StateFlow<String>,
+    passwordValidation: StateFlow<ValidationResult>,
+    onPasswordValueChange: (String) -> Unit,
+    confirmPassword: StateFlow<String>,
+    confirmPasswordValidation: StateFlow<ValidationResult>,
+    onConfirmPasswordValueChange: (String) -> Unit,
+    phone: StateFlow<String>,
+    phoneValidation: StateFlow<ValidationResult>,
+    onPhoneValueChange: (String) -> Unit,
+    userType: StateFlow<UserType>,
+    onUserTypeChange: (UserType) -> Unit,
+    pagerState: PagerState,
+    location: StateFlow<Location>,
+    onLocationRequested: () -> Unit,
 ) {
-    val userType by userTypeState.collectAsState()
-    AnimatedVisibility(visible = userType == UserType.Receiver) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            Text("Additional Info", style = MaterialTheme.typography.headlineSmall)
-            UploadFileHandler(onSetMedicalPrescriptionPath, "Medical Prescription")
-            UploadFileHandler(onSetSalaryProofPath, "Salary Proof")
-            UploadFileHandler(onSetIdCardPath, "ID Card")
+    HorizontalPager(
+        pageCount = RegisterPages.values().size,
+        contentPadding = PaddingValues(8.dp),
+        pageSpacing = 8.dp,
+        userScrollEnabled = false,
+        state = pagerState
+    ) { pageNumber ->
+        when (RegisterPages.values().find { it.ordinal == pageNumber }) {
+            RegisterPages.EmailAndUsername -> {
+                EmailAndUsernamePage(
+                    email = email,
+                    emailValidation = emailValidation,
+                    onEmailValueChange = onEmailValueChange,
+                    username = username,
+                    usernameValidation = usernameValidation,
+                    onUsernameValueChange = onUsernameValueChange
+                )
+            }
+
+            RegisterPages.Password -> {
+                PasswordPage(
+                    password = password,
+                    passwordValidation = passwordValidation,
+                    onPasswordValueChange = onPasswordValueChange,
+                    confirmPassword = confirmPassword,
+                    confirmPasswordValidation = confirmPasswordValidation,
+                    onConfirmPasswordValueChange = onConfirmPasswordValueChange
+                )
+            }
+
+            RegisterPages.PhoneAndUserType -> {
+                PhoneAndUserTypePage(
+                    phone = phone,
+                    phoneValidation = phoneValidation,
+                    onPhoneValueChange = onPhoneValueChange,
+                    userType = userType,
+                    onUserTypeValueChange = onUserTypeChange
+                )
+            }
+
+            RegisterPages.Location -> {
+                LocationPage(locationState = location, onLocationRequested = onLocationRequested)
+            }
+
+            RegisterPages.Done -> {
+                Box(
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        "You're all set press register to continue",
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                }
+            }
+
+            null -> Unit
         }
     }
 }
 
 @Composable
-private fun UploadFileHandler(onSetFilePath: (String) -> Unit, label: String) {
-    val permission = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { onSetFilePath(it.toString()) }
+private fun LogoImage(logo: Any, imageLoader: ImageLoader) {
+    AsyncImage(
+        model = logo,
+        modifier = Modifier
+            .fillMaxHeight(0.4f)
+            .fillMaxWidth(),
+        imageLoader = imageLoader,
+        contentDescription = null,
+        contentScale = ContentScale.Fit
     )
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(label)
-        IconButton(onClick = {
-            permission.launch(
-                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-            )
-        }) {
-            Icon(
-                imageVector = Icons.Default.Upload,
-                contentDescription = null
-            )
-        }
-    }
 }
+
+
+@Composable
+private fun ProgressIndicator(progressState: StateFlow<Float>) {
+    val progress by progressState.collectAsStateWithLifecycle()
+    val transition = updateTransition(progress, label = "progress")
+    val currentProgress by transition.animateFloat(label = "progress") { it }
+    LinearProgressIndicator(
+        progress = currentProgress,
+        modifier = Modifier
+            .fillMaxWidth()
+            .scale(scaleX = 1f, scaleY = 1.5f),
+    )
+
+}
+
 
 @Preview
 @Composable
 fun RegisterScreenPreview() {
     Surface {
         RegisterScreenContent(
-            username = MutableStateFlow("mohamed"),
+            logo = "",
+            username = MutableStateFlow(""),
             usernameValidation = MutableStateFlow(ValidationResult.Empty),
             onUsernameValueChange = {},
             email = MutableStateFlow(""),
@@ -290,12 +326,10 @@ fun RegisterScreenPreview() {
             onUserTypeChange = {},
             location = MutableStateFlow(Location(0.0, 0.0)),
             onLocationRequested = {},
-            onSetMedicalPrescriptionPath = {},
-            onSetIdCardPath = {},
-            onSetSalaryProofPath = {},
+            progress = MutableStateFlow(0f),
             registerButtonEnable = MutableStateFlow(true),
-            loading = MutableStateFlow(false),
-            onRegisterButtonClick = {}
-        ) {}
+            imageLoader = ImageLoader(LocalContext.current),
+            onRegisterButtonClick = {},
+        )
     }
 }

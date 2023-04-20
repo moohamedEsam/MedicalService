@@ -22,8 +22,8 @@ fun NavGraphBuilder.registerScreen(
         val lat = it.arguments?.getDouble(latKey) ?: 0.0
         val lng = it.arguments?.getDouble(lngKey) ?: 0.0
         RegisterScreen(
+            logo = logo,
             onRegistered = onRegistered,
-            onLoginClick = onLoginClick,
             onLocationRequested = onLocationRequested,
             lat = lat,
             lng = lng
