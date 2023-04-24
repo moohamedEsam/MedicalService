@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.medicalservice.domain.GetAvailableSymptomsUseCase
 import com.example.medicalservice.domain.PredictDiseaseBySymptomsUseCase
-import com.example.models.DiseaseView
-import com.example.models.Symptom
+import com.example.models.app.DiseaseView
+import com.example.models.app.Symptom
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

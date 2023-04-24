@@ -3,7 +3,7 @@ package com.example.medicalservice.presentation.components
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.example.models.Transaction
+import com.example.models.app.Transaction
 
 @Composable
 fun Transaction.Status.color() = when (this) {

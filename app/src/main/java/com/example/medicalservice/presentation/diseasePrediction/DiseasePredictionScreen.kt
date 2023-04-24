@@ -15,10 +15,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.einvoicecomponents.OneTimeEventButton
 import com.example.einvoicecomponents.textField.OutlinedSearchTextField
-import com.example.models.DiseaseView
-import com.example.models.Symptom
-import com.example.models.dummyList
-import com.example.models.headache
+import com.example.models.app.DiseaseView
+import com.example.models.app.Symptom
+import com.example.models.app.dummyList
+import com.example.models.app.headache
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.androidx.compose.koinViewModel

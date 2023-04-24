@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.auth.domain.LoginUseCase
 import com.example.common.models.SnackBarEvent
-import com.example.common.validators.validateEmail
-import com.example.common.validators.validatePassword
 import com.example.functions.snackbar.SnackBarManager
+import com.example.common.models.dataType.Email
+import com.example.common.models.dataType.Password
 import com.example.models.auth.Credentials
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,16 +25,8 @@ class LoginViewModel(
 
     fun handleEvent(event: LoginScreenEvent) {
         when (event) {
-            is LoginScreenEvent.EmailChanged -> {
-                _uiState.update { it.copy(email = event.value) }
-                _uiState.update { it.copy(emailValidationResult = validateEmail(event.value)) }
-            }
-
-            is LoginScreenEvent.PasswordChanged -> {
-                _uiState.update { it.copy(password = event.value) }
-                _uiState.update { it.copy(passwordValidationResult = validatePassword(event.value)) }
-            }
-
+            is LoginScreenEvent.EmailChanged -> { _uiState.update { it.copy(email = Email(event.value)) } }
+            is LoginScreenEvent.PasswordChanged -> { _uiState.update { it.copy(password = Password(event.value)) } }
             is LoginScreenEvent.LoginClicked -> {
                 if (!uiState.value.loginEnabled) return
                 _uiState.update { it.copy(isLoading = true) }
@@ -45,7 +37,7 @@ class LoginViewModel(
     }
 
     private fun login(onLoggedIn: () -> Unit): Job = viewModelScope.launch {
-        val result = loginUseCase(Credentials(uiState.value.email, uiState.value.password))
+        val result = loginUseCase(Credentials(uiState.value.email.value, uiState.value.password.value))
         result.ifFailure {
             val event = SnackBarEvent(
                 message = it ?: "Unknown error",

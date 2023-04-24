@@ -1,4 +1,4 @@
-package com.example.auth.register
+package com.example.auth.register.pages
 
 enum class RegisterPages {
     EmailAndUsername,

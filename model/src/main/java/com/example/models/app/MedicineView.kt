@@ -1,4 +1,4 @@
-package com.example.models
+package com.example.models.app
 
 @kotlinx.serialization.Serializable
 data class MedicineView(

@@ -1,4 +1,4 @@
-package com.example.models
+package com.example.models.app
 
 @JvmInline
 value class Symptom(val name: String) {

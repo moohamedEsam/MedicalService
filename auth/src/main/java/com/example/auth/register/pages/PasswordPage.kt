@@ -1,30 +1,27 @@
-package com.example.auth.register
+package com.example.auth.register.pages
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.common.models.ValidationResult
-import com.example.einvoicecomponents.textField.ValidationOutlinedTextField
 import com.example.einvoicecomponents.textField.ValidationPasswordTextField
+import com.example.common.models.dataType.Password
+import com.example.common.models.dataType.PasswordConfirmation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun PasswordPage(
-    password: StateFlow<String>,
-    passwordValidation: StateFlow<ValidationResult>,
+    password: Password,
     onPasswordValueChange: (String) -> Unit,
-    confirmPassword: StateFlow<String>,
-    confirmPasswordValidation: StateFlow<ValidationResult>,
+    confirmPassword: PasswordConfirmation,
     modifier: Modifier = Modifier,
     onConfirmPasswordValueChange: (String) -> Unit
 ) {
@@ -34,15 +31,15 @@ fun PasswordPage(
     ) {
         Text("Choose a strong password", style = MaterialTheme.typography.headlineMedium)
         ValidationPasswordTextField(
-            valueState = password,
-            validationState = passwordValidation,
+            value = password.value,
+            validation = password.validationResult,
             label = "Password",
             modifier = Modifier.fillMaxWidth(),
             onValueChange = onPasswordValueChange,
         )
         ValidationPasswordTextField(
-            valueState = confirmPassword,
-            validationState = confirmPasswordValidation,
+            value = confirmPassword.value,
+            validation = confirmPassword.validate(password.value),
             label = "Confirm Password",
             modifier = Modifier.fillMaxWidth(),
             onValueChange = onConfirmPasswordValueChange,
@@ -55,11 +52,9 @@ fun PasswordPage(
 private fun PasswordPagePreview() {
     Surface {
         PasswordPage(
-            password = MutableStateFlow(""),
-            passwordValidation = MutableStateFlow(ValidationResult.Valid),
+            password = Password(""),
             onPasswordValueChange = {},
-            confirmPassword = MutableStateFlow(""),
-            confirmPasswordValidation = MutableStateFlow(ValidationResult.Valid),
+            confirmPassword = PasswordConfirmation(""),
             onConfirmPasswordValueChange = {}
         )
     }

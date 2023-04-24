@@ -27,11 +27,18 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.ImageLoader
 import coil.compose.AsyncImage
-import com.example.common.models.ValidationResult
-import com.example.models.auth.Location
+import com.example.auth.register.pages.EmailAndUsernamePage
+import com.example.auth.register.pages.LocationPage
+import com.example.auth.register.pages.PasswordPage
+import com.example.auth.register.pages.PhoneAndUserTypePage
+import com.example.auth.register.pages.RegisterPages
+import com.example.models.Location
 import com.example.models.auth.UserType
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.example.common.models.dataType.Email
+import com.example.common.models.dataType.Password
+import com.example.common.models.dataType.PasswordConfirmation
+import com.example.common.models.dataType.Phone
+import com.example.common.models.dataType.Username
 import org.koin.androidx.compose.get
 import org.koin.androidx.compose.koinViewModel
 
@@ -46,62 +53,40 @@ fun RegisterScreen(
     imageLoader: ImageLoader = get()
 ) {
     if (lat != 0.0 && lng != 0.0) {
-        viewModel.setLocation(Location(lat, lng))
+        viewModel.handleEvent(RegisterScreenEvent.LocationChanged(Location(lat, lng)))
     }
-
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     RegisterScreenContent(
         logo = logo,
-        username = viewModel.username,
-        usernameValidation = viewModel.usernameValidationResult,
-        onUsernameValueChange = viewModel::setUsername,
-        email = viewModel.email,
-        emailValidation = viewModel.emailValidationResult,
-        onEmailValueChange = viewModel::setEmail,
-        password = viewModel.password,
-        passwordValidation = viewModel.passwordValidationResult,
-        onPasswordValueChange = viewModel::setPassword,
-        confirmPassword = viewModel.confirmPassword,
-        confirmPasswordValidation = viewModel.confirmPasswordValidationResult,
-        onConfirmPasswordValueChange = viewModel::setConfirmPassword,
-        phone = viewModel.phone,
-        phoneValidation = viewModel.phoneValidationResult,
-        onPhoneValueChange = viewModel::setPhone,
-        userType = viewModel.userType,
-        onUserTypeChange = viewModel::setUserType,
-        location = viewModel.location,
+        state = state,
+        onUsernameValueChange = { viewModel.handleEvent(RegisterScreenEvent.UsernameChanged(it)) },
+        onEmailValueChange = { viewModel.handleEvent(RegisterScreenEvent.EmailChanged(it)) },
+        onPasswordValueChange = { viewModel.handleEvent(RegisterScreenEvent.PasswordChanged(it)) },
+        onConfirmPasswordValueChange = {
+            viewModel.handleEvent(RegisterScreenEvent.PasswordConfirmationChanged(it))
+        },
+        onPhoneValueChange = { viewModel.handleEvent(RegisterScreenEvent.PhoneChanged(it)) },
+        onUserTypeChange = { viewModel.handleEvent(RegisterScreenEvent.UserTypeChanged(it)) },
         onLocationRequested = onLocationRequested,
-        progress = viewModel.progress,
-        registerButtonEnable = viewModel.isRegisterEnabled,
         imageLoader = imageLoader,
-        onRegisterButtonClick = { viewModel.register(onRegistered) },
+        onRegisterButtonClick = {
+            viewModel.handleEvent(RegisterScreenEvent.RegisterClicked(onSuccess = onRegistered))
+        }
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun RegisterScreenContent(
     logo: Any,
-    username: StateFlow<String>,
-    usernameValidation: StateFlow<ValidationResult>,
+    state: RegisterScreenState,
     onUsernameValueChange: (String) -> Unit,
-    email: StateFlow<String>,
-    emailValidation: StateFlow<ValidationResult>,
     onEmailValueChange: (String) -> Unit,
-    password: StateFlow<String>,
-    passwordValidation: StateFlow<ValidationResult>,
     onPasswordValueChange: (String) -> Unit,
-    confirmPassword: StateFlow<String>,
-    confirmPasswordValidation: StateFlow<ValidationResult>,
     onConfirmPasswordValueChange: (String) -> Unit,
-    phone: StateFlow<String>,
-    phoneValidation: StateFlow<ValidationResult>,
     onPhoneValueChange: (String) -> Unit,
-    userType: StateFlow<UserType>,
     onUserTypeChange: (UserType) -> Unit,
-    location: StateFlow<Location>,
     onLocationRequested: () -> Unit,
-    progress: StateFlow<Float>,
-    registerButtonEnable: StateFlow<Boolean>,
     imageLoader: ImageLoader,
     onRegisterButtonClick: () -> Unit,
 ) {
@@ -114,27 +99,22 @@ private fun RegisterScreenContent(
             .fillMaxSize()
             .padding(top = 8.dp)
     ) {
-        ProgressIndicator(progress)
+        ProgressIndicator(state.progress)
         LogoImage(logo, imageLoader)
         RegisterPager(
-            email = email,
-            emailValidation = emailValidation,
+            email = state.email,
             onEmailValueChange = onEmailValueChange,
-            username = username,
-            usernameValidation = usernameValidation,
+            username = state.username,
             onUsernameValueChange = onUsernameValueChange,
-            password = password,
-            passwordValidation = passwordValidation,
+            password = state.password,
             onPasswordValueChange = onPasswordValueChange,
-            confirmPassword = confirmPassword,
-            confirmPasswordValidation = confirmPasswordValidation,
+            confirmPassword = state.passwordConfirmation,
             onConfirmPasswordValueChange = onConfirmPasswordValueChange,
-            phone = phone,
-            phoneValidation = phoneValidation,
+            phone = state.phone,
             onPhoneValueChange = onPhoneValueChange,
-            userType = userType,
+            userType = state.userType,
             onUserTypeChange = onUserTypeChange,
-            location = location,
+            location = state.location,
             onLocationRequested = onLocationRequested,
             pagerState = pagerState,
         )
@@ -143,7 +123,7 @@ private fun RegisterScreenContent(
             pagerState = pagerState,
             onRegisterButtonClick = onRegisterButtonClick,
             onPageChangeClick = { pageToScroll = it },
-            registerButtonEnabledState = registerButtonEnable
+            registerButtonEnabled = state.registerEnabled
         )
     }
 
@@ -154,11 +134,10 @@ private fun RegisterScreenContent(
 private fun RegisterActionRow(
     pageToScroll: Int,
     pagerState: PagerState,
-    registerButtonEnabledState: StateFlow<Boolean>,
+    registerButtonEnabled: Boolean,
     onPageChangeClick: (Int) -> Unit,
     onRegisterButtonClick: () -> Unit
 ) {
-    val registerButtonEnabled by registerButtonEnabledState.collectAsStateWithLifecycle()
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -191,25 +170,20 @@ private fun RegisterActionRow(
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 private fun RegisterPager(
-    email: StateFlow<String>,
-    emailValidation: StateFlow<ValidationResult>,
+    email: Email,
     onEmailValueChange: (String) -> Unit,
-    username: StateFlow<String>,
-    usernameValidation: StateFlow<ValidationResult>,
+    username: Username,
     onUsernameValueChange: (String) -> Unit,
-    password: StateFlow<String>,
-    passwordValidation: StateFlow<ValidationResult>,
+    password: Password,
     onPasswordValueChange: (String) -> Unit,
-    confirmPassword: StateFlow<String>,
-    confirmPasswordValidation: StateFlow<ValidationResult>,
+    confirmPassword: PasswordConfirmation,
     onConfirmPasswordValueChange: (String) -> Unit,
-    phone: StateFlow<String>,
-    phoneValidation: StateFlow<ValidationResult>,
+    phone: Phone,
     onPhoneValueChange: (String) -> Unit,
-    userType: StateFlow<UserType>,
+    userType: UserType,
     onUserTypeChange: (UserType) -> Unit,
     pagerState: PagerState,
-    location: StateFlow<Location>,
+    location: Location,
     onLocationRequested: () -> Unit,
 ) {
     HorizontalPager(
@@ -223,10 +197,8 @@ private fun RegisterPager(
             RegisterPages.EmailAndUsername -> {
                 EmailAndUsernamePage(
                     email = email,
-                    emailValidation = emailValidation,
                     onEmailValueChange = onEmailValueChange,
                     username = username,
-                    usernameValidation = usernameValidation,
                     onUsernameValueChange = onUsernameValueChange
                 )
             }
@@ -234,10 +206,8 @@ private fun RegisterPager(
             RegisterPages.Password -> {
                 PasswordPage(
                     password = password,
-                    passwordValidation = passwordValidation,
                     onPasswordValueChange = onPasswordValueChange,
                     confirmPassword = confirmPassword,
-                    confirmPasswordValidation = confirmPasswordValidation,
                     onConfirmPasswordValueChange = onConfirmPasswordValueChange
                 )
             }
@@ -245,7 +215,6 @@ private fun RegisterPager(
             RegisterPages.PhoneAndUserType -> {
                 PhoneAndUserTypePage(
                     phone = phone,
-                    phoneValidation = phoneValidation,
                     onPhoneValueChange = onPhoneValueChange,
                     userType = userType,
                     onUserTypeValueChange = onUserTypeChange
@@ -253,7 +222,7 @@ private fun RegisterPager(
             }
 
             RegisterPages.Location -> {
-                LocationPage(locationState = location, onLocationRequested = onLocationRequested)
+                LocationPage(location = location, onLocationRequested = onLocationRequested)
             }
 
             RegisterPages.Done -> {
@@ -287,8 +256,7 @@ private fun LogoImage(logo: Any, imageLoader: ImageLoader) {
 
 
 @Composable
-private fun ProgressIndicator(progressState: StateFlow<Float>) {
-    val progress by progressState.collectAsStateWithLifecycle()
+private fun ProgressIndicator(progress: Float) {
     val transition = updateTransition(progress, label = "progress")
     val currentProgress by transition.animateFloat(label = "progress") { it }
     LinearProgressIndicator(
@@ -307,29 +275,16 @@ fun RegisterScreenPreview() {
     Surface {
         RegisterScreenContent(
             logo = "",
-            username = MutableStateFlow(""),
-            usernameValidation = MutableStateFlow(ValidationResult.Empty),
             onUsernameValueChange = {},
-            email = MutableStateFlow(""),
-            emailValidation = MutableStateFlow(ValidationResult.Empty),
             onEmailValueChange = {},
-            password = MutableStateFlow(""),
-            passwordValidation = MutableStateFlow(ValidationResult.Empty),
             onPasswordValueChange = {},
-            confirmPassword = MutableStateFlow(""),
-            confirmPasswordValidation = MutableStateFlow(ValidationResult.Empty),
             onConfirmPasswordValueChange = {},
-            phone = MutableStateFlow(""),
-            phoneValidation = MutableStateFlow(ValidationResult.Empty),
             onPhoneValueChange = {},
-            userType = MutableStateFlow(UserType.Receiver),
             onUserTypeChange = {},
-            location = MutableStateFlow(Location(0.0, 0.0)),
             onLocationRequested = {},
-            progress = MutableStateFlow(0f),
-            registerButtonEnable = MutableStateFlow(true),
             imageLoader = ImageLoader(LocalContext.current),
             onRegisterButtonClick = {},
+            state = RegisterScreenState()
         )
     }
 }

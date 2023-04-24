@@ -5,6 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.medicalservice.domain.GetCurrentUserUseCase
 import com.example.medicalservice.domain.GetDonationRequestsUseCase
 import com.example.models.*
+import com.example.models.app.DonationRequest
+import com.example.models.app.Transaction
+import com.example.models.app.User
+import com.example.models.app.emptyDonor
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

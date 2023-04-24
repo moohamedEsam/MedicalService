@@ -3,8 +3,9 @@ package com.example.medicalservice.presentation.home.receiver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.medicalservice.domain.GetCurrentUserUseCase
-import com.example.models.User
-import com.example.models.emptyReceiver
+import com.example.models.app.User
+import com.example.models.app.emptyReceiver
+
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

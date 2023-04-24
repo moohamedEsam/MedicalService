@@ -1,4 +1,4 @@
-package com.example.models
+package com.example.models.app
 
 import com.example.serializers.DateSerializer
 import kotlinx.serialization.Serializable

@@ -1,4 +1,4 @@
-package com.example.auth.register
+package com.example.auth.register.pages
 
 import android.location.Geocoder
 import androidx.compose.foundation.layout.Column
@@ -9,23 +9,18 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.models.auth.Location
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.example.models.Location
 
 @Composable
 fun LocationPage(
-    locationState: StateFlow<Location>,
+    location: Location,
     onLocationRequested: () -> Unit,
 ) {
-    val location by locationState.collectAsState()
     Column {
         if (location.latitude != 0.0 && location.longitude != 0.0) {
             val address = Geocoder(LocalContext.current).getFromLocation(
@@ -60,7 +55,7 @@ fun LocationPage(
 @Composable
 private fun LocationPagePreview() {
     LocationPage(
-        locationState = MutableStateFlow(Location(0.0, 0.0)),
+        location = Location(0.0, 0.0),
         onLocationRequested = { }
     )
 }

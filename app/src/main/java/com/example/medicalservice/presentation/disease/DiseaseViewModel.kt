@@ -3,8 +3,8 @@ package com.example.medicalservice.presentation.disease
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.medicalservice.domain.GetDiseaseDetailsUseCase
-import com.example.models.DiseaseView
-import com.example.models.empty
+import com.example.models.app.DiseaseView
+import com.example.models.app.empty
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

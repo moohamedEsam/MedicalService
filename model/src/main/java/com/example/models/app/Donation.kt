@@ -1,4 +1,4 @@
-package com.example.models
+package com.example.models.app
 
 data class Donation(
     val medicine: Medicine,

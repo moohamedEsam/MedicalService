@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.common.models.ValidationResult
 import com.example.common.validators.validateNumber
 import com.example.medicalservice.domain.GetMedicinesUseCase
-import com.example.models.MedicineView
+import com.example.models.app.MedicineView
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

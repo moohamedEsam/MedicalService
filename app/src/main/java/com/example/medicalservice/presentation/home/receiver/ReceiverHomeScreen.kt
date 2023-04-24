@@ -18,6 +18,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.medicalservice.presentation.components.transactionsList
 import com.example.models.*
+import com.example.models.app.Disease
+import com.example.models.app.Medicine
+import com.example.models.app.Transaction
+import com.example.models.app.User
+import com.example.models.app.empty
+import com.example.models.app.emptyReceiver
 import org.koin.androidx.compose.koinViewModel
 import java.util.*
 

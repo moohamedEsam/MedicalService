@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.dp
 import com.example.common.models.ValidationResult
 import com.example.einvoicecomponents.OneTimeEventButton
 import com.example.einvoicecomponents.textField.ValidationOutlinedTextField
-import com.example.models.MedicineView
-import com.example.models.empty
-import com.example.models.paracetamol
+import com.example.models.app.MedicineView
+import com.example.models.app.empty
+import com.example.models.app.paracetamol
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.androidx.compose.koinViewModel

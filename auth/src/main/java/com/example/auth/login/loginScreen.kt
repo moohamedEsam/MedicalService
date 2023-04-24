@@ -94,8 +94,8 @@ private fun LoginScreenContent(
         ) {
             Text("Login", style = MaterialTheme.typography.headlineMedium)
             ValidationOutlinedTextField(
-                value = state.email,
-                validation = state.emailValidationResult,
+                value = state.email.value,
+                validation = state.email.validationResult,
                 label = "Email",
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = onEmailValueChange,
@@ -110,8 +110,8 @@ private fun LoginScreenContent(
             )
 
             ValidationPasswordTextField(
-                value = state.password,
-                validation = state.passwordValidationResult,
+                value = state.password.value,
+                validation = state.password.validationResult,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = onPasswordValueChange,
                 testTag = "password"

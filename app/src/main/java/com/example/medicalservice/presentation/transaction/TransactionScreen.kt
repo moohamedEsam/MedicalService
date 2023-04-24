@@ -14,9 +14,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.example.models.Medicine
-import com.example.models.Transaction
-import com.example.models.empty
+import com.example.models.app.Medicine
+import com.example.models.app.Transaction
+import com.example.models.app.empty
 import java.text.SimpleDateFormat
 import java.util.*
 

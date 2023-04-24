@@ -1,5 +1,6 @@
 package com.example.models.auth
 
+import com.example.models.Location
 import kotlinx.serialization.Serializable
 
 @Serializable
