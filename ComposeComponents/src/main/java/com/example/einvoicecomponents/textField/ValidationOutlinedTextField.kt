@@ -44,6 +44,36 @@ fun ValidationOutlinedTextField(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ValidationOutlinedTextField(
+    value: String,
+    validation: ValidationResult,
+    label: String,
+    modifier: Modifier = Modifier,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    onValueChange: (String) -> Unit,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(),
+    testTag: String = label,
+) {
+    ValidationTextFieldContainer(modifier = modifier, validation = validation) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            isError = validation is ValidationResult.Invalid,
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(testTag),
+            leadingIcon = leadingIcon,
+            placeholder = { Text(label) },
+            keyboardOptions = keyboardOptions,
+            colors = DefaultTextFieldColor()
+        )
+    }
+}
+
+
+
 @Preview
 @Composable
 fun ValidationOutlinedTextFieldPreview() {

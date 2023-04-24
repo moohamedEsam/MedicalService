@@ -4,18 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.auth.domain.LoginUseCase
 import com.example.common.models.SnackBarEvent
-import com.example.common.models.ValidationResult
 import com.example.common.validators.validateEmail
 import com.example.common.validators.validatePassword
 import com.example.functions.snackbar.SnackBarManager
 import com.example.models.auth.Credentials
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
@@ -23,37 +18,34 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class LoginViewModel(
     private val loginUseCase: LoginUseCase,
-    private val snackBarManager: SnackBarManager,
+    private val snackBarManager: SnackBarManager
 ) : ViewModel(), SnackBarManager by snackBarManager {
-    private val _email = MutableStateFlow("")
-    val email = _email.asStateFlow()
-    val emailValidationResult = email.map(::validateEmail)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ValidationResult.Empty)
+    private val _uiState = MutableStateFlow(LoginScreenState())
+    val uiState = _uiState.asStateFlow()
 
-    private val _password = MutableStateFlow("")
-    val password = _password.asStateFlow()
-    val passwordValidationResult = password.map(::validatePassword)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ValidationResult.Empty)
+    fun handleEvent(event: LoginScreenEvent) {
+        when (event) {
+            is LoginScreenEvent.EmailChanged -> {
+                _uiState.update { it.copy(email = event.value) }
+                _uiState.update { it.copy(emailValidationResult = validateEmail(event.value)) }
+            }
 
-    val enableLogin = combine(emailValidationResult, passwordValidationResult) { email, password ->
-        email is ValidationResult.Valid && password is ValidationResult.Valid
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
+            is LoginScreenEvent.PasswordChanged -> {
+                _uiState.update { it.copy(password = event.value) }
+                _uiState.update { it.copy(passwordValidationResult = validatePassword(event.value)) }
+            }
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading = _isLoading.asStateFlow()
-
-    fun setEmail(value: String) {
-        _email.update { value }
+            is LoginScreenEvent.LoginClicked -> {
+                if (!uiState.value.loginEnabled) return
+                _uiState.update { it.copy(isLoading = true) }
+                login { event.onSuccess() }
+                _uiState.update { it.copy(isLoading = false) }
+            }
+        }
     }
 
-    fun setPassword(value: String) {
-        _password.update { value }
-    }
-
-    fun login(onLoggedIn: () -> Unit): Job = viewModelScope.launch {
-        _isLoading.update { true }
-        val result = loginUseCase(Credentials(email.value, password.value))
-        _isLoading.update { false }
+    private fun login(onLoggedIn: () -> Unit): Job = viewModelScope.launch {
+        val result = loginUseCase(Credentials(uiState.value.email, uiState.value.password))
         result.ifFailure {
             val event = SnackBarEvent(
                 message = it ?: "Unknown error",

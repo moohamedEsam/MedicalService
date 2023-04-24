@@ -36,3 +36,25 @@ fun ColumnScope.OneTimeEventButton(
         }
 
 }
+
+@Composable
+fun ColumnScope.OneTimeEventButton(
+    enabled: Boolean,
+    loading: Boolean,
+    modifier: Modifier = Modifier,
+    label: String,
+    onClick: () -> Unit
+) {
+    if (loading)
+        CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+    else
+        Button(
+            onClick = onClick,
+            enabled = enabled,
+            modifier = modifier,
+            shape = MaterialTheme.shapes.small
+        ) {
+            Text(label, textAlign = TextAlign.Center)
+        }
+
+}

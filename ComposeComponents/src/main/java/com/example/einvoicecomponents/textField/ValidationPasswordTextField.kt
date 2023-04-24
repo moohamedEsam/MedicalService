@@ -59,6 +59,45 @@ fun ValidationPasswordTextField(
         )
     }
 }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ValidationPasswordTextField(
+    value: String,
+    validation: ValidationResult,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    label: String = "Password",
+    leadingIcon: @Composable (() -> Unit)? = null,
+    testTag: String = label,
+) {
+    var isPasswordVisible by remember {
+        mutableStateOf(false)
+    }
+    ValidationTextFieldContainer(validation = validation, modifier = modifier) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            leadingIcon = leadingIcon,
+            trailingIcon = {
+                IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                    Icon(
+                        imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        contentDescription = "Visibility",
+                    )
+                }
+            },
+            placeholder = { Text(label) },
+            singleLine = true,
+            visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(testTag),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            maxLines = 1,
+            colors = DefaultTextFieldColor()
+        )
+    }
+}
 
 @Preview
 @Composable
