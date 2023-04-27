@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.rememberNavController
-import com.example.auth.login.LoginScreenRoute
-import com.example.medicalservice.presentation.diseasePrediction.DiseasePredictionScreenRoute
+import com.example.medicalservice.presentation.ocr.OcrScreen
 import com.example.medicalservice.ui.theme.MedicalServiceTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,11 +20,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MedicalServiceNavGraph(
-                        startDestination = LoginScreenRoute,
-                        navHostController = rememberNavController(),
-                        modifier = Modifier.fillMaxSize()
-                    )
+                    OcrScreen()
                 }
             }
         }

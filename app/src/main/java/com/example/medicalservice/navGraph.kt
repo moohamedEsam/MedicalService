@@ -1,5 +1,7 @@
 package com.example.medicalservice
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -16,26 +18,31 @@ import com.example.medicalservice.presentation.disease.navigateToDiseaseScreen
 import com.example.medicalservice.presentation.diseasePrediction.diseasePrediction
 import com.example.medicalservice.presentation.donation.donationScreen
 import com.example.medicalservice.presentation.donation.navigateToDonationScreen
-import com.example.medicalservice.presentation.home.donner.donnerHome
-import com.example.medicalservice.presentation.home.donner.navigateToDonnerHomeScreen
-import com.example.medicalservice.presentation.home.receiver.receiverHome
+import com.example.medicalservice.presentation.donationList.donationListScreen
+import com.example.medicalservice.presentation.home.navigation.homeScreen
+import com.example.medicalservice.presentation.home.navigation.navigateToHomeScreen
 import com.example.medicalservice.presentation.medicine.medicineDetailsScreen
 import com.example.medicalservice.presentation.medicine.navigateToMedicineDetailsScreen
+import com.example.models.auth.UserType
 
 @Composable
 fun MedicalServiceNavGraph(
     startDestination: String,
     navHostController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    userType: UserType = UserType.Donner,
+    paddingValues: PaddingValues = PaddingValues()
 ) {
     NavHost(
         navController = navHostController,
         startDestination = startDestination,
-        modifier = modifier
+        modifier = modifier.padding(
+            top = paddingValues.calculateTopPadding(),
+        )
     ) {
         loginScreen(
             logo = R.drawable.meidcal_service,
-            onLoggedIn = navHostController::navigateToDonnerHomeScreen,
+            onLoggedIn = navHostController::navigateToHomeScreen,
             onRegisterClick = navHostController::navigateToRegisterScreen
         )
 
@@ -60,14 +67,11 @@ fun MedicalServiceNavGraph(
             onMedicineClick = navHostController::navigateToMedicineDetailsScreen
         )
 
-        receiverHome(
-            onDiseaseClick = navHostController::navigateToDiseaseScreen,
-            onMedicineClick = navHostController::navigateToMedicineDetailsScreen
-        )
-
-        donnerHome(
+        homeScreen(
+            userType = userType,
             onMedicineClick = navHostController::navigateToMedicineDetailsScreen,
-            onDonateClick = navHostController::navigateToDonationScreen
+            onDonateClick = navHostController::navigateToDonationScreen,
+            onDiseaseClick = navHostController::navigateToDiseaseScreen
         )
 
         donationScreen()
@@ -76,5 +80,9 @@ fun MedicalServiceNavGraph(
             onMedicineClick = navHostController::navigateToMedicineDetailsScreen,
             onDiseaseClick = navHostController::navigateToDiseaseScreen
         )
+
+        donationListScreen()
     }
 }
+
+

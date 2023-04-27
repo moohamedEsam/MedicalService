@@ -34,3 +34,25 @@ fun OutlinedSearchTextField(
         }
     )
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun OutlinedSearchTextField(
+    query: String,
+    modifier: Modifier = Modifier,
+    label: String = "Search",
+    onQueryChange: (String) -> Unit
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        label = { Text(label) },
+        modifier = modifier,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.Search,
+                contentDescription = label
+            )
+        }
+    )
+}

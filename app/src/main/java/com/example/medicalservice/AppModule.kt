@@ -10,12 +10,12 @@ import com.example.functions.snackbar.SnackBarManager
 import com.example.medicalservice.domain.*
 import com.example.models.*
 import com.example.models.app.DiseaseView
-import com.example.models.app.DonationRequest
 import com.example.models.app.Medicine
 import com.example.models.app.MedicineView
 import com.example.models.app.Symptom
 import com.example.models.app.Transaction
 import com.example.models.app.User
+import com.example.models.app.dummyDonationRequests
 import com.example.models.app.dummyList
 import com.example.models.app.empty
 import com.example.models.app.emptyDonor
@@ -88,21 +88,9 @@ class AppModule {
 
     @Factory
     fun provideDonationRequestsUseCase() = GetDonationRequestsUseCase {
-        List(10) {
-            val needed = Random.nextInt(1, 1000)
-            val collected = Random.nextInt(1, needed)
-            DonationRequest.empty().copy(
-                needed = needed,
-                collected = collected,
-                contributorsCount = Random.nextInt(1, 100),
-                medicine = Medicine.empty().copy(
-                    name = "Paracetamol",
-                    description = "Paracetamol is a painkiller and a fever reducer (antipyretic). It is used to treat many conditions such as headache, muscle aches, arthritis, backache, toothaches, colds, and fevers. It is also used to treat pain and fever after surgery. Paracetamol is in a class of medications called analgesics (pain relievers) and antipyretics (fever reducers). It works by blocking the release of certain chemical messengers that cause pain and fever in the body."
-                ),
-            )
-        }
-
+        dummyDonationRequests()
     }
+
 
     @Single([SnackBarManager::class])
     fun provideSnackBarManager() = BaseSnackBarManager()
