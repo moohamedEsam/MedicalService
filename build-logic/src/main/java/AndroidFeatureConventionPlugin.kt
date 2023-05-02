@@ -10,13 +10,13 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply {
-                apply("einvoice.android.library.compose")
+                apply("mohamed.android.library.compose")
             }
 
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
             dependencies {
-                add("implementation", project(":ComposeComponents"))
+                add("implementation", project(":external:ComposeComponents"))
                 add("implementation", libs.findLibrary("androidx-paging-runtime").get())
                 add("implementation", libs.findLibrary("androidx-paging-compose").get())
                 addComposeDependencies(libs)

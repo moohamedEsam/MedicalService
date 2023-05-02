@@ -1,5 +1,5 @@
 plugins {
-    id("einvoice.android.feature")
+    id("mohamed.android.feature")
 }
 
 android {

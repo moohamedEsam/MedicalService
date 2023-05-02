@@ -15,8 +15,11 @@ dependencyResolutionManagement {
 }
 rootProject.name = "MedicalService"
 include(":app")
-include(":auth")
+include(":external:auth")
 include(":common")
-include(":ComposeComponents")
+include(":external:ComposeComponents")
 include(":model")
-include (":mapLocation")
+include (":external:mapLocation")
+include(":core:database")
+include(":core:workManager")
+include(":core:data")

@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
-import com.example.einvoice.ui.theme.*
+import com.example.mohamed.ui.theme.*
 
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,

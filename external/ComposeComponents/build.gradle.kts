@@ -1,5 +1,5 @@
 plugins {
-    id("einvoice.android.library.compose")
+    id("mohamed.android.library.compose")
 }
 
 android {

@@ -1,6 +1,6 @@
 plugins {
-    id("einvoice.android.feature")
-    id("einvoice.android.test")
+    id("mohamed.android.feature")
+    id("mohamed.android.test")
 }
 
 android {
@@ -10,5 +10,5 @@ android {
 
 dependencies {
     implementation(libs.androidx.activity.compose)
-    implementation(project(":mapLocation"))
+    implementation(project(":external:mapLocation"))
 }

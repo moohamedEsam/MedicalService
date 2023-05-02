@@ -21,12 +21,17 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/ComposeComponents" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/auth" />
             <option value="$PROJECT_DIR$/build-logic" />
             <option value="$PROJECT_DIR$/common" />
-            <option value="$PROJECT_DIR$/mapLocation" />
+            <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/core/data" />
+            <option value="$PROJECT_DIR$/core/database" />
+            <option value="$PROJECT_DIR$/core/workManager" />
+            <option value="$PROJECT_DIR$/external" />
+            <option value="$PROJECT_DIR$/external/ComposeComponents" />
+            <option value="$PROJECT_DIR$/external/auth" />
+            <option value="$PROJECT_DIR$/external/mapLocation" />
             <option value="$PROJECT_DIR$/model" />
           </set>
         </option>

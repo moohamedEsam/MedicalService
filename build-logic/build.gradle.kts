@@ -13,32 +13,32 @@ dependencies{
 gradlePlugin {
     plugins {
         register("androidApplicationCompose") {
-            id = "einvoice.android.application.compose"
+            id = "mohamed.android.application.compose"
             implementationClass = "AndroidApplicationComposeConventionPlugin"
         }
         register("androidApplication") {
-            id = "einvoice.android.application"
+            id = "mohamed.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
         register("androidLibraryCompose") {
-            id = "einvoice.android.library.compose"
+            id = "mohamed.android.library.compose"
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
         register("androidLibrary") {
-            id = "einvoice.android.library"
+            id = "mohamed.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
         register("androidFeature") {
-            id = "einvoice.android.feature"
+            id = "mohamed.android.feature"
             implementationClass = "AndroidFeatureConventionPlugin"
         }
         register("androidTest") {
-            id = "einvoice.android.test"
+            id = "mohamed.android.test"
             implementationClass = "AndroidTestConventionPlugin"
         }
 
         register("androidRoom") {
-            id = "einvoice.android.room"
+            id = "mohamed.android.room"
             implementationClass = "AndroidRoomConventionPlugin"
         }
     }

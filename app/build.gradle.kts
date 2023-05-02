@@ -1,7 +1,7 @@
 import java.util.Properties
 plugins {
-    id("einvoice.android.application")
-    id("einvoice.android.application.compose")
+    id("mohamed.android.application")
+    id("mohamed.android.application.compose")
     alias(libs.plugins.ksp) apply true
     alias(libs.plugins.kotlin.serialization) apply true
 }
@@ -76,9 +76,9 @@ dependencies {
     implementation(libs.ktor.client.logging)
     implementation(libs.google.play.services.text.recognition)
 
-    implementation(project(":auth"))
-    implementation(project(":mapLocation"))
+    implementation(project(":external:auth"))
+    implementation(project(":external:mapLocation"))
     implementation(project(":common"))
-    implementation(project(":ComposeComponents"))
+    implementation(project(":external:ComposeComponents"))
     implementation(project(":model"))
 }
