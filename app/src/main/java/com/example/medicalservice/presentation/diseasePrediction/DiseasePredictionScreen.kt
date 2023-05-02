@@ -13,8 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.einvoicecomponents.OneTimeEventButton
-import com.example.einvoicecomponents.textField.OutlinedSearchTextField
+import com.example.composecomponents.OneTimeEventButton
+import com.example.composecomponents.textField.OutlinedSearchTextField
 import com.example.models.app.DiseaseView
 import com.example.models.app.Symptom
 import com.example.models.app.dummyList

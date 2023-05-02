@@ -10,19 +10,21 @@ const val HomeScreenRoute = "Home"
 
 fun NavGraphBuilder.homeScreen(
     userType: UserType,
-    onMedicineClick: (String) -> Unit,
-    onDonateClick: () -> Unit,
-    onDiseaseClick: (String) -> Unit
+    onNavigateToMedicineScreen: (String) -> Unit,
+    onNavigateToDiseaseScreen: (String) -> Unit,
+    onNavigateToDonateScreen: (String?) -> Unit,
+    onNavigateToTransactionScreen: (String) -> Unit,
 ) {
     if (userType == UserType.Donner)
         donnerHome(
-            onMedicineClick = onMedicineClick,
-            onDonateClick = onDonateClick
+            onNavigateToMedicineScreen = onNavigateToMedicineScreen,
+            onNavigateToDonateScreen = onNavigateToDonateScreen,
+            onNavigateToTransactionScreen = onNavigateToTransactionScreen
         )
     else
         receiverHome(
-            onDiseaseClick = onDiseaseClick,
-            onMedicineClick = onMedicineClick
+            onNavigateToMedicineScreen = onNavigateToMedicineScreen,
+            onNavigateToDiseaseScreen = onNavigateToDiseaseScreen
         )
 }
 

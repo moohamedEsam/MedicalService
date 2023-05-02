@@ -8,7 +8,7 @@ import com.example.models.app.Transaction
 @Composable
 fun Transaction.Status.color() = when (this) {
     Transaction.Status.Pending -> Color.LightGray
-    Transaction.Status.Accepted -> Color.Green
+    Transaction.Status.Delivered -> MaterialTheme.colorScheme.primary
     Transaction.Status.Rejected -> Color.Red
     Transaction.Status.Completed -> MaterialTheme.colorScheme.primary
     Transaction.Status.Cancelled -> Color.Gray

@@ -2,73 +2,52 @@ package com.example.medicalservice.presentation.donation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.common.models.ValidationResult
-import com.example.common.validators.validateNumber
-import com.example.medicalservice.domain.GetMedicinesUseCase
-import com.example.models.app.MedicineView
+import com.example.medicalservice.domain.GetDonationRequestsUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 class DonationViewModel(
-    private val getMedicinesUseCase: GetMedicinesUseCase,
-    private val coroutineExceptionHandler: CoroutineExceptionHandler
+    private val getDonationRequestsUseCase: GetDonationRequestsUseCase,
+    private val initialDonationRequestId: String? = null,
+    coroutineExceptionHandler: CoroutineExceptionHandler
 ) : ViewModel() {
 
-    private val _medicineQuery = MutableStateFlow("")
-    val medicineQuery = _medicineQuery.asStateFlow()
-
-    private val _medicines = MutableStateFlow(emptyList<MedicineView>())
-    val medicines = combine(_medicines, medicineQuery) { medicines, query ->
-        medicines.filter { it.name.contains(query, true) }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-
-    private val _selectedMedicineIndex = MutableStateFlow(-1)
-    val selectedMedicine = _selectedMedicineIndex.map {
-        if (it == -1) null else medicines.value[it]
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
-
-    private val _quantity = MutableStateFlow("")
-    val quantity = _quantity.asStateFlow()
-    val quantityValidationResult = _quantity.map {
-        val validationResult = validateNumber(it)
-        if (validationResult is ValidationResult.Valid) {
-            if (it.toInt() <= 0) ValidationResult.Invalid("Quantity must be greater than 0")
-            else validationResult
-        } else validationResult
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ValidationResult.Empty)
-
-    val isDonateEnabled = combine(
-        quantityValidationResult,
-        selectedMedicine
-    ) { quantityValidationResult, selectedMedicine ->
-        quantityValidationResult is ValidationResult.Valid && selectedMedicine != null
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
-
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading = _isLoading.asStateFlow()
+    private val _uiState = MutableStateFlow(DonationScreenState())
+    val uiState = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch(coroutineExceptionHandler) {
-            _medicines.value = getMedicinesUseCase()
+            _uiState.value = _uiState.value.copy(donationRequests = getDonationRequestsUseCase())
+            if (initialDonationRequestId?.isNotBlank() == true)
+                handleEvent(DonationScreenEvent.OnDonationRequestSelected(initialDonationRequestId))
         }
     }
 
-    fun onMedicineQueryChanged(query: String) {
-        _medicineQuery.value = query
+    fun handleEvent(event: DonationScreenEvent) = viewModelScope.launch {
+        when (event) {
+            is DonationScreenEvent.OnDonationRequestSelected -> _uiState.value =
+                _uiState.value.copy(selectedDonationRequestId = event.donationRequestId)
+
+            is DonationScreenEvent.OnQueryChange -> onQueryChange(event.query)
+            is DonationScreenEvent.OnChooseAnotherDonationRequest -> _uiState.value =
+                _uiState.value.copy(selectedDonationRequestId = null, quantity = "")
+
+            is DonationScreenEvent.OnDonateClick -> onDonateClick()
+            is DonationScreenEvent.OnQuantityChange -> _uiState.value = _uiState.value.copy(quantity = event.quantity)
+
+        }
     }
 
-    fun onMedicineSelected(medicineView: MedicineView) {
-        _selectedMedicineIndex.value = medicines.value.indexOf(medicineView)
+    private fun onQueryChange(query: String) {
+        _uiState.value = _uiState.value.copy(query = query)
     }
 
-    fun onQuantityChanged(quantity: String) {
-        _quantity.value = quantity
-    }
 
-    fun onDonateClick() {
+    private fun onDonateClick() {
 
     }
 }

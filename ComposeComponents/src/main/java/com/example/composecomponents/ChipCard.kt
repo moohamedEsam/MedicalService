@@ -1,4 +1,4 @@
-package com.example.einvoicecomponents
+package com.example.composecomponents
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

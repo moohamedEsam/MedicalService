@@ -6,13 +6,13 @@ import com.example.medicalservice.presentation.home.navigation.HomeScreenRoute
 
 
 fun NavGraphBuilder.receiverHome(
-    onDiseaseClick: (String) -> Unit,
-    onMedicineClick: (String) -> Unit
+    onNavigateToMedicineScreen: (String) -> Unit,
+    onNavigateToDiseaseScreen: (String) -> Unit,
 ){
     composable(HomeScreenRoute){
         ReceiverHomeScreen(
-            onDiseaseClick = onDiseaseClick,
-            onMedicineClick = onMedicineClick
+            onDiseaseClick = onNavigateToDiseaseScreen,
+            onMedicineClick = onNavigateToMedicineScreen
         )
     }
 }

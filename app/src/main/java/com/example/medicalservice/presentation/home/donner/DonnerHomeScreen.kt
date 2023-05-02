@@ -1,244 +1,182 @@
 package com.example.medicalservice.presentation.home.donner
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Group
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.medicalservice.presentation.components.transactionsList
-import com.example.medicalservice.presentation.transaction.TransactionScreen
-import com.example.models.*
-import com.example.models.app.DonationRequest
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.composecomponents.textField.OutlinedSearchTextField
+import com.example.medicalservice.presentation.components.UrgentDonationList
+import com.example.medicalservice.presentation.components.color
 import com.example.models.app.Medicine
 import com.example.models.app.Transaction
 import com.example.models.app.User
+import com.example.models.app.dummyDonationRequests
 import com.example.models.app.empty
 import com.example.models.app.emptyDonor
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import org.koin.androidx.compose.koinViewModel
-import kotlin.random.Random
-
-//todo remove use resource instead of image vector
-//private const val donateResource = R.drawable.donate
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun DonnerHomeScreen(
     onMedicineClick: (String) -> Unit,
-    onDonateClick: () -> Unit,
+    onDonateClick: (String?) -> Unit,
+    onTransactionClick: (String) -> Unit,
     viewModel: DonnerHomeViewModel = koinViewModel()
 ) {
-    val user by viewModel.user.collectAsState()
-    val mostNeededMedicine by viewModel.mostNeededMedicine.collectAsState()
-    val showTransactionDialog by viewModel.showTransactionDialog.collectAsState()
-    if (user !is User.Donor) return
-    Box {
-        DonnerHomeScreenContent(
-            user = user as User.Donor,
-            donationRequests = mostNeededMedicine,
-            onTransactionClick = viewModel::onTransactionClick,
-            onDonateClick = onDonateClick,
-            onMedicineClick = onMedicineClick
-        )
-        TransactionSheet(
-            showTransactionDialog = showTransactionDialog,
-            onMedicineClick = onMedicineClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.4f)
-                .align(Alignment.BottomCenter),
-            transactionState = viewModel.transaction,
-            onDismiss = viewModel::onTransactionDialogDismiss
-        )
-    }
-}
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    DonnerHomeScreenContent(
+        state = state,
+        onEvent = viewModel::handleEvent,
+        onMedicineClick = onMedicineClick,
+        onDonateClick = onDonateClick,
+        onTransactionClick = onTransactionClick
+    )
 
-@Composable
-private fun TransactionSheet(
-    showTransactionDialog: Boolean,
-    onMedicineClick: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    transactionState: StateFlow<Transaction?>,
-    onDismiss: () -> Unit
-) {
-    val transaction by transactionState.collectAsState()
-    if (transaction == null) return
-    AnimatedVisibility(
-        visible = showTransactionDialog,
-        enter = slideInVertically { it + 200 },
-        exit = slideOutVertically { it + 200 },
-        modifier = modifier
-    ) {
-        Card(
-            modifier = Modifier.draggable(
-                orientation = Orientation.Vertical,
-                state = rememberDraggableState { delta ->
-                    if (delta > 0) {
-                        onDismiss()
-                    }
-                }
-            )
-        ) {
-            IconButton(
-                onClick = onDismiss,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ExpandMore,
-                    contentDescription = "Drag"
-                )
-            }
-            TransactionScreen(
-                transaction = transaction!!,
-                onMedicineClick = onMedicineClick,
-                modifier = Modifier.padding(16.dp)
-            )
-        }
-    }
 }
 
 @Composable
 private fun DonnerHomeScreenContent(
-    user: User.Donor,
-    donationRequests: List<DonationRequest>,
-    onTransactionClick: (Transaction) -> Unit,
+    state: DonnerHomeState,
+    onEvent: (DonnerHomeScreenEvent) -> Unit,
     onMedicineClick: (String) -> Unit,
-    onDonateClick: () -> Unit,
+    onDonateClick: (String?) -> Unit,
+    onTransactionClick: (String) -> Unit
 ) {
-    Box {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            donnerScreenHeader(user)
-            transactionsList(user.recentTransactions, onTransactionClick)
-            activeDonationList(donationRequests, onMedicineClick)
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
 
-        FloatingActionButton(
-            onClick = onDonateClick,
-            modifier = Modifier.align(Alignment.BottomEnd)
-        ) {
-            Icon(
-//                painter = painterResource(id = donateResource),
-                imageVector = Icons.Default.Settings,
-                contentDescription = "Donate",
-                tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                modifier = Modifier.size(24.dp)
-            )
-        }
-    }
-}
+        OutlinedSearchTextField(
+            query = state.query,
+            onQueryChange = { onEvent(DonnerHomeScreenEvent.OnQueryChange(it)) },
+            modifier = Modifier.fillMaxWidth()
+        )
 
-private fun LazyListScope.donnerScreenHeader(
-    user: User.Donor
-) {
-    item {
-        Text(text = "Hello ${user.username}", style = MaterialTheme.typography.headlineMedium)
-    }
-}
+        UrgentDonationList(
+            donationRequests = state.donationRequests,
+            title = "Urgent Donations",
+            onDonationRequestClick = { onDonateClick(it.id) },
+        )
 
-private fun LazyListScope.activeDonationList(
-    donationRequests: List<DonationRequest>,
-    onMedicineClick: (String) -> Unit
-) {
-    item {
-        Text(text = "Most Needed Medicine", style = MaterialTheme.typography.headlineSmall)
-    }
-
-    items(donationRequests) {
-        DonationItem(
-            donationRequest = it,
-            onClick = { }
+        RecentTransactions(
+            transactions = state.transactions,
+            onTransactionClick = { onTransactionClick(it.id) },
+            modifier = Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp / 2).dp),
+            onMedicineClick = onMedicineClick
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-private fun DonationItem(
-    donationRequest: DonationRequest,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
+private fun DonnerScreenHeader(
+    user: User.Donor
 ) {
-    Card(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth()
+    Text(text = "Hello ${user.username}", style = MaterialTheme.typography.headlineSmall)
+}
+
+@Composable
+private fun RecentTransactions(
+    transactions: List<Transaction>,
+    modifier: Modifier = Modifier,
+    onTransactionClick: (Transaction) -> Unit,
+    onMedicineClick: (String) -> Unit
+) {
+    val dateFormatter by remember {
+        mutableStateOf(SimpleDateFormat("MMMM dd", Locale.getDefault()))
+    }
+    Text(text = "Recent Transactions", style = MaterialTheme.typography.headlineSmall)
+    LazyColumn(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        items(transactions) { transaction ->
+            TransactionItem(
+                transaction = transaction,
+                onClick = { onTransactionClick(transaction) },
+                dateFormat = dateFormatter,
+                onMedicineClick = { onMedicineClick(it) }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TransactionItem(
+    transaction: Transaction,
+    modifier: Modifier = Modifier,
+    dateFormat: SimpleDateFormat,
+    onClick: () -> Unit,
+    onMedicineClick: (String) -> Unit
+) {
+    Card(modifier = modifier.fillMaxWidth(), onClick = onClick) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(text = donationRequest.medicine.name, style = MaterialTheme.typography.bodyLarge)
-
             Text(
-                text = donationRequest.medicine.description,
-                style = MaterialTheme.typography.bodySmall,
-                maxLines = 2
-            )
-            val progress = donationRequest.collected.toFloat() / donationRequest.needed.toFloat()
-            LinearProgressIndicator(
-                progress = progress,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+                text = transaction.medicine.name,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.clickable { onMedicineClick(transaction.medicine.id) }
             )
 
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        donationRequest.contributorsCount.toString(),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    Icon(imageVector = Icons.Default.Group, contentDescription = null)
-                }
-
                 Text(
-                    "${donationRequest.collected}/${donationRequest.needed}",
-                    style = MaterialTheme.typography.bodySmall
+                    text = "Quantity: ${transaction.quantity}",
+                    style = MaterialTheme.typography.bodyLarge
                 )
-
-                IconButton(
-                    onClick = { },
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-//                    painter = painterResource(id = donateResource),
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "donate"
-                    )
-                }
+                Text(
+                    text = buildAnnotatedString {
+                        append("Status: ")
+                        withStyle(SpanStyle(transaction.status.color())) {
+                            append(transaction.status.name)
+                        }
+                    },
+                    style = MaterialTheme.typography.bodyLarge,
+                )
             }
 
-
+            Text(
+                text = "Donation Date: ${dateFormat.format(transaction.createdAt)}",
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
-
     }
 }
 
@@ -247,40 +185,23 @@ private fun DonationItem(
 private fun DonnerHomeScreenPreview() {
     Box {
         DonnerHomeScreenContent(
-            user = User.emptyDonor().copy(
-                username = "John",
-                recentTransactions = List(10) { Transaction.empty() }
-            ),
-            donationRequests = listOf(
-                Medicine.empty().copy(
-                    name = "Paracetamol",
-                    description = "Paracetamol is a medicine used to treat pain and fever. It is typically used for mild to moderate conditions. Paracetamol is generally as effective as other painkillers but has fewer side effects. It is available on prescription and over the counter. It is also available as a generic medicine. Paracetamol is a type of analgesic (painkiller) and antipyretic (fever reducer). It works by blocking the production of certain chemicals in the body that cause pain and fever. Paracetamol is a type of analgesic (painkiller) and antipyretic (fever reducer). It works by blocking the production of certain chemicals in the body that cause pain and fever. Paracetamol is a type of analgesic (painkiller) and antipyretic (fever reducer). It works by blocking the production of certain chemicals in the body that cause pain and fever. Paracetamol is a type of analgesic (painkiller) and antipyretic (fever reducer). It works by blocking the production of certain chemicals in the body that cause pain and fever. Paracetamol is a type of analgesic (painkiller) and antipyretic (fever reducer). It works by blocking the production of certain chemicals in the body that cause pain and fever. Paracetamol is a type of analgesic (painkiller) and antipyretic (fever reducer). It works by blocking the production of certain chemicals in the body that cause pain and fever. Paracetamol is a type of analgesic (painkiller) and antipyretic (fever reducer). It works by blocking the production of certain chemicals in the body that cause pain and fever. Paracetamol is a type of analgesic (painkiller) and antipyretic (fever reducer). It works by blocking the production of certain chemicals in the body that cause pain and fever. Paracetamol is a type of analgesic (painkiller) and antipyretic (fever reducer). It works by blocking the production of certain chemicals in the body that cause pain and fever. Paracetamol is a type of analgesic (painkiller) and antipyretic (fever reducer). It works by blocking the production of certain chemicals in the body that cause pain and fever. Paracetamol is a type"
-                ),
-                Medicine.empty().copy(name = "Ibuprofen"),
-                Medicine.empty().copy(name = "Aspirin"),
-                Medicine.empty().copy(name = "Cetirizine"),
-                Medicine.empty().copy(name = "Diphenhydramine"),
-                Medicine.empty().copy(name = "Loratadine"),
-                Medicine.empty().copy(name = "Fexofenadine"),
-            ).map {
-                DonationRequest.empty().copy(
-                    medicine = it,
-                    needed = 100,
-                    collected = Random.nextInt(0, 50),
-                    contributorsCount = Random.nextInt(100)
+            state = DonnerHomeState(
+                donationRequests = dummyDonationRequests(),
+                user = User.emptyDonor().copy(username = "mohamed"),
+                transactions = listOf(
+                    Transaction.empty().copy(
+                        medicine = Medicine.empty().copy(name = "Panadol"),
+                        receiverName = "Medical Service",
+                        quantity = 10,
+                        status = Transaction.Status.Delivered,
+                        donationRequest = dummyDonationRequests().random()
+                    )
                 )
-            },
+            ),
             onTransactionClick = {},
             onDonateClick = {},
-            onMedicineClick = {}
-        )
-
-        TransactionSheet(
-            showTransactionDialog = false,
             onMedicineClick = {},
-            transactionState = MutableStateFlow(Transaction.empty()),
-            modifier = Modifier.align(Alignment.BottomStart),
-            onDismiss = {}
+            onEvent = {}
         )
     }
 }

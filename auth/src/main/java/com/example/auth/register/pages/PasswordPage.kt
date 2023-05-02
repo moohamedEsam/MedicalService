@@ -10,12 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.common.models.ValidationResult
-import com.example.einvoicecomponents.textField.ValidationPasswordTextField
+import com.example.composecomponents.textField.ValidationPasswordTextField
 import com.example.common.models.dataType.Password
 import com.example.common.models.dataType.PasswordConfirmation
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun PasswordPage(

@@ -1,4 +1,4 @@
-package com.example.einvoicecomponents
+package com.example.composecomponents
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,7 +16,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import com.example.einvoicecomponents.textField.OutlinedSearchTextField
+import com.example.composecomponents.textField.OutlinedSearchTextField
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable

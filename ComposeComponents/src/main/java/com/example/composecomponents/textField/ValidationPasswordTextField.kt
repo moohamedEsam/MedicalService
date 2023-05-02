@@ -1,4 +1,4 @@
-package com.example.einvoicecomponents.textField
+package com.example.composecomponents.textField
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions

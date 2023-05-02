@@ -1,9 +1,11 @@
 package com.example.models.app
 
+import kotlinx.serialization.Serializable
 import java.util.Date
 import java.util.UUID
 import kotlin.random.Random
 
+@Serializable
 data class DonationRequest(
     val medicine: Medicine,
     val collected: Int,

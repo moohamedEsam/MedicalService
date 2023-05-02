@@ -1,4 +1,4 @@
-package com.example.einvoicecomponents
+package com.example.composecomponents
 
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton

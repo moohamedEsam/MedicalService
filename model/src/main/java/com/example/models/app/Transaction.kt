@@ -2,7 +2,7 @@ package com.example.models.app
 
 import com.example.serializers.DateSerializer
 import kotlinx.serialization.Serializable
-import java.util.*
+import java.util.Date
 
 @Serializable
 data class Transaction(
@@ -18,9 +18,10 @@ data class Transaction(
     val senderId: String,
     val senderName: String,
     val status: Status,
+    val donationRequest: DonationRequest? = null,
 ) {
     enum class Status {
-        Pending, Accepted, Rejected, Completed, Cancelled, InProgress
+        Pending, Delivered, Rejected, Completed, Cancelled, InProgress
     }
 
     companion object

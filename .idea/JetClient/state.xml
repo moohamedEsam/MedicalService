@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JetClientState">
+    <option name="folders">
+      <list>
+        <folderState>
+          <option name="description" value="/api/v1/upload" />
+          <option name="folders">
+            <list>
+              <folderState>
+                <option name="id" value="4d0d8feb-73d8-453b-b919-53abccf2cb8a" />
+                <option name="name" value="User" />
+                <option name="requests">
+                  <list>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="{{baseUrl}}/api/users/getalluser" />
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
+                          </headerState>
+                        </list>
+                      </option>
+                      <option name="id" value="0772a98c-e670-4575-a840-7a8e12a728a5" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="getalluser" />
+                      <option name="url" value="{{baseUrl}}/api/users/getalluser" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="{{baseUrl}}/api/users/getuser/:userId" />
+                      <option name="id" value="1742c966-5f87-434c-a856-dc87b011012e" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="getuserbyid" />
+                      <option name="pathVariables">
+                        <list>
+                          <pathVariableState>
+                            <option name="key" value="userId" />
+                            <option name="value" value="6416b8c7794cf467b8aae2e2" />
+                          </pathVariableState>
+                        </list>
+                      </option>
+                      <option name="url" value="{{baseUrl}}/api/users/getuser/:userId" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;    &quot;email&quot;: &quot;mohamed0&quot;,&#13;&#10;    &quot;password&quot;: &quot;esam&quot;,&#13;&#10;    &quot;phone&quot;: &quot;012&quot;,&#13;&#10;    &quot;username&quot;: &quot;mohamed&quot;,&#13;&#10;    &quot;location&quot;: {&#10;      &quot;lat&quot;: 15,&#10;      &quot;lng&quot;: 15&#10;    },&#13;&#10;    &quot;enumType&quot;: 1&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="{{baseUrl}}/api/users/adduser" />
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
+                          </headerState>
+                        </list>
+                      </option>
+                      <option name="id" value="81ccfbb7-00de-4eab-bd70-b6a22504ee03" />
+                      <option name="method" value="POST" />
+                      <option name="name" value="adduser" />
+                      <option name="url" value="{{baseUrl}}/api/users/adduser" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;email&quot;:&quot;mido@gmail.com&quot;&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/users/deleteuser/63fe84436a71d06655c5d5d1" />
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
+                          </headerState>
+                        </list>
+                      </option>
+                      <option name="id" value="cd47a1b1-44b9-41a3-ac0c-9e6c2370c20e" />
+                      <option name="method" value="DELETE" />
+                      <option name="name" value="deleteuser" />
+                      <option name="pathVariables">
+                        <list>
+                          <pathVariableState>
+                            <option name="key" value="id" />
+                            <option name="value" value="644189cea77af6434b41118b" />
+                          </pathVariableState>
+                        </list>
+                      </option>
+                      <option name="url" value="{{baseUrl}}/api/users/deleteuser/:id" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;email&quot;:&quot;ali new update user&quot;,&#13;&#10;&quot;phone&quot;:&quot;0115416727373737373&quot;&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="{{baseUrl}}/api/users/updateuser/:id" />
+                      <option name="id" value="5f9515e4-8b35-444d-9093-5a1d9c37658e" />
+                      <option name="method" value="PUT" />
+                      <option name="name" value="updateuser" />
+                      <option name="pathVariables">
+                        <list>
+                          <pathVariableState>
+                            <option name="key" value="id" />
+                            <option name="value" value="6416b8c7794cf467b8aae2e2" />
+                          </pathVariableState>
+                        </list>
+                      </option>
+                      <option name="url" value="{{baseUrl}}/api/users/updateuser/:id" />
+                    </requestState>
+                    <requestState>
+                      <option name="auth">
+                        <authState>
+                          <option name="basic">
+                            <basicAuthState>
+                              <option name="pass" value="arafa" />
+                              <option name="username" value="mohamed" />
+                            </basicAuthState>
+                          </option>
+                          <option name="type" value="BASIC" />
+                        </authState>
+                      </option>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;    &quot;username&quot;: &quot;mohamed&quot;,&#13;&#10;    &quot;password&quot;: &quot;esam&quot;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="{{baseUrl}}/api/users/auth/login" />
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
+                          </headerState>
+                        </list>
+                      </option>
+                      <option name="id" value="a33a1590-0c2a-486c-bb3c-8cf347dce1af" />
+                      <option name="method" value="POST" />
+                      <option name="name" value="login" />
+                      <option name="testScript" value="response = jc.response.json()&#10;jc.collectionVariables.set(&quot;token&quot;, response.token)" />
+                      <option name="url" value="{{baseUrl}}/api/users/auth/login" />
+                    </requestState>
+                  </list>
+                </option>
+                <option name="sortWeight" value="1000000" />
+              </folderState>
+              <folderState>
+                <option name="auth">
+                  <authState>
+                    <option name="bearer">
+                      <iz>
+                        <option name="token" value="{{token}}" />
+                      </iz>
+                    </option>
+                    <option name="type" value="BEARER" />
+                  </authState>
+                </option>
+                <option name="id" value="3323b395-295a-40a2-af4a-edbd20560f95" />
+                <option name="name" value="Medicine" />
+                <option name="requests">
+                  <list>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;so5onya + loze&quot;,&#13;&#10;&quot;diseasesID&quot;:[&quot;new&quot;,&quot;medicine&quot;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="{{baseUrl}}/api/medicine/addmedicine" />
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="disabled" value="true" />
+                            <option name="key" value="Authorization" />
+                            <option name="value" value="Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhaG1lZCIsImNyZWF0ZWQiOjE2Nzg4MDQzMTQ4ODksImV4cCI6MTY3OTQwOTExNH0.BC-4cEU4QwdHqZg9U3tPLBGS2I8pergnbmIX8b7pNkyVLAYv6eien2WFh3-65-zboKsDPBr5DpUG4SB_0xWK_A" />
+                          </headerState>
+                        </list>
+                      </option>
+                      <option name="id" value="751a252a-afbd-4c5a-a54a-4578fea8b0b8" />
+                      <option name="method" value="POST" />
+                      <option name="name" value="addmedicine" />
+                      <option name="url" value="{{baseUrl}}/api/medicine/addmedicine" />
+                    </requestState>
+                    <requestState>
+                      <option name="description" value="{{baseUrl}}/api/medicine/getmedicine/:id" />
+                      <option name="id" value="4a64e4cf-279c-44cf-81bf-39c6358c8191" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="getmedicinebyid" />
+                      <option name="pathVariables">
+                        <list>
+                          <pathVariableState>
+                            <option name="key" value="id" />
+                          </pathVariableState>
+                        </list>
+                      </option>
+                      <option name="url" value="{{baseUrl}}/api/medicine/getmedicine/:id" />
+                    </requestState>
+                    <requestState>
+                      <option name="description" value="{{baseUrl}}/api/medicine/getallmedicine" />
+                      <option name="id" value="c5131adf-5ed4-4fb7-a20f-5b177f46f70d" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="getall" />
+                      <option name="url" value="{{baseUrl}}/api/medicine/getallmedicine" />
+                    </requestState>
+                    <requestState>
+                      <option name="description" value="/api/medicine/deletemedicine/63fe8b8f6d17de0a74bccf5b" />
+                      <option name="id" value="eb9006e1-dd43-494a-8019-f20085ddfc22" />
+                      <option name="method" value="DELETE" />
+                      <option name="name" value="deletemedicinebyid" />
+                      <option name="url" value="http://localhost:3000/api/medicine/deletemedicine/63fe8b8f6d17de0a74bccf5b" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;new medicine mother fucker&quot;&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="{{baseUrl}}/api/medicine/updatemedicine/:id" />
+                      <option name="id" value="8683778f-78ba-4d85-bfd7-a86352d073c6" />
+                      <option name="method" value="PUT" />
+                      <option name="name" value="updatemedicine" />
+                      <option name="pathVariables">
+                        <list>
+                          <pathVariableState>
+                            <option name="key" value="id" />
+                          </pathVariableState>
+                        </list>
+                      </option>
+                      <option name="url" value="{{baseUrl}}/api/medicine/updatemedicine/:id" />
+                    </requestState>
+                  </list>
+                </option>
+                <option name="sortWeight" value="2000000" />
+              </folderState>
+              <folderState>
+                <option name="auth">
+                  <authState>
+                    <option name="bearer">
+                      <iz>
+                        <option name="token" value="{{token}}" />
+                      </iz>
+                    </option>
+                    <option name="type" value="BEARER" />
+                  </authState>
+                </option>
+                <option name="description" value="/api/disease/" />
+                <option name="id" value="d9a919a8-bf36-4cb2-a97f-ebe48b479eb2" />
+                <option name="name" value="Disease" />
+                <option name="requests">
+                  <list>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;second disease&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/disease/adddisease" />
+                      <option name="id" value="a335c5c8-f3a7-4811-886c-6af92019920e" />
+                      <option name="method" value="POST" />
+                      <option name="name" value="adddisease" />
+                      <option name="url" value="http://localhost:3000/api/disease/adddisease" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;second disease&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/disease/getdisease/63ffe3e3fa270760a57f04e4" />
+                      <option name="id" value="fa36d412-73ae-48aa-b817-140431f17102" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="getsiseasebyid" />
+                      <option name="url" value="http://localhost:3000/api/disease/getdisease/63ffe3e3fa270760a57f04e4" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;second disease&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/disease/getalldisease" />
+                      <option name="id" value="3659ee98-bb6b-494c-b0a4-1cdf803d6b28" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="getalldisease" />
+                      <option name="url" value="http://localhost:3000/api/disease/getalldisease" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;second disease&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/disease/deletedisease/63ffe3e3fa270760a57f04e4" />
+                      <option name="id" value="5f36ca0c-1b2d-4994-9de2-7f0408d74faa" />
+                      <option name="method" value="DELETE" />
+                      <option name="name" value="deletedisease" />
+                      <option name="url" value="http://localhost:3000/api/disease/deletedisease/63ffe3e3fa270760a57f04e4" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;ss&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/disease/updatedisease/6401323b248e01620a3fb779" />
+                      <option name="id" value="0e23cf91-5622-45ac-ac10-c2b5e19b8858" />
+                      <option name="method" value="PUT" />
+                      <option name="name" value="updatedisease" />
+                      <option name="url" value="http://localhost:3000/api/disease/updatedisease/6401323b248e01620a3fb779" />
+                    </requestState>
+                  </list>
+                </option>
+                <option name="sortWeight" value="3000000" />
+              </folderState>
+              <folderState>
+                <option name="description" value="/api/transaction/" />
+                <option name="id" value="a8cd8184-c27e-43d8-8840-a8cc584da8d5" />
+                <option name="name" value="Transaction" />
+                <option name="requests">
+                  <list>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;myStatusValue&quot;:&quot;DONE&quot;&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/transaction/addtransaction" />
+                      <option name="id" value="ce19f134-666d-40f6-85b7-4db6817a1a96" />
+                      <option name="method" value="POST" />
+                      <option name="name" value="addtransaction" />
+                      <option name="url" value="http://localhost:3000/api/transaction/addtransaction" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;second disease&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/transaction/gettransaction/63fff35e29d9203077c0c59f" />
+                      <option name="id" value="324c58e8-e716-4e62-9779-c3a4fab717c3" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="gettransactionbyid" />
+                      <option name="url" value="http://localhost:3000/api/transaction/gettransaction/63fff35e29d9203077c0c59f" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;second disease&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/transaction/gettransactionbyuserid/64108ee40b2b5e15816989c3" />
+                      <option name="id" value="53f7ac01-8d44-4472-8497-85b5dd71a269" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="gettransactionbyuserid" />
+                      <option name="url" value="http://localhost:3000/api/transaction/gettransactionbyuserid/64108ee40b2b5e15816989c3" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;second disease&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/transaction/getalltransaction" />
+                      <option name="id" value="0e16edd9-ef95-40b9-b999-adc764389c85" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="getalltransaction" />
+                      <option name="url" value="http://localhost:3000/api/transaction/getalltransaction" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;second disease&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/transaction/deletetransaction/63fff35e29d9203077c0c59f" />
+                      <option name="id" value="c5c8ed55-0e43-4895-a144-21671c370e6a" />
+                      <option name="method" value="DELETE" />
+                      <option name="name" value="deletetransaction" />
+                      <option name="url" value="http://localhost:3000/api/transaction/deletetransaction/63fff35e29d9203077c0c59f" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;myStatusValue&quot;:&quot;DONE&quot;&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/transaction/updatetransaction/63fff3de29d9203077c0c5a0" />
+                      <option name="id" value="1dfc3e75-8b02-40fd-a076-34987422c8d9" />
+                      <option name="method" value="PUT" />
+                      <option name="name" value="updatetransaction" />
+                      <option name="url" value="http://localhost:3000/api/transaction/updatetransaction/63fff3de29d9203077c0c5a0" />
+                    </requestState>
+                  </list>
+                </option>
+                <option name="sortWeight" value="4000000" />
+              </folderState>
+              <folderState>
+                <option name="description" value="/api/" />
+                <option name="id" value="850ec309-7d24-4224-aa41-285f21d45946" />
+                <option name="name" value="Stock" />
+                <option name="requests">
+                  <list>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;quantity&quot;:&quot;all qauntity&quot;&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/stock/addstock" />
+                      <option name="id" value="e5e1ed43-0d00-4e50-8bdd-468a59894714" />
+                      <option name="method" value="POST" />
+                      <option name="name" value="addstock" />
+                      <option name="url" value="http://localhost:3000/api/stock/addstock" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;second disease&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/stock/getstock/640130c8248e01620a3fb775" />
+                      <option name="id" value="3414870e-b942-47af-b222-8d10069e501e" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="getstockbyid" />
+                      <option name="url" value="http://localhost:3000/api/stock/getstock/640130c8248e01620a3fb775" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;second disease&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/stock/getallstock" />
+                      <option name="id" value="f4e2341d-22ab-4b1b-9259-84def868526a" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="getallstock" />
+                      <option name="url" value="http://localhost:3000/api/stock/getallstock" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;myStatusValue&quot;:&quot;DONE&quot;&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/transaction/updatetransaction/63fff3de29d9203077c0c5a0" />
+                      <option name="id" value="8d1c3583-72f7-41c2-8d91-8f6fe1ca0465" />
+                      <option name="method" value="PUT" />
+                      <option name="name" value="updatestock" />
+                      <option name="url" value="http://localhost:3000/api/transaction/updatetransaction/63fff3de29d9203077c0c5a0" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;second disease&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/stock/deletestock/6401378fb6adaa71de67ee277" />
+                      <option name="id" value="1199d2cb-a11f-454f-a5ed-2e0773793c54" />
+                      <option name="method" value="DELETE" />
+                      <option name="name" value="deletetransaction" />
+                      <option name="url" value="http://localhost:3000/api/stock/deletestock/6401378fb6adaa71de67ee277" />
+                    </requestState>
+                  </list>
+                </option>
+                <option name="sortWeight" value="5000000" />
+              </folderState>
+              <folderState>
+                <option name="description" value="/api/" />
+                <option name="id" value="0bf28440-7b36-4a3d-965b-a20814ebf0f5" />
+                <option name="name" value="log" />
+                <option name="requests">
+                  <list>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;quantity&quot;:&quot;all qauntity&quot;&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/stock/addstock" />
+                      <option name="id" value="3641ec24-24e4-440c-b989-1ced96f745ac" />
+                      <option name="method" value="POST" />
+                      <option name="name" value="addlog" />
+                      <option name="url" value="http://localhost:3000/api/stock/addstock" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;second disease&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/stock/getstock/640130c8248e01620a3fb775" />
+                      <option name="id" value="cf4f9bd2-54a8-4c0f-b8e4-430951c38377" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="getlogbyid" />
+                      <option name="url" value="http://localhost:3000/api/stock/getstock/640130c8248e01620a3fb775" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;second disease&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/stock/getstock/640130c8248e01620a3fb775" />
+                      <option name="id" value="98fdd211-1510-487f-a939-066056a4bd38" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="getlogbyuserid" />
+                      <option name="url" value="http://localhost:3000/api/stock/getstock/640130c8248e01620a3fb775" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;second disease&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/log/getalllog" />
+                      <option name="id" value="127fbc4d-0ca9-44af-9404-d37a313211cb" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="getalllog" />
+                      <option name="url" value="http://localhost:3000/api/log/getalllog" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;myStatusValue&quot;:&quot;DONE&quot;&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/transaction/updatetransaction/63fff3de29d9203077c0c5a0" />
+                      <option name="id" value="8392d296-6bb6-4750-ab49-4c86982fe6d1" />
+                      <option name="method" value="PUT" />
+                      <option name="name" value="updatelog" />
+                      <option name="url" value="http://localhost:3000/api/transaction/updatetransaction/63fff3de29d9203077c0c5a0" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;second disease&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="description" value="/api/log/deletelog/64013b240183d63184d50911" />
+                      <option name="id" value="3257ea64-4d13-402b-aafd-90d987ceac52" />
+                      <option name="method" value="DELETE" />
+                      <option name="name" value="deletelog" />
+                      <option name="url" value="http://localhost:3000/api/log/deletelog/64013b240183d63184d50911" />
+                    </requestState>
+                  </list>
+                </option>
+                <option name="sortWeight" value="6000000" />
+              </folderState>
+              <folderState>
+                <option name="id" value="3ca29f06-9274-4d8b-b767-b696df0f9695" />
+                <option name="name" value="Model" />
+                <option name="requests">
+                  <list>
+                    <requestState>
+                      <option name="description" value="/api/users/model/predict" />
+                      <option name="id" value="f2458d20-e64f-458e-a69d-cb5cd599d176" />
+                      <option name="method" value="POST" />
+                      <option name="name" value="predict" />
+                      <option name="queryParams">
+                        <list>
+                          <queryParamState>
+                            <option name="key" value="symptoms" />
+                            <option name="value" value="1100000000000000000000000000000" />
+                          </queryParamState>
+                        </list>
+                      </option>
+                      <option name="url" value="http://localhost:3000/api/users/model/predict?symptoms=1100000000000000000000000000000" />
+                    </requestState>
+                  </list>
+                </option>
+                <option name="sortWeight" value="7000000" />
+              </folderState>
+            </list>
+          </option>
+          <option name="id" value="99240083-0ddc-43ec-957e-cfd8a78d33d0" />
+          <option name="name" value="MedicalService" />
+          <option name="requests">
+            <list>
+              <requestState>
+                <option name="auth">
+                  <authState>
+                    <option name="bearer">
+                      <iz>
+                        <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYSIsImNyZWF0ZWQiOjE2Nzk3NTY3ODkzNTgsImV4cCI6MTY4MDM2MTU4OX0.-U248bTiS4YjrGcYqsHUOp78qSk7J-sfQdmCs9c9_WR8lv75ayzRDnlOren35zSWJMCrKFwUxKNY8yUvfTWl1w" />
+                      </iz>
+                    </option>
+                    <option name="type" value="BEARER" />
+                  </authState>
+                </option>
+                <option name="body">
+                  <bodyState>
+                    <option name="type" value="FORM_DATA" />
+                  </bodyState>
+                </option>
+                <option name="description" value="/api/v1/upload" />
+                <option name="headers">
+                  <list>
+                    <headerState>
+                      <option name="key" value="Content-Type" />
+                      <option name="value" value="multipart/form-data" />
+                    </headerState>
+                  </list>
+                </option>
+                <option name="id" value="93ff4fc9-fb40-45c5-adeb-98e7a581f73c" />
+                <option name="method" value="POST" />
+                <option name="name" value="upload" />
+                <option name="url" value="http://localhost:3000/api/v1/upload" />
+              </requestState>
+              <requestState>
+                <option name="description" value="/api/v1/upload" />
+                <option name="id" value="a8fe5be4-e041-412b-b1e4-00b03d9323f9" />
+                <option name="method" value="GET" />
+                <option name="name" value="upload Copy" />
+                <option name="url" value="http://localhost:3000/api/v1/upload" />
+              </requestState>
+            </list>
+          </option>
+          <option name="sortWeight" value="1000000" />
+          <option name="syncProperties">
+            <synchronizationPropertiesState>
+              <option name="folderPath" value="$PROJECT_DIR$/.jetclient" />
+            </synchronizationPropertiesState>
+          </option>
+        </folderState>
+      </list>
+    </option>
+    <option name="id" value="8e9618c2-7b07-4e62-8a71-d29bd60209e3" />
+  </component>
+</project>

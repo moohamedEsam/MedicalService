@@ -35,9 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.ImageLoader
 import coil.compose.AsyncImage
-import com.example.einvoicecomponents.OneTimeEventButton
-import com.example.einvoicecomponents.textField.ValidationOutlinedTextField
-import com.example.einvoicecomponents.textField.ValidationPasswordTextField
+import com.example.composecomponents.OneTimeEventButton
+import com.example.composecomponents.textField.ValidationOutlinedTextField
+import com.example.composecomponents.textField.ValidationPasswordTextField
 import org.koin.androidx.compose.get
 import org.koin.androidx.compose.koinViewModel
 

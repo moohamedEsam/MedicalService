@@ -1,255 +1,237 @@
 package com.example.medicalservice.presentation.donation
 
-import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.UploadFile
-import androidx.compose.material3.*
+import androidx.compose.material.icons.outlined.Timer
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.common.models.ValidationResult
-import com.example.einvoicecomponents.OneTimeEventButton
-import com.example.einvoicecomponents.textField.ValidationOutlinedTextField
-import com.example.models.app.MedicineView
-import com.example.models.app.empty
-import com.example.models.app.paracetamol
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.composecomponents.OneTimeEventButton
+import com.example.composecomponents.textField.OutlinedSearchTextField
+import com.example.composecomponents.textField.ValidationOutlinedTextField
+import com.example.medicalservice.presentation.components.UrgentDonationList
+import com.example.models.app.DonationRequest
+import com.example.models.app.dummyDonationRequests
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun DonationScreen(
-    viewModel: DonationViewModel = koinViewModel()
+    donationRequestId: String,
+    onMedicineReadMoreClick: (String) -> Unit,
+    viewModel: DonationViewModel = koinViewModel { parametersOf(donationRequestId) }
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     DonationScreen(
-        medicines = viewModel.medicines,
-        selectedMedicine = viewModel.selectedMedicine,
-        quantity = viewModel.quantity,
-        onQuantityChange = viewModel::onQuantityChanged,
-        quantityValidationResult = viewModel.quantityValidationResult,
-        onDonateClick = viewModel::onDonateClick,
-        donateButtonEnabled = viewModel.isDonateEnabled,
-        isLoading = viewModel.isLoading,
-        onSelectMedicine = viewModel::onMedicineSelected
+        state = uiState,
+        modifier = Modifier,
+        onEvent = viewModel::handleEvent,
+        onMedicineReadMoreClick = onMedicineReadMoreClick
     )
 }
 
 @Composable
 private fun DonationScreen(
-    medicines: StateFlow<List<MedicineView>>,
-    selectedMedicine: StateFlow<MedicineView?>,
-    onSelectMedicine: (MedicineView) -> Unit,
-    quantity: StateFlow<String>,
-    onQuantityChange: (String) -> Unit,
-    quantityValidationResult: StateFlow<ValidationResult>,
-    onDonateClick: () -> Unit,
-    donateButtonEnabled: StateFlow<Boolean>,
-    isLoading: StateFlow<Boolean>,
+    state: DonationScreenState,
     modifier: Modifier = Modifier,
+    onMedicineReadMoreClick: (String) -> Unit = {},
+    onEvent: (DonationScreenEvent) -> Unit = {},
 ) {
     Column(
-        modifier = modifier.padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = modifier
+            .fillMaxSize()
+            .padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         DonationHeader(
-            medicines = medicines,
-            selectedMedicine = selectedMedicine,
-            modifier = Modifier
-                .heightIn(max = (LocalConfiguration.current.screenHeightDp / 3).dp)
-                .fillMaxWidth(),
-            onSelectMedicine = onSelectMedicine
+            state = state,
+            onDonationRequestClick = { onEvent(DonationScreenEvent.OnDonationRequestSelected(it)) },
+            onQueryChange = { onEvent(DonationScreenEvent.OnQueryChange(it)) },
+            onChooseAnotherDonationRequest = { onEvent(DonationScreenEvent.OnChooseAnotherDonationRequest) },
+            onMedicineReadMoreClick = onMedicineReadMoreClick
         )
-
         DonationBody(
-            quantity = quantity,
-            onQuantityChange = onQuantityChange,
-            quantityValidationResult = quantityValidationResult,
-            onDonateClick = onDonateClick,
-            donateButtonEnabled = donateButtonEnabled,
-            isLoading = isLoading
+            state = state,
+            onEvent = onEvent
         )
-
     }
 }
 
 @Composable
 private fun DonationHeader(
-    medicines: StateFlow<List<MedicineView>>,
-    selectedMedicine: StateFlow<MedicineView?>,
-    onSelectMedicine: (MedicineView) -> Unit,
-    modifier: Modifier = Modifier,
+    state: DonationScreenState,
+    onDonationRequestClick: (String) -> Unit,
+    onQueryChange: (String) -> Unit,
+    onChooseAnotherDonationRequest: () -> Unit,
+    onMedicineReadMoreClick: (String) -> Unit = {},
 ) {
-    Text(
-        text = "Medicine",
-        style = MaterialTheme.typography.headlineMedium,
-    )
-    OutlinedCard(
-        modifier = modifier.animateContentSize()
+    AnimatedVisibility(
+        visible = state.selectedDonationRequest == null,
+        enter = fadeIn()
     ) {
-        DonationHeaderBody(selectedMedicine, medicines, onSelectMedicine)
-    }
-}
-
-@Composable
-private fun DonationHeaderBody(
-    selectedMedicineState: StateFlow<MedicineView?>,
-    medicines: StateFlow<List<MedicineView>>,
-    onSelectMedicine: (MedicineView) -> Unit
-) {
-    val selectedMedicine by selectedMedicineState.collectAsState()
-    if (selectedMedicine != null)
-        SelectedMedicineBox(selectedMedicine!!)
-    else
-        MedicineList(medicines, onSelectMedicine)
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun MedicineList(
-    medicinesState: StateFlow<List<MedicineView>>,
-    onSelectMedicine: (MedicineView) -> Unit
-) {
-    val medicines by medicinesState.collectAsState()
-    TextField(
-        value = "",
-        onValueChange = {},
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Search,
-                contentDescription = "Search"
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            DonationHeader(
+                query = state.query,
+                donationRequests = state.donationRequests,
+                onDonationRequestClick = onDonationRequestClick,
+                onQueryChange = onQueryChange
             )
-        },
-        label = { Text(text = "Search") },
-        modifier = Modifier
-            .fillMaxWidth()
-    )
-    LazyColumn(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        items(medicines) { medicine ->
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onSelectMedicine(medicine) }
-            ) {
-                Text(
-                    text = medicine.name,
-                    style = MaterialTheme.typography.headlineSmall
-                )
-                Divider()
-            }
         }
     }
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun SelectedMedicineBox(selectedMedicine: MedicineView) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(12.dp)
+    AnimatedVisibility(
+        visible = state.selectedDonationRequest != null,
+        enter = fadeIn()
     ) {
-        Text(
-            text = selectedMedicine.name,
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
-
-        Text(
-            text = "Diseases",
-            style = MaterialTheme.typography.bodyLarge,
-        )
-
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            items(selectedMedicine.diseases) {
-                SuggestionChip(onClick = { }, label = { Text(text = it.name) })
-            }
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            DonationHeader(
+                donationRequest = state.selectedDonationRequest,
+                onChooseAnotherDonationRequest = onChooseAnotherDonationRequest,
+                onMedicineReadMoreClick = onMedicineReadMoreClick
+            )
         }
     }
 }
 
 @Composable
-private fun ColumnScope.DonationBody(
-    quantity: StateFlow<String>,
-    onQuantityChange: (String) -> Unit,
-    quantityValidationResult: StateFlow<ValidationResult>,
-    onDonateClick: () -> Unit,
-    donateButtonEnabled: StateFlow<Boolean>,
-    isLoading: StateFlow<Boolean>,
+private fun DonationHeader(
+    query: String,
+    donationRequests: List<DonationRequest>,
+    onDonationRequestClick: (String) -> Unit,
+    onQueryChange: (String) -> Unit,
 ) {
-    ValidationOutlinedTextField(
-        valueState = quantity,
-        validationState = quantityValidationResult,
-        label = "Quantity",
-        onValueChange = onQuantityChange,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+    OutlinedSearchTextField(
+        query = query,
+        onQueryChange = onQueryChange,
+        modifier = Modifier.fillMaxWidth(),
+        label = "Search for donation requests",
     )
 
+    UrgentDonationList(
+        donationRequests = donationRequests,
+        title = "Donations Requests",
+        isDonateButtonVisible = false,
+        onDonationRequestCardClick = { onDonationRequestClick(it.id) }
+    )
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun DonationHeader(
+    donationRequest: DonationRequest?,
+    onChooseAnotherDonationRequest: () -> Unit = {},
+    onMedicineReadMoreClick: (String) -> Unit = {}
+) {
+    if (donationRequest == null) return
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = "Donation Request", style = MaterialTheme.typography.headlineMedium)
+        TextButton(onClick = onChooseAnotherDonationRequest) {
+            Text(text = "Choose Another Donation", style = MaterialTheme.typography.bodyMedium)
+        }
+    }
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "Medicine Image", style = MaterialTheme.typography.bodyLarge)
-        IconButton(onClick = { }) {
-            Icon(
-                imageVector = Icons.Outlined.UploadFile,
-                contentDescription = "Add a photo"
-            )
+        Text(text = donationRequest.medicine.name, style = MaterialTheme.typography.headlineSmall)
+        TextButton(onClick = { onMedicineReadMoreClick(donationRequest.medicine.id) }) {
+            Text(text = "Read more", style = MaterialTheme.typography.bodyMedium)
         }
     }
-
-    OneTimeEventButton(
-        enabled = donateButtonEnabled,
-        loading = isLoading,
-        label = "Donate",
-        onClick = onDonateClick,
-        modifier = Modifier.align(Alignment.End)
+    Text(
+        text = donationRequest.medicine.description,
+        style = MaterialTheme.typography.bodyMedium,
+        maxLines = 2
     )
+    val progress = donationRequest.collected.toFloat() / donationRequest.needed.toFloat()
+    LinearProgressIndicator(
+        progress = progress,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp)
+    )
+    Text(
+        "Quantity needed: ${donationRequest.needed - donationRequest.collected}",
+        style = MaterialTheme.typography.bodyLarge
+    )
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(imageVector = Icons.Outlined.Timer, contentDescription = null)
+        Text(text = "ends in 4 days", style = MaterialTheme.typography.bodyLarge)
+    }
+}
+
+@Composable
+private fun ColumnScope.DonationBody(
+    state: DonationScreenState,
+    onEvent: (DonationScreenEvent) -> Unit
+) {
+    if (state.selectedDonationRequest == null) return
+    ValidationOutlinedTextField(
+        value = state.quantity,
+        validation = state.quantityValidationResult,
+        label = "Quantity",
+        onValueChange = {
+            onEvent(DonationScreenEvent.OnQuantityChange(it))
+        },
+        modifier = Modifier.fillMaxWidth(),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+    )
+    OneTimeEventButton(
+        enabled = state.isDonateButtonEnabled,
+        loading = state.isLoading,
+        label = "Donate",
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
+    ) {
+        onEvent(DonationScreenEvent.OnDonateClick)
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun DonationScreenPreview() {
-    DonationScreen(
-        medicines = MutableStateFlow(listOf(
-            MedicineView.empty().copy(name = "Paracetamol"),
-            MedicineView.empty().copy(name = "Ibuprofen"),
-            MedicineView.empty().copy(name = "Aspirin"),
-            MedicineView.empty().copy(name = "Caffeine"),
-            MedicineView.empty().copy(name = "Codeine"),
-            MedicineView.empty().copy(name = "Dextromethorphan"),
-        ).sortedBy { it.name }),
-        onDonateClick = {},
-        modifier = Modifier.fillMaxSize(),
-        selectedMedicine = MutableStateFlow(MedicineView.paracetamol()),
-        quantity = MutableStateFlow("0"),
-        onQuantityChange = {},
-        quantityValidationResult = MutableStateFlow(ValidationResult.Valid),
-        donateButtonEnabled = MutableStateFlow(false),
-        isLoading = MutableStateFlow(false),
-        onSelectMedicine = {}
-    )
+    Surface {
+        val donationRequests = donationRequests()
+        DonationScreen(
+            state = DonationScreenState(
+                donationRequests = donationRequests,
+                selectedDonationRequestId = donationRequests.random().id,
+            ),
+            onEvent = {}
+        )
+    }
+
 }
+
+@Composable
+private fun donationRequests() = dummyDonationRequests()

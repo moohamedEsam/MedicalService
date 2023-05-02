@@ -114,7 +114,7 @@ private fun LazyListScope.receiverHomeScreenBody(
         )
     }
 
-    transactionsList(user.recentTransactions) { } //todo add transaction sheet
+//    transactionsList(user.recentTransactions) { } //todo add transaction sheet
 }
 
 
@@ -173,28 +173,6 @@ private fun ReceiverHomeScreenPreview() {
                 Medicine.empty().copy(name = "Diphenhydramine"),
             ),
             username = "John Doe",
-            recentTransactions = listOf(
-                Transaction.empty().copy(
-                    medicine = Medicine.empty().copy(name = "Paracetamol"),
-                    quantity = 2,
-
-                    ),
-                Transaction.empty().copy(
-                    medicine = Medicine.empty().copy(name = "Aspirin"),
-                    quantity = 1,
-
-                    ),
-                Transaction.empty().copy(
-                    medicine = Medicine.empty().copy(name = "Ibuprofen"),
-                    quantity = 1,
-
-                    ),
-                Transaction.empty().copy(
-                    medicine = Medicine.empty().copy(name = "Diphenhydramine"),
-                    quantity = 1,
-
-                    )
-            )
         ),
         onMedicineClick = { },
         onDiseaseClick = { },

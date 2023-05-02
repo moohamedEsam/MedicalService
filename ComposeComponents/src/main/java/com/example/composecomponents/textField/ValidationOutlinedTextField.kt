@@ -1,4 +1,4 @@
-package com.example.einvoicecomponents.textField
+package com.example.composecomponents.textField
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
@@ -65,7 +65,7 @@ fun ValidationOutlinedTextField(
                 .fillMaxWidth()
                 .testTag(testTag),
             leadingIcon = leadingIcon,
-            placeholder = { Text(label) },
+            label = { Text(label) },
             keyboardOptions = keyboardOptions,
             colors = DefaultTextFieldColor()
         )

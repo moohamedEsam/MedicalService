@@ -5,19 +5,26 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.FormatListBulleted
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -63,6 +70,7 @@ fun MedicalServiceLayout(
         modifier = Modifier.fillMaxSize(),
         bottomBar = { BottomBar(navHostController = navHostController) },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        topBar = { TopBar(navHostController = navHostController) },
         content = {
             MedicalServiceNavGraph(
                 startDestination = startDestination,
@@ -106,12 +114,12 @@ fun BottomBar(navHostController: NavHostController) {
             },
             label = { Text(text = "Donation List") },
         )
-//        NavigationBarItem(
-//            selected = false,
-//            onClick = { },
-//            icon = { Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = null) },
-//            label = { Text(text = "My Donations") },
-//        )
+        NavigationBarItem(
+            selected = false,
+            onClick = { },
+            icon = { Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = null) },
+            label = { Text(text = "My Donations") },
+        )
 
         NavigationBarItem(
             selected = false,
@@ -120,15 +128,52 @@ fun BottomBar(navHostController: NavHostController) {
             label = { Text(text = "Search") },
         )
 
-        NavigationBarItem(
-            selected = false,
-            onClick = { },
-            icon = { Icon(imageVector = Icons.Outlined.Person, contentDescription = null) },
-            label = { Text(text = "Account") },
-        )
+//        NavigationBarItem(
+//            selected = false,
+//            onClick = { },
+//            icon = { Icon(imageVector = Icons.Outlined.Person, contentDescription = null) },
+//            label = { Text(text = "Account") },
+//        )
 
 
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TopBar(navHostController: NavHostController) {
+    val navEntry by navHostController.currentBackStackEntryAsState()
+
+    val currentRoute by remember {
+        derivedStateOf {
+            navEntry?.destination?.route?.takeWhile { it != '/' }
+        }
+    }
+    CenterAlignedTopAppBar(
+        title = { Text(text = currentRoute ?: "") },
+        actions = {
+            IconButton(onClick = { }) {
+                Icon(imageVector = Icons.Outlined.Sync, contentDescription = null)
+            }
+
+            IconButton(onClick = {}) {
+                Icon(imageVector = Icons.Outlined.Person, contentDescription = null)
+            }
+        },
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        ),
+        navigationIcon = {
+            IconButton(
+                onClick = {
+                    if (navHostController.previousBackStackEntry != null)
+                        navHostController.popBackStack()
+                },
+            ) {
+                Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = null)
+            }
+        }
+    )
 }
 
 @Preview(showBackground = true)

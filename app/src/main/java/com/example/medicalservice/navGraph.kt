@@ -69,12 +69,15 @@ fun MedicalServiceNavGraph(
 
         homeScreen(
             userType = userType,
-            onMedicineClick = navHostController::navigateToMedicineDetailsScreen,
-            onDonateClick = navHostController::navigateToDonationScreen,
-            onDiseaseClick = navHostController::navigateToDiseaseScreen
+            onNavigateToMedicineScreen = navHostController::navigateToMedicineDetailsScreen,
+            onNavigateToDonateScreen = navHostController::navigateToDonationScreen,
+            onNavigateToDiseaseScreen = navHostController::navigateToDiseaseScreen,
+            onNavigateToTransactionScreen = {}
         )
 
-        donationScreen()
+        donationScreen(
+            onNavigateToMedicineScreen = navHostController::navigateToMedicineDetailsScreen
+        )
 
         diseasePrediction(
             onMedicineClick = navHostController::navigateToMedicineDetailsScreen,

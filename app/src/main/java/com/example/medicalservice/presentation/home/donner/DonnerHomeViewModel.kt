@@ -2,11 +2,9 @@ package com.example.medicalservice.presentation.home.donner
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.medicalservice.domain.GetCurrentUserTransactionsUseCase
 import com.example.medicalservice.domain.GetCurrentUserUseCase
 import com.example.medicalservice.domain.GetDonationRequestsUseCase
-import com.example.models.*
-import com.example.models.app.DonationRequest
-import com.example.models.app.Transaction
 import com.example.models.app.User
 import com.example.models.app.emptyDonor
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -19,36 +17,29 @@ import org.koin.android.annotation.KoinViewModel
 class DonnerHomeViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getDonationRequestsUseCase: GetDonationRequestsUseCase,
+    private val getCurrentUserTransactionsUseCase: GetCurrentUserTransactionsUseCase,
     coroutineExceptionHandler: CoroutineExceptionHandler
 ) : ViewModel() {
-    private val _user: MutableStateFlow<User> = MutableStateFlow(User.emptyDonor())
-    val user = _user.asStateFlow()
-
-    private val _mostNeededMedicine = MutableStateFlow(emptyList<DonationRequest>())
-    val mostNeededMedicine = _mostNeededMedicine.asStateFlow()
-
-    private val _showTransactionDialog = MutableStateFlow(false)
-    val showTransactionDialog = _showTransactionDialog.asStateFlow()
-
-    private val _transaction: MutableStateFlow<Transaction?> = MutableStateFlow(null)
-    val transaction = _transaction.asStateFlow()
+    private val _uiState = MutableStateFlow(DonnerHomeState())
+    val uiState = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch(coroutineExceptionHandler) {
-            _user.value = getCurrentUserUseCase()
-        }
-
-        viewModelScope.launch(coroutineExceptionHandler) {
-            _mostNeededMedicine.value = getDonationRequestsUseCase()
+            val user = getCurrentUserUseCase()
+            val donationRequests = getDonationRequestsUseCase()
+            val transactions = getCurrentUserTransactionsUseCase()
+            _uiState.value = DonnerHomeState(
+                user = user as? User.Donor ?: User.emptyDonor(),
+                donationRequests = donationRequests,
+                transactions = transactions,
+            )
         }
     }
 
-    fun onTransactionClick(transaction: Transaction) {
-        _transaction.value = transaction
-        _showTransactionDialog.value = true
-    }
-
-    fun onTransactionDialogDismiss() {
-        _showTransactionDialog.value = false
+    fun handleEvent(event: DonnerHomeScreenEvent) = viewModelScope.launch {
+        when (event) {
+            is DonnerHomeScreenEvent.OnQueryChange ->
+                _uiState.value = _uiState.value.copy(query = event.query)
+        }
     }
 }

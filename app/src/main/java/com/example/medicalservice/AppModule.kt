@@ -55,20 +55,7 @@ class AppModule {
 
     @Factory
     fun provideCurrentUserUseCase() = GetCurrentUserUseCase {
-        User.emptyDonor().copy(
-            recentTransactions = List(4) {
-                Transaction.empty().copy(
-                    medicine = Medicine.empty().copy(
-                        name = "Paracetamol",
-                        description = "Paracetamol is a painkiller and a fever reducer (antipyretic). It is used to treat many conditions such as headache, muscle aches, arthritis, backache, toothaches, colds, and fevers. It is also used to treat pain and fever after surgery. Paracetamol is in a class of medications called analgesics (pain relievers) and antipyretics (fever reducers). It works by blocking the release of certain chemical messengers that cause pain and fever in the body."
-                    ),
-                    quantity = Random.nextInt(1, 1000),
-                    senderName = "mohamed",
-                    receiverName = "medical service",
-                )
-            },
-            username = "mohamed",
-        )
+        User.emptyDonor().copy(username = "mohamed")
     }
 
     @Factory
@@ -109,6 +96,21 @@ class AppModule {
     fun provideCoroutineExceptionHandler() = CoroutineExceptionHandler { _, throwable ->
         Log.e("Error", "CoroutineExceptionHandler: ${throwable.message}")
         throwable.printStackTrace()
+    }
+
+    @Factory
+    fun provideGetCurrentUserTransactionsUseCase() = GetCurrentUserTransactionsUseCase {
+        List(Random.nextInt(1,100)) {
+            Transaction.empty().copy(
+                medicine = Medicine.empty().copy(
+                    name = "Paracetamol",
+                    description = "Paracetamol is a painkiller and a fever reducer (antipyretic). It is used to treat many conditions such as headache, muscle aches, arthritis, backache, toothaches, colds, and fevers. It is also used to treat pain and fever after surgery. Paracetamol is in a class of medications called analgesics (pain relievers) and antipyretics (fever reducers). It works by blocking the release of certain chemical messengers that cause pain and fever in the body."
+                ),
+                quantity = Random.nextInt(1, 1000),
+                senderName = "mohamed",
+                receiverName = "medical service",
+            )
+        }
     }
 
     @Single

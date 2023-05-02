@@ -1,4 +1,4 @@
-package com.example.einvoicecomponents.textField
+package com.example.composecomponents.textField
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle

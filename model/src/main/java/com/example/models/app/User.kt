@@ -11,7 +11,6 @@ sealed interface User {
     val phone: String
     val type: UserType
     val location: Location
-    val recentTransactions: List<Transaction>
     val id: String
 
     data class Receiver(
@@ -20,7 +19,6 @@ sealed interface User {
         override val phone: String,
         override val type: UserType,
         override val location: Location,
-        override val recentTransactions: List<Transaction>,
         override val id: String,
         val medicalPrescriptionUrl: String,
         val salaryProofUrl: String,
@@ -35,7 +33,6 @@ sealed interface User {
         override val phone: String,
         override val type: UserType,
         override val location: Location,
-        override val recentTransactions: List<Transaction>,
         override val id: String,
     ) : User
 
@@ -48,7 +45,6 @@ fun User.Companion.emptyReceiver() = User.Receiver(
     phone = "",
     type = UserType.Receiver,
     location = Location(0.0, 0.0),
-    recentTransactions = emptyList(),
     id = "",
     medicalPrescriptionUrl = "",
     salaryProofUrl = "",
@@ -63,7 +59,6 @@ fun User.Companion.emptyDonor() = User.Donor(
     phone = "",
     type = UserType.Donner,
     location = Location(0.0, 0.0),
-    recentTransactions = emptyList(),
     id = "",
 )
 

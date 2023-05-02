@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.example.einvoicecomponents.textField.ValidationOutlinedTextField
+import com.example.composecomponents.textField.ValidationOutlinedTextField
 import com.example.common.models.dataType.Email
 import com.example.common.models.dataType.Username
 
