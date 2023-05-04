@@ -6,6 +6,6 @@ android {
     namespace = "com.example.data"
 }
 
-dependencies {
-    implementation(project(":common"))
+dependencies{
+    implementation(project(":core:network"))
 }

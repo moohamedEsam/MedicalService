@@ -1,7 +1,8 @@
 package com.example.auth.register
 
-import com.example.models.Location
-import com.example.models.auth.UserType
+import com.example.model.app.Location
+import com.example.model.app.UserType
+
 
 sealed interface RegisterScreenEvent {
     data class EmailChanged(val value: String) : RegisterScreenEvent

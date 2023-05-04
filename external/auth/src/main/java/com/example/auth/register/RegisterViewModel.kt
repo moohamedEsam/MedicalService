@@ -2,16 +2,18 @@ package com.example.auth.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.auth.domain.RegisterUseCase
 import com.example.common.models.SnackBarEvent
-import com.example.functions.snackbar.SnackBarManager
-import com.example.models.auth.Register
 import com.example.common.models.dataType.Email
 import com.example.common.models.dataType.Password
 import com.example.common.models.dataType.PasswordConfirmation
 import com.example.common.models.dataType.Phone
 import com.example.common.models.dataType.Username
-import kotlinx.coroutines.flow.*
+import com.example.domain.usecase.RegisterUseCase
+import com.example.functions.snackbar.SnackBarManager
+import com.example.model.app.Register
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -19,7 +21,7 @@ import org.koin.android.annotation.KoinViewModel
 class RegisterViewModel(
     private val registerUseCase: RegisterUseCase,
     private val snackBarManager: SnackBarManager,
-) : ViewModel(), SnackBarManager by snackBarManager {
+) : ViewModel() {
     private val _uiState = MutableStateFlow(RegisterScreenState())
     val uiState = _uiState.asStateFlow()
 
@@ -60,7 +62,7 @@ class RegisterViewModel(
                     actionLabel = "Retry",
                     action = { register(onRegisterSuccess) }
                 )
-                showSnackBarEvent(event)
+                snackBarManager.showSnackBarEvent(event)
             }
             result.ifSuccess { onRegisterSuccess() }
         }

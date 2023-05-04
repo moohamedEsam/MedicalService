@@ -2,9 +2,8 @@ package com.example.medicalservice.presentation.medicine
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.medicalservice.domain.GetMedicineDetailsUseCase
-import com.example.models.app.MedicineView
-import com.example.models.app.empty
+import com.example.domain.usecase.GetMedicineDetailsUseCase
+import com.example.model.app.empty
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +16,7 @@ class MedicineDetailsViewModel(
     private val medicineId: String,
     coroutineExceptionHandler: CoroutineExceptionHandler
 ) : ViewModel() {
-    private val _medicine = MutableStateFlow(MedicineView.empty())
+    private val _medicine = MutableStateFlow(com.example.model.app.MedicineView.empty())
     val medicine = _medicine.asStateFlow()
 
     init {

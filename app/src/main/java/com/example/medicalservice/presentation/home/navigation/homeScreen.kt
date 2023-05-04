@@ -4,7 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import com.example.medicalservice.presentation.home.donner.donnerHome
 import com.example.medicalservice.presentation.home.receiver.receiverHome
-import com.example.models.auth.UserType
+import com.example.model.app.UserType
 
 const val HomeScreenRoute = "Home"
 

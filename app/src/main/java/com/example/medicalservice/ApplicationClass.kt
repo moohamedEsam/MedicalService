@@ -2,11 +2,14 @@ package com.example.medicalservice
 
 import android.app.Application
 import com.example.auth.AuthModule
+import com.example.data.DataModule
+import com.example.domain.DomainModule
 import com.example.maplocation.MapLocationModule
+import com.example.network.NetworkModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
-import org.koin.ksp.generated.*
+import org.koin.ksp.generated.module
 
 class ApplicationClass : Application() {
     override fun onCreate() {
@@ -14,9 +17,13 @@ class ApplicationClass : Application() {
         startKoin {
             modules(
                 listOf(
-                    AuthModule().module,
+                    DomainModule().module,
                     MapLocationModule().module,
-                    AppModule().module
+                    AppModule().module,
+                    DomainModule().module,
+                    NetworkModule().module,
+                    DataModule().module,
+                    AuthModule().module,
                 )
             )
 

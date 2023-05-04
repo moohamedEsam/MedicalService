@@ -36,8 +36,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.medicalservice.presentation.components.UrgentDonationList
-import com.example.models.app.DonationRequest
-import com.example.models.app.dummyDonationRequests
+import com.example.model.app.DonationRequest
+import com.example.model.app.dummyDonationRequests
 import org.koin.androidx.compose.koinViewModel
 import kotlin.random.Random
 import kotlin.time.DurationUnit
@@ -95,7 +95,7 @@ private fun DonationListTopBar(
 
 @Composable
 private fun ColumnScope.DonationListContent(
-    donationRequests: List<DonationRequest>
+    donationRequests: List<com.example.model.app.DonationRequest>
 ) {
     UrgentDonationList(donationRequests, "Urgent Donations")
 
@@ -118,7 +118,7 @@ private fun ColumnScope.DonationListContent(
 
 @Composable
 private fun FeaturedDonationList(
-    donationRequests: List<DonationRequest>,
+    donationRequests: List<com.example.model.app.DonationRequest>,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -137,7 +137,7 @@ private fun FeaturedDonationList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun VerticalDonationItem(
-    donationRequest: DonationRequest,
+    donationRequest: com.example.model.app.DonationRequest,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = { },
     onDonateClick: () -> Unit = { }
@@ -177,7 +177,7 @@ private fun DonationListScreenPreview() {
     Surface {
         DonationListScreen(
             state = DonationListState(
-                donationRequests = dummyDonationRequests(),
+                donationRequests = com.example.model.app.dummyDonationRequests(),
                 query = "paracetamol"
             )
         )

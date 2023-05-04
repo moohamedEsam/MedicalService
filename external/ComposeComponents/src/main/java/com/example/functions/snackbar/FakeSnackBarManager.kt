@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.flowOf
 class FakeSnackBarManager : SnackBarManager {
 
     override fun getReceiverChannel(): Flow<SnackBarEvent> = flowOf()
-    override suspend fun SnackBarManager.showSnackBarEvent(event: SnackBarEvent) = Unit
+    override suspend fun showSnackBarEvent(event: SnackBarEvent) = Unit
 }

@@ -33,17 +33,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.medicalservice.R
-import com.example.models.app.DonationRequest
+import com.example.model.app.DonationRequest
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
 @Composable
 fun UrgentDonationList(
-    donationRequests: List<DonationRequest>,
+    donationRequests: List<com.example.model.app.DonationRequest>,
     title: String,
     isDonateButtonVisible: Boolean = true,
-    onDonationRequestCardClick: (DonationRequest) -> Unit = {},
-    onDonationRequestClick: (DonationRequest) -> Unit = {}
+    onDonationRequestCardClick: (com.example.model.app.DonationRequest) -> Unit = {},
+    onDonationRequestClick: (com.example.model.app.DonationRequest) -> Unit = {}
 ) {
     val listState = rememberLazyListState()
     val visibleItemIndex by remember {
@@ -89,7 +89,7 @@ fun UrgentDonationList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DonationListItem(
-    donationRequest: DonationRequest,
+    donationRequest: com.example.model.app.DonationRequest,
     modifier: Modifier = Modifier,
     isDonateButtonVisible: Boolean = true,
     onClick: () -> Unit = { },

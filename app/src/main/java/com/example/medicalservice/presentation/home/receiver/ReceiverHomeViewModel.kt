@@ -2,9 +2,8 @@ package com.example.medicalservice.presentation.home.receiver
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.medicalservice.domain.GetCurrentUserUseCase
-import com.example.models.app.User
-import com.example.models.app.emptyReceiver
+import com.example.domain.usecase.GetCurrentUserUseCase
+import com.example.model.app.emptyReceiver
 
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +16,7 @@ class ReceiverHomeViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     coroutineExceptionHandler: CoroutineExceptionHandler
 ) : ViewModel() {
-    private val _user: MutableStateFlow<User> = MutableStateFlow(User.emptyReceiver())
+    private val _user: MutableStateFlow<com.example.model.app.User> = MutableStateFlow(com.example.model.app.User.emptyReceiver())
     val user = _user.asStateFlow()
 
     init{

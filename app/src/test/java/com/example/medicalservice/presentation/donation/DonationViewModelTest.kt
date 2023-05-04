@@ -1,7 +1,7 @@
 package com.example.medicalservice.presentation.donation
 
 import app.cash.turbine.test
-import com.example.models.app.dummyDonationRequests
+import com.example.model.app.dummyDonationRequests
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -21,7 +21,7 @@ class DonationViewModelTest {
 
     @OptIn(DelicateCoroutinesApi::class)
     private val thread = newSingleThreadContext("UI thread")
-    private val dummyDonationRequests = dummyDonationRequests()
+    private val dummyDonationRequests = com.example.model.app.dummyDonationRequests()
     private var dummyDonationRequestId: String? = null
 
     @Before

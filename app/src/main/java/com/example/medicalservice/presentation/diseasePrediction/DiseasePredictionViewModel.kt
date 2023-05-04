@@ -2,10 +2,8 @@ package com.example.medicalservice.presentation.diseasePrediction
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.medicalservice.domain.GetAvailableSymptomsUseCase
-import com.example.medicalservice.domain.PredictDiseaseBySymptomsUseCase
-import com.example.models.app.DiseaseView
-import com.example.models.app.Symptom
+import com.example.domain.usecase.GetAvailableSymptomsUseCase
+import com.example.domain.usecase.PredictDiseaseBySymptomsUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -17,7 +15,7 @@ class DiseasePredictionViewModel(
     private val predictDiseaseBySymptomsUseCase: PredictDiseaseBySymptomsUseCase,
     private val coroutineExceptionHandler: CoroutineExceptionHandler
 ) : ViewModel() {
-    private val _symptoms = MutableStateFlow(emptyList<Symptom>())
+    private val _symptoms = MutableStateFlow(emptyList<com.example.model.app.Symptom>())
     private val _query = MutableStateFlow("")
     val query = _query.asStateFlow()
 
@@ -25,10 +23,10 @@ class DiseasePredictionViewModel(
         symptoms.filter { it.name.contains(query, true) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
-    private val _selectedSymptoms = MutableStateFlow(emptySet<Symptom>())
+    private val _selectedSymptoms = MutableStateFlow(emptySet<com.example.model.app.Symptom>())
     val selectedSymptoms = _selectedSymptoms.asStateFlow()
 
-    private val _diseases = MutableStateFlow(emptyList<DiseaseView>())
+    private val _diseases = MutableStateFlow(emptyList<com.example.model.app.DiseaseView>())
     val diseases = _diseases.asStateFlow()
 
     val isPredictButtonEnabled = _selectedSymptoms.map { selectedSymptoms ->
@@ -42,7 +40,7 @@ class DiseasePredictionViewModel(
         viewModelScope.launch(coroutineExceptionHandler) { _symptoms.value = getAvailableSymptomsUseCase() }
     }
 
-    fun onSymptomSelected(symptom: Symptom) {
+    fun onSymptomSelected(symptom: com.example.model.app.Symptom) {
         _selectedSymptoms.update {
             if (it.contains(symptom)) {
                 it - symptom

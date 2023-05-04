@@ -37,8 +37,11 @@ android {
     }
 
     sourceSets.getByName("main"){
-        java.srcDirs("../auth/build/generated/ksp/debug/kotlin")
-        java.srcDirs("../mapLocation/build/generated/ksp/debug/kotlin")
+        java.srcDirs("../core/network/build/generated/ksp/debug/kotlin")
+        java.srcDirs("../core/domain/build/generated/ksp/debug/kotlin")
+        java.srcDirs("../core/data/build/generated/ksp/debug/kotlin")
+        java.srcDirs("../external/mapLocation/build/generated/ksp/debug/kotlin")
+        java.srcDirs("../external/auth/build/generated/ksp/debug/kotlin")
         java.srcDirs("build/generated/ksp/debug/kotlin")
     }
 
@@ -80,5 +83,8 @@ dependencies {
     implementation(project(":external:mapLocation"))
     implementation(project(":common"))
     implementation(project(":external:ComposeComponents"))
-    implementation(project(":model"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:network"))
+    implementation(project(":core:model"))
+    implementation(project(":core:data"))
 }

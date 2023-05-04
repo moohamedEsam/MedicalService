@@ -46,7 +46,7 @@ import com.example.medicalservice.presentation.donationList.DonationListScreenRo
 import com.example.medicalservice.presentation.donationList.navigateToDonationListScreen
 import com.example.medicalservice.presentation.home.navigation.HomeScreenRoute
 import com.example.medicalservice.presentation.home.navigation.navigateToHomeScreen
-import com.example.models.auth.UserType
+import com.example.model.app.UserType
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.get
 

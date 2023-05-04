@@ -23,7 +23,7 @@ import com.example.medicalservice.presentation.home.navigation.homeScreen
 import com.example.medicalservice.presentation.home.navigation.navigateToHomeScreen
 import com.example.medicalservice.presentation.medicine.medicineDetailsScreen
 import com.example.medicalservice.presentation.medicine.navigateToMedicineDetailsScreen
-import com.example.models.auth.UserType
+import com.example.model.app.UserType
 
 @Composable
 fun MedicalServiceNavGraph(

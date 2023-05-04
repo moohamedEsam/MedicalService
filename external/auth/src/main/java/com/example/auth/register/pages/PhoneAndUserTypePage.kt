@@ -23,9 +23,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.auth.R
-import com.example.composecomponents.textField.ValidationOutlinedTextField
-import com.example.models.auth.UserType
 import com.example.common.models.dataType.Phone
+import com.example.composecomponents.textField.ValidationOutlinedTextField
+import com.example.model.app.UserType
 
 @Composable
 fun PhoneAndUserTypePage(

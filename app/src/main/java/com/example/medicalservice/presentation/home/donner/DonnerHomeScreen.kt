@@ -33,12 +33,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.composecomponents.textField.OutlinedSearchTextField
 import com.example.medicalservice.presentation.components.UrgentDonationList
 import com.example.medicalservice.presentation.components.color
-import com.example.models.app.Medicine
-import com.example.models.app.Transaction
-import com.example.models.app.User
-import com.example.models.app.dummyDonationRequests
-import com.example.models.app.empty
-import com.example.models.app.emptyDonor
+import com.example.model.app.Medicine
+import com.example.model.app.Transaction
+import com.example.model.app.User
+import com.example.model.app.dummyDonationRequests
+import com.example.model.app.empty
+import com.example.model.app.emptyDonor
 import org.koin.androidx.compose.koinViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -100,16 +100,16 @@ private fun DonnerHomeScreenContent(
 
 @Composable
 private fun DonnerScreenHeader(
-    user: User.Donor
+    user: com.example.model.app.User.Donor
 ) {
     Text(text = "Hello ${user.username}", style = MaterialTheme.typography.headlineSmall)
 }
 
 @Composable
 private fun RecentTransactions(
-    transactions: List<Transaction>,
+    transactions: List<com.example.model.app.Transaction>,
     modifier: Modifier = Modifier,
-    onTransactionClick: (Transaction) -> Unit,
+    onTransactionClick: (com.example.model.app.Transaction) -> Unit,
     onMedicineClick: (String) -> Unit
 ) {
     val dateFormatter by remember {
@@ -134,7 +134,7 @@ private fun RecentTransactions(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TransactionItem(
-    transaction: Transaction,
+    transaction: com.example.model.app.Transaction,
     modifier: Modifier = Modifier,
     dateFormat: SimpleDateFormat,
     onClick: () -> Unit,
@@ -186,15 +186,15 @@ private fun DonnerHomeScreenPreview() {
     Box {
         DonnerHomeScreenContent(
             state = DonnerHomeState(
-                donationRequests = dummyDonationRequests(),
-                user = User.emptyDonor().copy(username = "mohamed"),
+                donationRequests = com.example.model.app.dummyDonationRequests(),
+                user = com.example.model.app.User.emptyDonor().copy(username = "mohamed"),
                 transactions = listOf(
-                    Transaction.empty().copy(
-                        medicine = Medicine.empty().copy(name = "Panadol"),
+                    com.example.model.app.Transaction.empty().copy(
+                        medicine = com.example.model.app.Medicine.empty().copy(name = "Panadol"),
                         receiverName = "Medical Service",
                         quantity = 10,
-                        status = Transaction.Status.Delivered,
-                        donationRequest = dummyDonationRequests().random()
+                        status = com.example.model.app.Transaction.Status.Delivered,
+                        donationRequest = com.example.model.app.dummyDonationRequests().random()
                     )
                 )
             ),

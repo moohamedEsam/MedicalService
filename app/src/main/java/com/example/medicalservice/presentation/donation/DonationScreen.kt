@@ -32,8 +32,8 @@ import com.example.composecomponents.OneTimeEventButton
 import com.example.composecomponents.textField.OutlinedSearchTextField
 import com.example.composecomponents.textField.ValidationOutlinedTextField
 import com.example.medicalservice.presentation.components.UrgentDonationList
-import com.example.models.app.DonationRequest
-import com.example.models.app.dummyDonationRequests
+import com.example.model.app.DonationRequest
+import com.example.model.app.dummyDonationRequests
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -118,7 +118,7 @@ private fun DonationHeader(
 @Composable
 private fun DonationHeader(
     query: String,
-    donationRequests: List<DonationRequest>,
+    donationRequests: List<com.example.model.app.DonationRequest>,
     onDonationRequestClick: (String) -> Unit,
     onQueryChange: (String) -> Unit,
 ) {
@@ -140,7 +140,7 @@ private fun DonationHeader(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun DonationHeader(
-    donationRequest: DonationRequest?,
+    donationRequest: com.example.model.app.DonationRequest?,
     onChooseAnotherDonationRequest: () -> Unit = {},
     onMedicineReadMoreClick: (String) -> Unit = {}
 ) {
@@ -234,4 +234,4 @@ private fun DonationScreenPreview() {
 }
 
 @Composable
-private fun donationRequests() = dummyDonationRequests()
+private fun donationRequests() = com.example.model.app.dummyDonationRequests()

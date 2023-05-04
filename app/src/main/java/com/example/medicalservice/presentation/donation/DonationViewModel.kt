@@ -2,7 +2,7 @@ package com.example.medicalservice.presentation.donation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.medicalservice.domain.GetDonationRequestsUseCase
+import com.example.domain.usecase.GetDonationRequestsUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -7,35 +7,13 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import com.example.functions.snackbar.BaseSnackBarManager
 import com.example.functions.snackbar.SnackBarManager
-import com.example.medicalservice.domain.*
-import com.example.models.*
-import com.example.models.app.DiseaseView
-import com.example.models.app.Medicine
-import com.example.models.app.MedicineView
-import com.example.models.app.Symptom
-import com.example.models.app.Transaction
-import com.example.models.app.User
-import com.example.models.app.dummyDonationRequests
-import com.example.models.app.dummyList
-import com.example.models.app.empty
-import com.example.models.app.emptyDonor
-import com.example.models.app.headache
-import com.example.models.app.paracetamol
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.Logger
-import io.ktor.client.plugins.logging.Logging
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 import org.koin.core.scope.Scope
-import kotlin.random.Random
 
 @Module
 @ComponentScan
@@ -54,82 +32,12 @@ class AppModule {
         .build()
 
     @Factory
-    fun provideCurrentUserUseCase() = GetCurrentUserUseCase {
-        User.emptyDonor().copy(username = "mohamed")
-    }
-
-    @Factory
-    fun provideDiseaseDetailsUseCase() = GetDiseaseDetailsUseCase {
-        DiseaseView.headache()
-    }
-
-    @Factory
-    fun provideMedicineDetailsUseCase() = GetMedicineDetailsUseCase {
-        MedicineView.paracetamol()
-    }
-
-    @Factory
-    fun provideMedicinesUseCase() = GetMedicinesUseCase {
-        listOf(MedicineView.paracetamol())
-    }
-
-    @Factory
-    fun provideDonationRequestsUseCase() = GetDonationRequestsUseCase {
-        dummyDonationRequests()
-    }
-
-
-    @Single([SnackBarManager::class])
-    fun provideSnackBarManager() = BaseSnackBarManager()
-
-    @Factory
-    fun provideGetAvailableSymptomsUseCase() = GetAvailableSymptomsUseCase {
-        Symptom.dummyList()
-    }
-
-    @Factory
-    fun providePredictDiseasesUseCase() = PredictDiseaseBySymptomsUseCase {
-        listOf(DiseaseView.headache())
-    }
-
-    @Factory
     fun provideCoroutineExceptionHandler() = CoroutineExceptionHandler { _, throwable ->
         Log.e("Error", "CoroutineExceptionHandler: ${throwable.message}")
         throwable.printStackTrace()
     }
 
-    @Factory
-    fun provideGetCurrentUserTransactionsUseCase() = GetCurrentUserTransactionsUseCase {
-        List(Random.nextInt(1,100)) {
-            Transaction.empty().copy(
-                medicine = Medicine.empty().copy(
-                    name = "Paracetamol",
-                    description = "Paracetamol is a painkiller and a fever reducer (antipyretic). It is used to treat many conditions such as headache, muscle aches, arthritis, backache, toothaches, colds, and fevers. It is also used to treat pain and fever after surgery. Paracetamol is in a class of medications called analgesics (pain relievers) and antipyretics (fever reducers). It works by blocking the release of certain chemical messengers that cause pain and fever in the body."
-                ),
-                quantity = Random.nextInt(1, 1000),
-                senderName = "mohamed",
-                receiverName = "medical service",
-            )
-        }
-    }
-
-    @Single
-    fun provideHttpClient() = HttpClient(CIO) {
-        install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-                isLenient = true
-            })
-        }
-
-        install(Logging) {
-            logger = object : Logger {
-                override fun log(message: String) {
-                    Log.i("ktor", "log: $message")
-                }
-            }
-        }
-    }
-
+    @Single([SnackBarManager::class])
+    fun provideSnackBarManager() = BaseSnackBarManager()
 }
 

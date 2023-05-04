@@ -32,13 +32,12 @@ import com.example.auth.register.pages.LocationPage
 import com.example.auth.register.pages.PasswordPage
 import com.example.auth.register.pages.PhoneAndUserTypePage
 import com.example.auth.register.pages.RegisterPages
-import com.example.models.Location
-import com.example.models.auth.UserType
 import com.example.common.models.dataType.Email
 import com.example.common.models.dataType.Password
 import com.example.common.models.dataType.PasswordConfirmation
 import com.example.common.models.dataType.Phone
 import com.example.common.models.dataType.Username
+import com.example.model.app.UserType
 import org.koin.androidx.compose.get
 import org.koin.androidx.compose.koinViewModel
 
@@ -53,7 +52,12 @@ fun RegisterScreen(
     imageLoader: ImageLoader = get()
 ) {
     if (lat != 0.0 && lng != 0.0) {
-        viewModel.handleEvent(RegisterScreenEvent.LocationChanged(Location(lat, lng)))
+        viewModel.handleEvent(RegisterScreenEvent.LocationChanged(
+            com.example.model.app.Location(
+                lat,
+                lng
+            )
+        ))
     }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     RegisterScreenContent(
@@ -183,7 +187,7 @@ private fun RegisterPager(
     userType: UserType,
     onUserTypeChange: (UserType) -> Unit,
     pagerState: PagerState,
-    location: Location,
+    location: com.example.model.app.Location,
     onLocationRequested: () -> Unit,
 ) {
     HorizontalPager(

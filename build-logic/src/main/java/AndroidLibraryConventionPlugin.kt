@@ -1,3 +1,4 @@
+
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.JavaVersion
@@ -5,7 +6,11 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.plugins.ExtensionAware
-import org.gradle.kotlin.dsl.*
+import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.kotlin
+import org.gradle.kotlin.dsl.project
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 
 class AndroidLibraryConventionPlugin : Plugin<Project> {
@@ -32,7 +37,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 }
             }
             dependencies {
-                add("implementation", project(":model"))
+                add("implementation", project(":core:model"))
                 add("implementation", project(":common"))
                 add("implementation", libs.findLibrary("koin-core").get())
                 add("implementation", libs.findLibrary("koin-android").get())

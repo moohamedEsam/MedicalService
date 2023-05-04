@@ -2,11 +2,10 @@ package com.example.medicalservice.presentation.home.donner
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.medicalservice.domain.GetCurrentUserTransactionsUseCase
-import com.example.medicalservice.domain.GetCurrentUserUseCase
-import com.example.medicalservice.domain.GetDonationRequestsUseCase
-import com.example.models.app.User
-import com.example.models.app.emptyDonor
+import com.example.domain.usecase.GetCurrentUserTransactionsUseCase
+import com.example.domain.usecase.GetCurrentUserUseCase
+import com.example.domain.usecase.GetDonationRequestsUseCase
+import com.example.model.app.emptyDonor
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,7 +28,7 @@ class DonnerHomeViewModel(
             val donationRequests = getDonationRequestsUseCase()
             val transactions = getCurrentUserTransactionsUseCase()
             _uiState.value = DonnerHomeState(
-                user = user as? User.Donor ?: User.emptyDonor(),
+                user = user as? com.example.model.app.User.Donor ?: com.example.model.app.User.emptyDonor(),
                 donationRequests = donationRequests,
                 transactions = transactions,
             )

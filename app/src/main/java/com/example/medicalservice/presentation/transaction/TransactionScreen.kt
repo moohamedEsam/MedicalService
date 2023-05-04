@@ -14,15 +14,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.example.models.app.Medicine
-import com.example.models.app.Transaction
-import com.example.models.app.empty
+import com.example.model.app.Medicine
+import com.example.model.app.Transaction
+import com.example.model.app.empty
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
 fun TransactionScreen(
-    transaction: Transaction,
+    transaction: com.example.model.app.Transaction,
     modifier: Modifier = Modifier,
     verticalSpacing: Dp = 8.dp,
     onMedicineClick: (String) -> Unit
@@ -35,7 +35,7 @@ fun TransactionScreen(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun TransactionHeader(transaction: Transaction) {
+private fun TransactionHeader(transaction: com.example.model.app.Transaction) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -58,7 +58,7 @@ private fun TransactionHeader(transaction: Transaction) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun TransactionBody(
-    transaction: Transaction,
+    transaction: com.example.model.app.Transaction,
     onMedicineClick: (String) -> Unit
 ) {
     val simpleDateFormat by remember {
@@ -123,10 +123,10 @@ private fun TransactionScreenPreview() {
     Dialog(onDismissRequest = {}) {
         Card {
             TransactionScreen(
-                Transaction.empty().copy(
-                    medicine = Medicine.empty().copy(name = "Paracetamol"),
+                com.example.model.app.Transaction.empty().copy(
+                    medicine = com.example.model.app.Medicine.empty().copy(name = "Paracetamol"),
                     quantity = 2,
-                    status = Transaction.Status.values().random(),
+                    status = com.example.model.app.Transaction.Status.values().random(),
                     senderName = "ahmed",
                     receiverName = "mohamed",
                 ),

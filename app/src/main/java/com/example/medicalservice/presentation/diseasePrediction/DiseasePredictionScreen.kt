@@ -15,10 +15,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.composecomponents.OneTimeEventButton
 import com.example.composecomponents.textField.OutlinedSearchTextField
-import com.example.models.app.DiseaseView
-import com.example.models.app.Symptom
-import com.example.models.app.dummyList
-import com.example.models.app.headache
+import com.example.model.app.DiseaseView
+import com.example.model.app.Symptom
+import com.example.model.app.dummyList
+import com.example.model.app.headache
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.androidx.compose.koinViewModel
@@ -46,12 +46,12 @@ fun DiseasePredictionScreen(
 
 @Composable
 private fun DiseasePredictionScreenContent(
-    symptoms: StateFlow<List<Symptom>>,
+    symptoms: StateFlow<List<com.example.model.app.Symptom>>,
     query: StateFlow<String>,
     onQueryChange: (String) -> Unit,
-    selectedSymptoms: StateFlow<Set<Symptom>>,
-    onSymptomSelected: (Symptom) -> Unit,
-    diseases: StateFlow<List<DiseaseView>>,
+    selectedSymptoms: StateFlow<Set<com.example.model.app.Symptom>>,
+    onSymptomSelected: (com.example.model.app.Symptom) -> Unit,
+    diseases: StateFlow<List<com.example.model.app.DiseaseView>>,
     isPredictButtonEnabled: StateFlow<Boolean>,
     onPredictClick: () -> Unit,
     isLoading: StateFlow<Boolean>,
@@ -96,9 +96,9 @@ private fun DiseasePredictionScreenContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SymptomsList(
-    symptomsState: StateFlow<List<Symptom>>,
-    onSymptomSelected: (Symptom) -> Unit,
-    selectedSymptoms: StateFlow<Set<Symptom>>
+    symptomsState: StateFlow<List<com.example.model.app.Symptom>>,
+    onSymptomSelected: (com.example.model.app.Symptom) -> Unit,
+    selectedSymptoms: StateFlow<Set<com.example.model.app.Symptom>>
 ) {
     val symptoms by symptomsState.collectAsState()
     val selectedSymptoms by selectedSymptoms.collectAsState()
@@ -134,8 +134,8 @@ private fun SearchBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SelectedSymptomsList(
-    selectedSymptomsState: StateFlow<Set<Symptom>>,
-    onSymptomRemoved: (Symptom) -> Unit
+    selectedSymptomsState: StateFlow<Set<com.example.model.app.Symptom>>,
+    onSymptomRemoved: (com.example.model.app.Symptom) -> Unit
 ) {
     val selectedSymptoms by selectedSymptomsState.collectAsState()
     Text(text = "Selected Symptoms", style = MaterialTheme.typography.headlineMedium)
@@ -153,7 +153,7 @@ private fun SelectedSymptomsList(
 
 @Composable
 private fun PredictedDiseasesList(
-    diseasesState: StateFlow<List<DiseaseView>>,
+    diseasesState: StateFlow<List<com.example.model.app.DiseaseView>>,
     onDiseaseClick: (String) -> Unit,
     onMedicineClick: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -177,7 +177,7 @@ private fun PredictedDiseasesList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DiseaseItem(
-    disease: DiseaseView,
+    disease: com.example.model.app.DiseaseView,
     onDiseaseClick: (String) -> Unit = {},
     onMedicineClick: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -227,12 +227,12 @@ private fun DiseaseItem(
 @Composable
 private fun DiseasePredictionScreenPreview() {
     DiseasePredictionScreenContent(
-        symptoms = MutableStateFlow(Symptom.dummyList()),
+        symptoms = MutableStateFlow(com.example.model.app.Symptom.dummyList()),
         query = MutableStateFlow(""),
         onQueryChange = {},
-        selectedSymptoms = MutableStateFlow(Symptom.dummyList().shuffled().subList(0, 4).toSet()),
+        selectedSymptoms = MutableStateFlow(com.example.model.app.Symptom.dummyList().shuffled().subList(0, 4).toSet()),
         onSymptomSelected = {},
-        diseases = MutableStateFlow(listOf(DiseaseView.headache())),
+        diseases = MutableStateFlow(listOf(com.example.model.app.DiseaseView.headache())),
         isPredictButtonEnabled = MutableStateFlow(false),
         onPredictClick = {},
         isLoading = MutableStateFlow(false),

@@ -1,9 +1,9 @@
 package com.example.medicalservice.presentation.donationList
 
-import com.example.models.app.DonationRequest
+import com.example.model.app.DonationRequest
 
 data class DonationListState(
-    val donationRequests: List<DonationRequest> = emptyList(),
+    val donationRequests: List<com.example.model.app.DonationRequest> = emptyList(),
     val query: String = "",
     val isLoading: Boolean = false,
 )

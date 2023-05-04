@@ -1,16 +1,16 @@
 package com.example.medicalservice.presentation.donation
 
 import com.example.common.models.ValidationResult
-import com.example.models.app.DonationRequest
+import com.example.model.app.DonationRequest
 
 data class DonationScreenState(
-    val donationRequests: List<DonationRequest> = emptyList(),
+    val donationRequests: List<com.example.model.app.DonationRequest> = emptyList(),
     val selectedDonationRequestId: String? = null,
     val query: String = "",
     val quantity: String = "",
     val isLoading: Boolean = false,
 ) {
-    val selectedDonationRequest: DonationRequest?
+    val selectedDonationRequest: com.example.model.app.DonationRequest?
         get() = donationRequests.find { it.id == selectedDonationRequestId }
 
     private val isDonationRequestSelected: Boolean

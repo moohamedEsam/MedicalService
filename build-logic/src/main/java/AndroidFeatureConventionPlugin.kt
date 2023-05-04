@@ -17,6 +17,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
 
             dependencies {
                 add("implementation", project(":external:ComposeComponents"))
+                add("implementation", project(":core:domain"))
                 add("implementation", libs.findLibrary("androidx-paging-runtime").get())
                 add("implementation", libs.findLibrary("androidx-paging-compose").get())
                 addComposeDependencies(libs)
