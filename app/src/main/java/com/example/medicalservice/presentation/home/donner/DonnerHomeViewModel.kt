@@ -29,8 +29,8 @@ class DonnerHomeViewModel(
             val transactions = getCurrentUserTransactionsUseCase()
             _uiState.value = DonnerHomeState(
                 user = user as? com.example.model.app.User.Donor ?: com.example.model.app.User.emptyDonor(),
-                donationRequests = donationRequests,
-                transactions = transactions,
+                donationRequestViews = donationRequests,
+                transactionViews = transactions,
             )
         }
     }

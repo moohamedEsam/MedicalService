@@ -15,7 +15,7 @@ import com.example.model.app.DiseaseView
 import com.example.model.app.Medicine
 import com.example.model.app.MedicineView
 import com.example.model.app.Symptom
-import com.example.model.app.Transaction
+import com.example.model.app.TransactionView
 import com.example.model.app.User
 import com.example.model.app.dummyDonationRequests
 import com.example.model.app.dummyList
@@ -77,7 +77,7 @@ class DomainModule{
     @Factory
     fun provideGetCurrentUserTransactionsUseCase() = GetCurrentUserTransactionsUseCase {
         List(Random.nextInt(1,100)) {
-            Transaction.empty().copy(
+            TransactionView.empty().copy(
                 medicine = Medicine.empty().copy(
                     name = "Paracetamol",
                     description = "Paracetamol is a painkiller and a fever reducer (antipyretic). It is used to treat many conditions such as headache, muscle aches, arthritis, backache, toothaches, colds, and fevers. It is also used to treat pain and fever after surgery. Paracetamol is in a class of medications called analgesics (pain relievers) and antipyretics (fever reducers). It works by blocking the release of certain chemical messengers that cause pain and fever in the body."

@@ -17,7 +17,7 @@ class DonationListViewModel(
 
     init {
         viewModelScope.launch {
-            _uiState.value = DonationListState(donationRequests = getDonationRequestsUseCase())
+            _uiState.value = DonationListState(donationRequestViews = getDonationRequestsUseCase())
         }
     }
 }

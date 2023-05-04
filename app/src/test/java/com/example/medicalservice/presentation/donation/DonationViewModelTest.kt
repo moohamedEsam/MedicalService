@@ -1,7 +1,6 @@
 package com.example.medicalservice.presentation.donation
 
 import app.cash.turbine.test
-import com.example.model.app.dummyDonationRequests
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -37,7 +36,7 @@ class DonationViewModelTest {
 
     @Test
     fun `should set donation requests on init`() = runTest {
-        assertThat(viewModel.uiState.value.donationRequests).isEqualTo(dummyDonationRequests)
+        assertThat(viewModel.uiState.value.donationRequestViews).isEqualTo(dummyDonationRequests)
     }
 
     @Test
@@ -45,10 +44,10 @@ class DonationViewModelTest {
         viewModel.uiState.test {
             val state = awaitItem()
             if (dummyDonationRequestId != null) {
-                assertThat(state.selectedDonationRequest).isNotNull()
-                assertThat(state.selectedDonationRequest!!.id).isEqualTo(dummyDonationRequestId)
+                assertThat(state.selectedDonationRequestView).isNotNull()
+                assertThat(state.selectedDonationRequestView!!.id).isEqualTo(dummyDonationRequestId)
             } else
-                assertThat(state.selectedDonationRequest).isNull()
+                assertThat(state.selectedDonationRequestView).isNull()
         }
     }
 
@@ -58,8 +57,8 @@ class DonationViewModelTest {
         viewModel.handleEvent(DonationScreenEvent.OnDonationRequestSelected(newDonationRequestId))
         viewModel.uiState.test {
             val state = awaitItem()
-            assertThat(state.selectedDonationRequest).isNotNull()
-            assertThat(state.selectedDonationRequest!!.id).isEqualTo(newDonationRequestId)
+            assertThat(state.selectedDonationRequestView).isNotNull()
+            assertThat(state.selectedDonationRequestView!!.id).isEqualTo(newDonationRequestId)
         }
     }
 
@@ -69,7 +68,7 @@ class DonationViewModelTest {
         viewModel.handleEvent(DonationScreenEvent.OnDonationRequestSelected(newDonationRequestId))
         viewModel.uiState.test {
             val state = awaitItem()
-            assertThat(state.selectedDonationRequest).isNull()
+            assertThat(state.selectedDonationRequestView).isNull()
         }
     }
 

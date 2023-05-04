@@ -14,41 +14,39 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.example.model.app.Medicine
-import com.example.model.app.Transaction
 import com.example.model.app.empty
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
 fun TransactionScreen(
-    transaction: com.example.model.app.Transaction,
+    transactionView: com.example.model.app.TransactionView,
     modifier: Modifier = Modifier,
     verticalSpacing: Dp = 8.dp,
     onMedicineClick: (String) -> Unit
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(verticalSpacing)) {
-        TransactionHeader(transaction = transaction)
-        TransactionBody(transaction = transaction, onMedicineClick = onMedicineClick)
+        TransactionHeader(transactionView = transactionView)
+        TransactionBody(transactionView = transactionView, onMedicineClick = onMedicineClick)
     }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun TransactionHeader(transaction: com.example.model.app.Transaction) {
+private fun TransactionHeader(transactionView: com.example.model.app.TransactionView) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         TransactionItem(
             label = "Sender:",
-            value = transaction.senderName,
+            value = transactionView.senderName,
             onClick = {}
         )
 
         TransactionItem(
             label = "Receiver:",
-            value = transaction.receiverName,
+            value = transactionView.receiverName,
             onClick = {}
         )
     }
@@ -58,7 +56,7 @@ private fun TransactionHeader(transaction: com.example.model.app.Transaction) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun TransactionBody(
-    transaction: com.example.model.app.Transaction,
+    transactionView: com.example.model.app.TransactionView,
     onMedicineClick: (String) -> Unit
 ) {
     val simpleDateFormat by remember {
@@ -71,13 +69,13 @@ private fun TransactionBody(
     ) {
         TransactionItem(
             label = "Medicine",
-            value = transaction.medicine.name,
-            onClick = { onMedicineClick(transaction.medicine.id) }
+            value = transactionView.medicine.name,
+            onClick = { onMedicineClick(transactionView.medicine.id) }
         )
 
         TransactionItem(
             label = "Status:",
-            value = transaction.status.name,
+            value = transactionView.status.name,
             onClick = {
                 //todo: show reason
             }
@@ -87,8 +85,8 @@ private fun TransactionBody(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Text(text = "Quantity: ${transaction.quantity}")
-        Text(text = "Created At: ${simpleDateFormat.format(transaction.createdAt)}")
+        Text(text = "Quantity: ${transactionView.quantity}")
+        Text(text = "Created At: ${simpleDateFormat.format(transactionView.createdAt)}")
     }
 
 }
@@ -123,10 +121,10 @@ private fun TransactionScreenPreview() {
     Dialog(onDismissRequest = {}) {
         Card {
             TransactionScreen(
-                com.example.model.app.Transaction.empty().copy(
+                com.example.model.app.TransactionView.empty().copy(
                     medicine = com.example.model.app.Medicine.empty().copy(name = "Paracetamol"),
                     quantity = 2,
-                    status = com.example.model.app.Transaction.Status.values().random(),
+                    status = com.example.model.app.TransactionView.Status.values().random(),
                     senderName = "ahmed",
                     receiverName = "mohamed",
                 ),

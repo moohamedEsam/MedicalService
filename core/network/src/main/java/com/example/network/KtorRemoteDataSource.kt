@@ -2,15 +2,6 @@ package com.example.network
 
 import com.example.common.functions.tryWrapper
 import com.example.common.models.Result
-import com.example.model.app.Credentials
-import com.example.model.app.Disease
-import com.example.model.app.DonationRequest
-import com.example.model.app.Medicine
-import com.example.model.app.Register
-import com.example.model.app.Symptom
-import com.example.model.app.Token
-import com.example.model.app.Transaction
-import com.example.model.app.User
 import com.example.network.models.RemoteResponse
 import com.example.network.models.toNetworkRegister
 import io.ktor.client.HttpClient
@@ -42,7 +33,7 @@ class KtorRemoteDataSource(
         mapResponse(response.body())
     }
 
-    override suspend fun getDonationRequests(): Result<List<com.example.model.app.DonationRequest>> = tryWrapper {
+    override suspend fun getDonationRequests(): Result<List<com.example.model.app.DonationRequestView>> = tryWrapper {
         val response = client.get(EndPoints.DONATION_REQUEST)
         mapResponse(response.body())
     }
@@ -62,7 +53,7 @@ class KtorRemoteDataSource(
         mapResponse(response.body())
     }
 
-    override suspend fun getUserTransactions(id: String): Result<List<com.example.model.app.Transaction>> = tryWrapper {
+    override suspend fun getUserTransactions(id: String): Result<List<com.example.model.app.TransactionView>> = tryWrapper {
         val response = client.get(EndPoints.getUserTransactions(id))
         mapResponse(response.body())
     }

@@ -36,8 +36,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.medicalservice.presentation.components.UrgentDonationList
-import com.example.model.app.DonationRequest
-import com.example.model.app.dummyDonationRequests
 import org.koin.androidx.compose.koinViewModel
 import kotlin.random.Random
 import kotlin.time.DurationUnit
@@ -70,7 +68,7 @@ private fun DonationListScreen(
                 .fillMaxWidth()
                 .shadow(8.dp),
         )
-        DonationListContent(state.donationRequests)
+        DonationListContent(state.donationRequestViews)
     }
 }
 
@@ -95,9 +93,9 @@ private fun DonationListTopBar(
 
 @Composable
 private fun ColumnScope.DonationListContent(
-    donationRequests: List<com.example.model.app.DonationRequest>
+    donationRequestViews: List<com.example.model.app.DonationRequestView>
 ) {
-    UrgentDonationList(donationRequests, "Urgent Donations")
+    UrgentDonationList(donationRequestViews, "Urgent Donations")
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -110,7 +108,7 @@ private fun ColumnScope.DonationListContent(
         }
     }
     FeaturedDonationList(
-        donationRequests,
+        donationRequestViews,
         modifier = Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp / 2).dp)
     )
 }
@@ -118,16 +116,16 @@ private fun ColumnScope.DonationListContent(
 
 @Composable
 private fun FeaturedDonationList(
-    donationRequests: List<com.example.model.app.DonationRequest>,
+    donationRequestViews: List<com.example.model.app.DonationRequestView>,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier
     ) {
-        items(donationRequests, key = { it.id }) {
+        items(donationRequestViews, key = { it.id }) {
             VerticalDonationItem(
-                donationRequest = it,
+                donationRequestView = it,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -137,7 +135,7 @@ private fun FeaturedDonationList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun VerticalDonationItem(
-    donationRequest: com.example.model.app.DonationRequest,
+    donationRequestView: com.example.model.app.DonationRequestView,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = { },
     onDonateClick: () -> Unit = { }
@@ -147,8 +145,8 @@ private fun VerticalDonationItem(
         onClick = onClick,
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(donationRequest.medicine.name, fontWeight = FontWeight.Bold)
-            Text(donationRequest.medicine.description, maxLines = 1)
+            Text(donationRequestView.medicine.name, fontWeight = FontWeight.Bold)
+            Text(donationRequestView.medicine.description, maxLines = 1)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -156,12 +154,12 @@ private fun VerticalDonationItem(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(imageVector = Icons.Outlined.Group, contentDescription = null)
-                    Text("${donationRequest.contributorsCount} Contributors")
+                    Text("${donationRequestView.contributorsCount} Contributors")
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(imageVector = Icons.Outlined.Timer, contentDescription = null)
                     val duration =
-                        (donationRequest.endDate - System.currentTimeMillis()).toDuration(
+                        (donationRequestView.endDate - System.currentTimeMillis()).toDuration(
                             DurationUnit.DAYS
                         )
                     Text("ends in ${Random.nextInt(1, 100)} days")
@@ -177,7 +175,7 @@ private fun DonationListScreenPreview() {
     Surface {
         DonationListScreen(
             state = DonationListState(
-                donationRequests = com.example.model.app.dummyDonationRequests(),
+                donationRequestViews = com.example.model.app.dummyDonationRequests(),
                 query = "paracetamol"
             )
         )

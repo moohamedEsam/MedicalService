@@ -17,24 +17,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.model.app.Transaction
 import java.text.SimpleDateFormat
 import java.util.*
 
 fun LazyListScope.transactionsList(
-    transactions: List<com.example.model.app.Transaction>,
-    onTransactionClick: (com.example.model.app.Transaction) -> Unit
+    transactionViews: List<com.example.model.app.TransactionView>,
+    onTransactionClick: (com.example.model.app.TransactionView) -> Unit
 ) {
     item {
         Text(text = "Recent Transactions", style = MaterialTheme.typography.headlineSmall)
     }
 
-    items(transactions) {
+    items(transactionViews) {
         TransactionItem(
-            transaction = it,
+            transactionView = it,
             onClick = { onTransactionClick(it) }
         )
     }
@@ -43,7 +41,7 @@ fun LazyListScope.transactionsList(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun TransactionItem(
-    transaction: com.example.model.app.Transaction,
+    transactionView: com.example.model.app.TransactionView,
     onClick: () -> Unit
 ) {
     val simpleDateFormat by remember {
@@ -59,18 +57,18 @@ private fun TransactionItem(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Column {
-                Text(text = "Medicine: ${transaction.medicine.name}")
-                Text(text = "Quantity: ${transaction.quantity}")
+                Text(text = "Medicine: ${transactionView.medicine.name}")
+                Text(text = "Quantity: ${transactionView.quantity}")
             }
             Column {
                 Row {
                     Text(text = "Status: ")
                     Text(
-                        text = transaction.status.name,
-                        color = transaction.status.color()
+                        text = transactionView.status.name,
+                        color = transactionView.status.color()
                     )
                 }
-                Text(text = "Issue Date: ${simpleDateFormat.format(transaction.createdAt)}")
+                Text(text = "Issue Date: ${simpleDateFormat.format(transactionView.createdAt)}")
             }
         }
     }

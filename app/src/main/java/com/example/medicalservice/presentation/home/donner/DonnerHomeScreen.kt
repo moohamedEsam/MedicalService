@@ -33,10 +33,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.composecomponents.textField.OutlinedSearchTextField
 import com.example.medicalservice.presentation.components.UrgentDonationList
 import com.example.medicalservice.presentation.components.color
-import com.example.model.app.Medicine
-import com.example.model.app.Transaction
-import com.example.model.app.User
-import com.example.model.app.dummyDonationRequests
 import com.example.model.app.empty
 import com.example.model.app.emptyDonor
 import org.koin.androidx.compose.koinViewModel
@@ -84,13 +80,13 @@ private fun DonnerHomeScreenContent(
         )
 
         UrgentDonationList(
-            donationRequests = state.donationRequests,
+            donationRequestViews = state.donationRequestViews,
             title = "Urgent Donations",
             onDonationRequestClick = { onDonateClick(it.id) },
         )
 
         RecentTransactions(
-            transactions = state.transactions,
+            transactionViews = state.transactionViews,
             onTransactionClick = { onTransactionClick(it.id) },
             modifier = Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp / 2).dp),
             onMedicineClick = onMedicineClick
@@ -107,9 +103,9 @@ private fun DonnerScreenHeader(
 
 @Composable
 private fun RecentTransactions(
-    transactions: List<com.example.model.app.Transaction>,
+    transactionViews: List<com.example.model.app.TransactionView>,
     modifier: Modifier = Modifier,
-    onTransactionClick: (com.example.model.app.Transaction) -> Unit,
+    onTransactionClick: (com.example.model.app.TransactionView) -> Unit,
     onMedicineClick: (String) -> Unit
 ) {
     val dateFormatter by remember {
@@ -120,9 +116,9 @@ private fun RecentTransactions(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        items(transactions) { transaction ->
+        items(transactionViews) { transaction ->
             TransactionItem(
-                transaction = transaction,
+                transactionView = transaction,
                 onClick = { onTransactionClick(transaction) },
                 dateFormat = dateFormatter,
                 onMedicineClick = { onMedicineClick(it) }
@@ -134,7 +130,7 @@ private fun RecentTransactions(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TransactionItem(
-    transaction: com.example.model.app.Transaction,
+    transactionView: com.example.model.app.TransactionView,
     modifier: Modifier = Modifier,
     dateFormat: SimpleDateFormat,
     onClick: () -> Unit,
@@ -146,10 +142,10 @@ private fun TransactionItem(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = transaction.medicine.name,
+                text = transactionView.medicine.name,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.clickable { onMedicineClick(transaction.medicine.id) }
+                modifier = Modifier.clickable { onMedicineClick(transactionView.medicine.id) }
             )
 
 
@@ -158,14 +154,14 @@ private fun TransactionItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = "Quantity: ${transaction.quantity}",
+                    text = "Quantity: ${transactionView.quantity}",
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Text(
                     text = buildAnnotatedString {
                         append("Status: ")
-                        withStyle(SpanStyle(transaction.status.color())) {
-                            append(transaction.status.name)
+                        withStyle(SpanStyle(transactionView.status.color())) {
+                            append(transactionView.status.name)
                         }
                     },
                     style = MaterialTheme.typography.bodyLarge,
@@ -173,7 +169,7 @@ private fun TransactionItem(
             }
 
             Text(
-                text = "Donation Date: ${dateFormat.format(transaction.createdAt)}",
+                text = "Donation Date: ${dateFormat.format(transactionView.createdAt)}",
                 style = MaterialTheme.typography.bodyLarge
             )
         }
@@ -186,15 +182,15 @@ private fun DonnerHomeScreenPreview() {
     Box {
         DonnerHomeScreenContent(
             state = DonnerHomeState(
-                donationRequests = com.example.model.app.dummyDonationRequests(),
+                donationRequestViews = com.example.model.app.dummyDonationRequests(),
                 user = com.example.model.app.User.emptyDonor().copy(username = "mohamed"),
-                transactions = listOf(
-                    com.example.model.app.Transaction.empty().copy(
+                transactionViews = listOf(
+                    com.example.model.app.TransactionView.empty().copy(
                         medicine = com.example.model.app.Medicine.empty().copy(name = "Panadol"),
                         receiverName = "Medical Service",
                         quantity = 10,
-                        status = com.example.model.app.Transaction.Status.Delivered,
-                        donationRequest = com.example.model.app.dummyDonationRequests().random()
+                        status = com.example.model.app.TransactionView.Status.Delivered,
+                        donationRequestView = com.example.model.app.dummyDonationRequests().random()
                     )
                 )
             ),

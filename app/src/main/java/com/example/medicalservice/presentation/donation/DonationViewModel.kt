@@ -21,7 +21,7 @@ class DonationViewModel(
 
     init {
         viewModelScope.launch(coroutineExceptionHandler) {
-            _uiState.value = _uiState.value.copy(donationRequests = getDonationRequestsUseCase())
+            _uiState.value = _uiState.value.copy(donationRequestViews = getDonationRequestsUseCase())
             if (initialDonationRequestId?.isNotBlank() == true)
                 handleEvent(DonationScreenEvent.OnDonationRequestSelected(initialDonationRequestId))
         }

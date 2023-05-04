@@ -1,17 +1,16 @@
 package com.example.medicalservice.presentation.donation
 
 import com.example.common.models.ValidationResult
-import com.example.model.app.DonationRequest
 
 data class DonationScreenState(
-    val donationRequests: List<com.example.model.app.DonationRequest> = emptyList(),
+    val donationRequestViews: List<com.example.model.app.DonationRequestView> = emptyList(),
     val selectedDonationRequestId: String? = null,
     val query: String = "",
     val quantity: String = "",
     val isLoading: Boolean = false,
 ) {
-    val selectedDonationRequest: com.example.model.app.DonationRequest?
-        get() = donationRequests.find { it.id == selectedDonationRequestId }
+    val selectedDonationRequestView: com.example.model.app.DonationRequestView?
+        get() = donationRequestViews.find { it.id == selectedDonationRequestId }
 
     private val isDonationRequestSelected: Boolean
         get() = selectedDonationRequestId != null
@@ -20,7 +19,7 @@ data class DonationScreenState(
         get() = isDonationRequestSelected && quantityValidationResult is ValidationResult.Valid && !isLoading
 
     private val quantityRange
-        get() = selectedDonationRequest?.run {
+        get() = selectedDonationRequestView?.run {
             (1..needed - collected)
         } ?: 0..0
 

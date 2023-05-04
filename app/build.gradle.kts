@@ -1,4 +1,5 @@
 import java.util.Properties
+
 plugins {
     id("mohamed.android.application")
     id("mohamed.android.application.compose")
@@ -36,16 +37,16 @@ android {
         resources.excludes += "META-INF/atomicfu.kotlin_module"
     }
 
-    sourceSets.getByName("main"){
-        java.srcDirs("../core/network/build/generated/ksp/debug/kotlin")
+    sourceSets.getByName("main") {
         java.srcDirs("../core/domain/build/generated/ksp/debug/kotlin")
         java.srcDirs("../core/data/build/generated/ksp/debug/kotlin")
+        java.srcDirs("../core/database/build/generated/ksp/debug/kotlin")
         java.srcDirs("../external/mapLocation/build/generated/ksp/debug/kotlin")
         java.srcDirs("../external/auth/build/generated/ksp/debug/kotlin")
         java.srcDirs("build/generated/ksp/debug/kotlin")
     }
 
-    kotlinOptions{
+    kotlinOptions {
         freeCompilerArgs = listOf("-Xcontext-receivers")
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
@@ -87,4 +88,7 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:model"))
     implementation(project(":core:data"))
+    implementation(project(":core:database"))
 }
+
+fun getCoreModuleSourceSet(name: String) = "../core/$name/build/generated/ksp/debug/kotlin"

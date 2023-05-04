@@ -3,6 +3,7 @@ package com.example.medicalservice
 import android.app.Application
 import com.example.auth.AuthModule
 import com.example.data.DataModule
+import com.example.database.DatabaseModule
 import com.example.domain.DomainModule
 import com.example.maplocation.MapLocationModule
 import com.example.network.NetworkModule
@@ -24,6 +25,7 @@ class ApplicationClass : Application() {
                     NetworkModule().module,
                     DataModule().module,
                     AuthModule().module,
+                    DatabaseModule().module
                 )
             )
 

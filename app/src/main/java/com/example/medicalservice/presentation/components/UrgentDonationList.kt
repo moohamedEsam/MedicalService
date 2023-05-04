@@ -33,17 +33,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.medicalservice.R
-import com.example.model.app.DonationRequest
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
 @Composable
 fun UrgentDonationList(
-    donationRequests: List<com.example.model.app.DonationRequest>,
+    donationRequestViews: List<com.example.model.app.DonationRequestView>,
     title: String,
     isDonateButtonVisible: Boolean = true,
-    onDonationRequestCardClick: (com.example.model.app.DonationRequest) -> Unit = {},
-    onDonationRequestClick: (com.example.model.app.DonationRequest) -> Unit = {}
+    onDonationRequestCardClick: (com.example.model.app.DonationRequestView) -> Unit = {},
+    onDonationRequestClick: (com.example.model.app.DonationRequestView) -> Unit = {}
 ) {
     val listState = rememberLazyListState()
     val visibleItemIndex by remember {
@@ -53,7 +52,7 @@ fun UrgentDonationList(
     }
     LaunchedEffect(key1 = visibleItemIndex) {
         delay(3000)
-        if (visibleItemIndex < donationRequests.size - 1)
+        if (visibleItemIndex < donationRequestViews.size - 1)
             listState.animateScrollToItem(visibleItemIndex + 1)
         else
             listState.scrollToItem(0)
@@ -73,9 +72,9 @@ fun UrgentDonationList(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         state = listState,
     ) {
-        items(donationRequests, key = { it.id }) {
+        items(donationRequestViews, key = { it.id }) {
             DonationListItem(
-                donationRequest = it,
+                donationRequestView = it,
                 modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp * 0.9f),
                 isDonateButtonVisible = isDonateButtonVisible,
                 onDonateClick = { onDonationRequestClick(it) },
@@ -89,7 +88,7 @@ fun UrgentDonationList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DonationListItem(
-    donationRequest: com.example.model.app.DonationRequest,
+    donationRequestView: com.example.model.app.DonationRequestView,
     modifier: Modifier = Modifier,
     isDonateButtonVisible: Boolean = true,
     onClick: () -> Unit = { },
@@ -108,9 +107,9 @@ private fun DonationListItem(
                 .fillMaxHeight(0.3f)
         )
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(donationRequest.medicine.name, fontWeight = FontWeight.Bold)
-            Text(donationRequest.medicine.description, maxLines = 2)
-            val progress = donationRequest.collected.toFloat() / donationRequest.needed.toFloat()
+            Text(donationRequestView.medicine.name, fontWeight = FontWeight.Bold)
+            Text(donationRequestView.medicine.description, maxLines = 2)
+            val progress = donationRequestView.collected.toFloat() / donationRequestView.needed.toFloat()
             LinearProgressIndicator(
                 progress = progress,
                 modifier = Modifier
@@ -126,7 +125,7 @@ private fun DonationListItem(
             ) {
                 Column {
                     Text(
-                        "${donationRequest.collected} / ${donationRequest.needed} units collected",
+                        "${donationRequestView.collected} / ${donationRequestView.needed} units collected",
                         fontSize = 12.sp
                     )
                     Text(
