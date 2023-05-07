@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -32,19 +31,25 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.example.medicalservice.R
+import com.example.model.app.DonationRequestView
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlin.random.Random
 
 @Composable
 fun UrgentDonationList(
-    donationRequestViews: List<com.example.model.app.DonationRequestView>,
+    donationRequestViewPagingData: Flow<PagingData<DonationRequestView>>,
     title: String,
     isDonateButtonVisible: Boolean = true,
-    onDonationRequestCardClick: (com.example.model.app.DonationRequestView) -> Unit = {},
-    onDonationRequestClick: (com.example.model.app.DonationRequestView) -> Unit = {}
+    onDonationRequestCardClick: (DonationRequestView) -> Unit = {},
+    onDonationRequestClick: (DonationRequestView) -> Unit = {}
 ) {
     val listState = rememberLazyListState()
+    val donationRequestViews = donationRequestViewPagingData.collectAsLazyPagingItems()
     val visibleItemIndex by remember {
         derivedStateOf {
             listState.firstVisibleItemIndex
@@ -52,7 +57,7 @@ fun UrgentDonationList(
     }
     LaunchedEffect(key1 = visibleItemIndex) {
         delay(3000)
-        if (visibleItemIndex < donationRequestViews.size - 1)
+        if (visibleItemIndex < donationRequestViews.itemCount - 1)
             listState.animateScrollToItem(visibleItemIndex + 1)
         else
             listState.scrollToItem(0)
@@ -73,6 +78,7 @@ fun UrgentDonationList(
         state = listState,
     ) {
         items(donationRequestViews, key = { it.id }) {
+            if (it == null) return@items
             DonationListItem(
                 donationRequestView = it,
                 modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp * 0.9f),
@@ -88,7 +94,7 @@ fun UrgentDonationList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DonationListItem(
-    donationRequestView: com.example.model.app.DonationRequestView,
+    donationRequestView: DonationRequestView,
     modifier: Modifier = Modifier,
     isDonateButtonVisible: Boolean = true,
     onClick: () -> Unit = { },
@@ -109,7 +115,8 @@ private fun DonationListItem(
         Column(modifier = Modifier.padding(16.dp)) {
             Text(donationRequestView.medicine.name, fontWeight = FontWeight.Bold)
             Text(donationRequestView.medicine.description, maxLines = 2)
-            val progress = donationRequestView.collected.toFloat() / donationRequestView.needed.toFloat()
+            val progress =
+                donationRequestView.collected.toFloat() / donationRequestView.needed.toFloat()
             LinearProgressIndicator(
                 progress = progress,
                 modifier = Modifier

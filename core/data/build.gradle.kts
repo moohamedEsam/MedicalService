@@ -1,5 +1,6 @@
 plugins {
     id("mohamed.android.library")
+    id("mohamed.android.test")
 }
 
 android {
@@ -8,4 +9,8 @@ android {
 
 dependencies{
     implementation(project(":core:network"))
+    implementation(project(":core:database"))
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.kotlinx.coroutines.android)
+
 }

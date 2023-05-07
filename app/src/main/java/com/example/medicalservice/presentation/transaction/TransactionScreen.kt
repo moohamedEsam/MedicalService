@@ -14,7 +14,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.example.model.app.MedicineView
 import com.example.model.app.empty
+import com.example.model.app.paracetamol
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -122,7 +124,7 @@ private fun TransactionScreenPreview() {
         Card {
             TransactionScreen(
                 com.example.model.app.TransactionView.empty().copy(
-                    medicine = com.example.model.app.Medicine.empty().copy(name = "Paracetamol"),
+                    medicine = MedicineView.paracetamol(),
                     quantity = 2,
                     status = com.example.model.app.TransactionView.Status.values().random(),
                     senderName = "ahmed",

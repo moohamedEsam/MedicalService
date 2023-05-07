@@ -1,15 +1,19 @@
 package com.example.composecomponents
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 
-fun LazyListScope.loadStateItem(state: LazyPagingItems<*>) {
+fun LazyListScope.loadStateItem(state: CombinedLoadStates, spacerModifier: Modifier = Modifier) {
     item {
         Row(
             modifier = Modifier
@@ -18,12 +22,13 @@ fun LazyListScope.loadStateItem(state: LazyPagingItems<*>) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            when (state.loadState.refresh) {
+            when (state.refresh) {
                 is LoadState.Loading -> {
                     CircularProgressIndicator()
                 }
+
                 else -> {
-                    Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = spacerModifier)
                 }
             }
         }

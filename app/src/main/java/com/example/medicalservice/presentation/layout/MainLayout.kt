@@ -33,13 +33,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.auth.login.LoginScreenRoute
+import com.example.auth.register.RegisterScreenRoute
 import com.example.functions.handleSnackBarEvent
-import com.example.functions.snackbar.BaseSnackBarManager
+import com.example.functions.snackbar.FakeSnackBarManager
 import com.example.functions.snackbar.SnackBarManager
 import com.example.medicalservice.MedicalServiceNavGraph
 import com.example.medicalservice.presentation.donationList.DonationListScreenRoute
@@ -49,6 +52,25 @@ import com.example.medicalservice.presentation.home.navigation.navigateToHomeScr
 import com.example.model.app.UserType
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.get
+import org.koin.androidx.compose.koinViewModel
+
+@Composable
+fun MedicalServiceLayout(
+    userType: UserType = UserType.Donner,
+    startDestination: String = HomeScreenRoute,
+    navHostController: NavHostController = rememberNavController(),
+    snackBarManager: SnackBarManager = get(),
+    viewModel: MainLayoutViewModel = koinViewModel(),
+) {
+    val owner = LocalLifecycleOwner.current
+    MedicalServiceLayout(
+        userType = userType,
+        startDestination = startDestination,
+        navHostController = navHostController,
+        snackBarManager = snackBarManager,
+        onSyncClick = { viewModel.sync(owner) },
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,6 +79,7 @@ fun MedicalServiceLayout(
     startDestination: String = HomeScreenRoute,
     navHostController: NavHostController = rememberNavController(),
     snackBarManager: SnackBarManager = get(),
+    onSyncClick: () -> Unit,
 ) {
     val snackbarHostState by remember {
         mutableStateOf(SnackbarHostState())
@@ -70,7 +93,7 @@ fun MedicalServiceLayout(
         modifier = Modifier.fillMaxSize(),
         bottomBar = { BottomBar(navHostController = navHostController) },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        topBar = { TopBar(navHostController = navHostController) },
+        topBar = { TopBar(navHostController = navHostController, onSyncClick = onSyncClick) },
         content = {
             MedicalServiceNavGraph(
                 startDestination = startDestination,
@@ -90,6 +113,7 @@ fun BottomBar(navHostController: NavHostController) {
             navEntry?.destination?.route?.takeWhile { it != '/' }
         }
     }
+    if (currentRoute == LoginScreenRoute || currentRoute == RegisterScreenRoute) return
     BottomAppBar(
         modifier = Modifier
             .fillMaxWidth()
@@ -141,18 +165,21 @@ fun BottomBar(navHostController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopBar(navHostController: NavHostController) {
+private fun TopBar(
+    navHostController: NavHostController,
+    onSyncClick: () -> Unit
+) {
     val navEntry by navHostController.currentBackStackEntryAsState()
-
     val currentRoute by remember {
         derivedStateOf {
             navEntry?.destination?.route?.takeWhile { it != '/' }
         }
     }
+    if (currentRoute == LoginScreenRoute || currentRoute == RegisterScreenRoute) return
     CenterAlignedTopAppBar(
         title = { Text(text = currentRoute ?: "") },
         actions = {
-            IconButton(onClick = { }) {
+            IconButton(onClick = onSyncClick) {
                 Icon(imageVector = Icons.Outlined.Sync, contentDescription = null)
             }
 
@@ -181,7 +208,8 @@ private fun TopBar(navHostController: NavHostController) {
 private fun MainLayoutPreview() {
     Surface {
         MedicalServiceLayout(
-            snackBarManager = BaseSnackBarManager()
+            snackBarManager = FakeSnackBarManager(),
+            onSyncClick = {}
         )
     }
 }

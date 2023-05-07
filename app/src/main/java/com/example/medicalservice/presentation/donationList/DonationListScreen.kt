@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -35,7 +35,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
+import com.example.composecomponents.loadStateItem
 import com.example.medicalservice.presentation.components.UrgentDonationList
+import com.example.model.app.DonationRequestView
+import com.example.model.app.dummyDonationRequests
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import org.koin.androidx.compose.koinViewModel
 import kotlin.random.Random
 import kotlin.time.DurationUnit
@@ -93,7 +101,7 @@ private fun DonationListTopBar(
 
 @Composable
 private fun ColumnScope.DonationListContent(
-    donationRequestViews: List<com.example.model.app.DonationRequestView>
+    donationRequestViews: Flow<PagingData<DonationRequestView>>
 ) {
     UrgentDonationList(donationRequestViews, "Urgent Donations")
 
@@ -116,19 +124,22 @@ private fun ColumnScope.DonationListContent(
 
 @Composable
 private fun FeaturedDonationList(
-    donationRequestViews: List<com.example.model.app.DonationRequestView>,
+    donationRequestViewsFlow: Flow<PagingData<DonationRequestView>>,
     modifier: Modifier = Modifier
 ) {
+    val donationRequestViews = donationRequestViewsFlow.collectAsLazyPagingItems()
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier
     ) {
         items(donationRequestViews, key = { it.id }) {
+            if (it == null) return@items
             VerticalDonationItem(
                 donationRequestView = it,
                 modifier = Modifier.fillMaxWidth()
             )
         }
+        loadStateItem(donationRequestViews.loadState, spacerModifier = Modifier.height(32.dp))
     }
 }
 
@@ -175,7 +186,7 @@ private fun DonationListScreenPreview() {
     Surface {
         DonationListScreen(
             state = DonationListState(
-                donationRequestViews = com.example.model.app.dummyDonationRequests(),
+                donationRequestViews = flowOf(PagingData.from(dummyDonationRequests())),
                 query = "paracetamol"
             )
         )

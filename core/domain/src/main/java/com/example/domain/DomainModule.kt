@@ -1,10 +1,13 @@
 package com.example.domain
 
-import com.example.data.AuthRepository
+import com.example.data.auth.AuthRepository
+import com.example.data.donation.DonationRepository
+import com.example.data.transaction.TransactionRepository
 import com.example.domain.usecase.GetAvailableSymptomsUseCase
 import com.example.domain.usecase.GetCurrentUserTransactionsUseCase
 import com.example.domain.usecase.GetCurrentUserUseCase
 import com.example.domain.usecase.GetDiseaseDetailsUseCase
+import com.example.domain.usecase.GetDonationRequestByIdUseCase
 import com.example.domain.usecase.GetDonationRequestsUseCase
 import com.example.domain.usecase.GetMedicineDetailsUseCase
 import com.example.domain.usecase.GetMedicinesUseCase
@@ -12,25 +15,20 @@ import com.example.domain.usecase.LoginUseCase
 import com.example.domain.usecase.PredictDiseaseBySymptomsUseCase
 import com.example.domain.usecase.RegisterUseCase
 import com.example.model.app.DiseaseView
-import com.example.model.app.Medicine
 import com.example.model.app.MedicineView
 import com.example.model.app.Symptom
-import com.example.model.app.TransactionView
 import com.example.model.app.User
-import com.example.model.app.dummyDonationRequests
 import com.example.model.app.dummyList
-import com.example.model.app.empty
 import com.example.model.app.emptyDonor
 import com.example.model.app.headache
 import com.example.model.app.paracetamol
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Module
-import kotlin.random.Random
 
 @Module
 @ComponentScan
-class DomainModule{
+class DomainModule {
     @Factory
     fun provideRegisterUseCase(repository: AuthRepository) = RegisterUseCase(repository::register)
 
@@ -58,9 +56,12 @@ class DomainModule{
     }
 
     @Factory
-    fun provideDonationRequestsUseCase() = GetDonationRequestsUseCase {
-        dummyDonationRequests()
-    }
+    fun provideDonationRequestsUseCase(donationRepository: DonationRepository) =
+        GetDonationRequestsUseCase(donationRepository::getDonationRequests)
+
+    @Factory
+    fun provideDonationRequestByIdUseCase(donationRepository: DonationRepository) =
+        GetDonationRequestByIdUseCase(donationRepository::getDonationRequest)
 
 
     @Factory
@@ -75,17 +76,6 @@ class DomainModule{
 
 
     @Factory
-    fun provideGetCurrentUserTransactionsUseCase() = GetCurrentUserTransactionsUseCase {
-        List(Random.nextInt(1,100)) {
-            TransactionView.empty().copy(
-                medicine = Medicine.empty().copy(
-                    name = "Paracetamol",
-                    description = "Paracetamol is a painkiller and a fever reducer (antipyretic). It is used to treat many conditions such as headache, muscle aches, arthritis, backache, toothaches, colds, and fevers. It is also used to treat pain and fever after surgery. Paracetamol is in a class of medications called analgesics (pain relievers) and antipyretics (fever reducers). It works by blocking the release of certain chemical messengers that cause pain and fever in the body."
-                ),
-                quantity = Random.nextInt(1, 1000),
-                senderName = "mohamed",
-                receiverName = "medical service",
-            )
-        }
-    }
+    fun provideGetCurrentUserTransactionsUseCase(transactionRepository: TransactionRepository) =
+        GetCurrentUserTransactionsUseCase(transactionRepository::getTransactions)
 }

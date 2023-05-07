@@ -26,7 +26,8 @@ class DonationViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(thread)
-        dummyDonationRequestId = if (Random.nextBoolean()) dummyDonationRequests.first().id else null
+        dummyDonationRequestId =
+            if (Random.nextBoolean()) dummyDonationRequests.first().id else null
         viewModel = DonationViewModel(
             getDonationRequestsUseCase = { dummyDonationRequests },
             initialDonationRequestId = dummyDonationRequestId,
@@ -85,7 +86,7 @@ class DonationViewModelTest {
         runTest {
             val newDonationRequestId = dummyDonationRequests.last().id
             viewModel.handleEvent(DonationScreenEvent.OnDonationRequestSelected(newDonationRequestId))
-            viewModel.handleEvent(DonationScreenEvent.OnQuantityChange(1))
+            viewModel.handleEvent(DonationScreenEvent.OnQuantityChange("1"))
             viewModel.uiState.test {
                 val state = awaitItem()
                 assertThat(state.isDonateButtonEnabled).isTrue()

@@ -66,18 +66,15 @@ dependencies {
     implementation(libs.koin.core)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
+    implementation(libs.koin.workmanager)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.iconsExtended)
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.koin.annotations)
     ksp(libs.koin.ksp.compiler)
-    implementation(libs.ktor.client.android)
-    implementation(libs.ktor.client.auth)
-    implementation(libs.ktor.client.serialization)
-    implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.client.serialization)
-    implementation(libs.ktor.client.content.negotiation)
-    implementation(libs.ktor.client.logging)
+
     implementation(libs.google.play.services.text.recognition)
 
     implementation(project(":external:auth"))
@@ -89,6 +86,7 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:data"))
     implementation(project(":core:database"))
+    implementation(project(":core:worker"))
 }
 
 fun getCoreModuleSourceSet(name: String) = "../core/$name/build/generated/ksp/debug/kotlin"

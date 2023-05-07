@@ -28,10 +28,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.PagingData
 import com.example.composecomponents.OneTimeEventButton
 import com.example.composecomponents.textField.OutlinedSearchTextField
 import com.example.composecomponents.textField.ValidationOutlinedTextField
 import com.example.medicalservice.presentation.components.UrgentDonationList
+import com.example.model.app.DonationRequestView
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -80,13 +84,13 @@ private fun DonationScreen(
 @Composable
 private fun DonationHeader(
     state: DonationScreenState,
-    onDonationRequestClick: (String) -> Unit,
+    onDonationRequestClick: (DonationRequestView) -> Unit,
     onQueryChange: (String) -> Unit,
     onChooseAnotherDonationRequest: () -> Unit,
     onMedicineReadMoreClick: (String) -> Unit = {},
 ) {
     AnimatedVisibility(
-        visible = state.selectedDonationRequestView == null,
+        visible = state.selectedDonationRequest == null,
         enter = fadeIn()
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -100,12 +104,12 @@ private fun DonationHeader(
     }
 
     AnimatedVisibility(
-        visible = state.selectedDonationRequestView != null,
+        visible = state.selectedDonationRequest != null,
         enter = fadeIn()
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             DonationHeader(
-                donationRequestView = state.selectedDonationRequestView,
+                donationRequestView = state.selectedDonationRequest,
                 onChooseAnotherDonationRequest = onChooseAnotherDonationRequest,
                 onMedicineReadMoreClick = onMedicineReadMoreClick
             )
@@ -116,8 +120,8 @@ private fun DonationHeader(
 @Composable
 private fun DonationHeader(
     query: String,
-    donationRequestViews: List<com.example.model.app.DonationRequestView>,
-    onDonationRequestClick: (String) -> Unit,
+    donationRequestViews: Flow<PagingData<DonationRequestView>>,
+    onDonationRequestClick: (DonationRequestView) -> Unit,
     onQueryChange: (String) -> Unit,
 ) {
     OutlinedSearchTextField(
@@ -128,17 +132,17 @@ private fun DonationHeader(
     )
 
     UrgentDonationList(
-        donationRequestViews = donationRequestViews,
+        donationRequestViewPagingData = donationRequestViews,
         title = "Donations Requests",
         isDonateButtonVisible = false,
-        onDonationRequestCardClick = { onDonationRequestClick(it.id) }
+        onDonationRequestCardClick = { onDonationRequestClick(it) }
     )
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun DonationHeader(
-    donationRequestView: com.example.model.app.DonationRequestView?,
+    donationRequestView: DonationRequestView?,
     onChooseAnotherDonationRequest: () -> Unit = {},
     onMedicineReadMoreClick: (String) -> Unit = {}
 ) {
@@ -192,7 +196,7 @@ private fun ColumnScope.DonationBody(
     state: DonationScreenState,
     onEvent: (DonationScreenEvent) -> Unit
 ) {
-    if (state.selectedDonationRequestView == null) return
+    if (state.selectedDonationRequest == null) return
     ValidationOutlinedTextField(
         value = state.quantity,
         validation = state.quantityValidationResult,
@@ -222,8 +226,8 @@ private fun DonationScreenPreview() {
         val donationRequests = donationRequests()
         DonationScreen(
             state = DonationScreenState(
-                donationRequestViews = donationRequests,
-                selectedDonationRequestId = donationRequests.random().id,
+                donationRequestViews = flowOf(PagingData.from(donationRequests)),
+                selectedDonationRequest = donationRequests.random(),
             ),
             onEvent = {}
         )

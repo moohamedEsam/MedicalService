@@ -55,7 +55,7 @@
                     <requestState>
                       <option name="body">
                         <bodyState>
-                          <option name="raw" value="{&#13;&#10;    &quot;email&quot;: &quot;mohamed0&quot;,&#13;&#10;    &quot;password&quot;: &quot;esam&quot;,&#13;&#10;    &quot;phone&quot;: &quot;012&quot;,&#13;&#10;    &quot;username&quot;: &quot;mohamed&quot;,&#13;&#10;    &quot;location&quot;: {&#10;      &quot;lat&quot;: 15,&#10;      &quot;lng&quot;: 15&#10;    },&#13;&#10;    &quot;enumType&quot;: 1&#13;&#10;}" />
+                          <option name="raw" value="{&#13;&#10;    &quot;email&quot;: &quot;mohamedEsam@gmail.com&quot;,&#13;&#10;    &quot;password&quot;: &quot;somethingRandom&quot;,&#13;&#10;    &quot;phone&quot;: &quot;012&quot;,&#13;&#10;    &quot;username&quot;: &quot;mohamed esam&quot;,&#13;&#10;    &quot;location&quot;: {&#10;      &quot;lat&quot;: 15,&#10;      &quot;lng&quot;: 15&#10;    },&#13;&#10;    &quot;enumType&quot;: 1&#13;&#10;}" />
                           <option name="type" value="JSON" />
                         </bodyState>
                       </option>
@@ -110,6 +110,14 @@
                         </bodyState>
                       </option>
                       <option name="description" value="{{baseUrl}}/api/users/updateuser/:id" />
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
+                          </headerState>
+                        </list>
+                      </option>
                       <option name="id" value="5f9515e4-8b35-444d-9093-5a1d9c37658e" />
                       <option name="method" value="PUT" />
                       <option name="name" value="updateuser" />
@@ -117,7 +125,7 @@
                         <list>
                           <pathVariableState>
                             <option name="key" value="id" />
-                            <option name="value" value="6416b8c7794cf467b8aae2e2" />
+                            <option name="value" value="6457859b9bc82f40001c3351" />
                           </pathVariableState>
                         </list>
                       </option>
@@ -137,7 +145,7 @@
                       </option>
                       <option name="body">
                         <bodyState>
-                          <option name="raw" value="{&#13;&#10;    &quot;username&quot;: &quot;mohamed&quot;,&#13;&#10;    &quot;password&quot;: &quot;esam&quot;&#13;&#10;}" />
+                          <option name="raw" value="{&#13;&#10;    &quot;username&quot;: &quot;mohamedEsam@gmail.com&quot;,&#13;&#10;    &quot;password&quot;: &quot;somethingRandom&quot;&#13;&#10;}" />
                           <option name="type" value="JSON" />
                         </bodyState>
                       </option>
@@ -164,9 +172,9 @@
                 <option name="auth">
                   <authState>
                     <option name="bearer">
-                      <iz>
+                      <iU>
                         <option name="token" value="{{token}}" />
-                      </iz>
+                      </iU>
                     </option>
                     <option name="type" value="BEARER" />
                   </authState>
@@ -178,7 +186,7 @@
                     <requestState>
                       <option name="body">
                         <bodyState>
-                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;so5onya + loze&quot;,&#13;&#10;&quot;diseasesID&quot;:[&quot;new&quot;,&quot;medicine&quot;]&#13;&#10;&#13;&#10;}" />
+                          <option name="raw" value="{&#10;  &quot;name&quot;: &quot;Fioricet&quot;,&#10;  &quot;uses&quot;: [&#10;    &quot;Fioricet capsules contain a combination of acetaminophen, butalbital, and caffeine. Acetaminophen is a pain reliever and fever reducer. Butalbital is in a group of drugs called barbiturates. It relaxes muscle contractions involved in a tension headache. Caffeine is a central nervous system stimulant. It relaxes muscle contractions in blood vessels to improve blood flow.&quot;&#10;  ],&#10;  &quot;sideEffects&quot;:[&#10;    &quot;confusion, a seizure&quot;&#10;  ] ,&#10;  &quot;overDos&quot;: [&#10;    &quot;The first signs of an acetaminophen overdose include loss of appetite, nausea, vomiting, stomach pain, sweating, and confusion or weakness. Later symptoms may include pain in your upper stomach, dark urine, and yellowing of your skin or the whites of your eyes.&quot;&#10;  ],&#10;  &quot;precautions&quot;: [&#10;    &quot;Do not use Fioricet if you have used an MAO inhibitor in the past 14 days. A dangerous drug interaction could occur. MAO inhibitors include isocarboxazid, linezolid, methylene blue injection, phenelzine, and tranylcypromine.&quot;&#10;  ],&#10;  &quot;diseasesID&quot;: []&#10;}" />
                           <option name="type" value="JSON" />
                         </bodyState>
                       </option>
@@ -189,6 +197,10 @@
                             <option name="disabled" value="true" />
                             <option name="key" value="Authorization" />
                             <option name="value" value="Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhaG1lZCIsImNyZWF0ZWQiOjE2Nzg4MDQzMTQ4ODksImV4cCI6MTY3OTQwOTExNH0.BC-4cEU4QwdHqZg9U3tPLBGS2I8pergnbmIX8b7pNkyVLAYv6eien2WFh3-65-zboKsDPBr5DpUG4SB_0xWK_A" />
+                          </headerState>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
                           </headerState>
                         </list>
                       </option>
@@ -223,16 +235,32 @@
                       <option name="id" value="eb9006e1-dd43-494a-8019-f20085ddfc22" />
                       <option name="method" value="DELETE" />
                       <option name="name" value="deletemedicinebyid" />
-                      <option name="url" value="http://localhost:3000/api/medicine/deletemedicine/63fe8b8f6d17de0a74bccf5b" />
+                      <option name="pathVariables">
+                        <list>
+                          <pathVariableState>
+                            <option name="key" value="id" />
+                            <option name="value" value="6457ab892bffc8068b055771" />
+                          </pathVariableState>
+                        </list>
+                      </option>
+                      <option name="url" value="http://localhost:3000/api/medicine/deletemedicine/:id" />
                     </requestState>
                     <requestState>
                       <option name="body">
                         <bodyState>
-                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;new medicine mother fucker&quot;&#13;&#10;&#13;&#10;}" />
+                          <option name="raw" value="{&#10;  &quot;id&quot;: &quot;6457abf52bffc8068b055772&quot;,&#10;  &quot;name&quot;: &quot;Fioricet&quot;,&#10;  &quot;uses&quot;: [&#10;    &quot;Fioricet capsules contain a combination of acetaminophen, butalbital, and caffeine. Acetaminophen is a pain reliever and fever reducer. Butalbital is in a group of drugs called barbiturates. It relaxes muscle contractions involved in a tension headache. Caffeine is a central nervous system stimulant. It relaxes muscle contractions in blood vessels to improve blood flow.&quot;&#10;  ],&#10;  &quot;sideEffects&quot;: [&#10;    &quot;confusion, a seizure&quot;&#10;  ],&#10;  &quot;precautions&quot;: [&#10;    &quot;Do not use Fioricet if you have used an MAO inhibitor in the past 14 days. A dangerous drug interaction could occur. MAO inhibitors include isocarboxazid, linezolid, methylene blue injection, phenelzine, and tranylcypromine.&quot;&#10;  ],&#10;  &quot;overDos&quot;: [&#10;    &quot;The first signs of an acetaminophen overdose include loss of appetite, nausea, vomiting, stomach pain, sweating, and confusion or weakness. Later symptoms may include pain in your upper stomach, dark urine, and yellowing of your skin or the whites of your eyes.&quot;&#10;  ],&#10;  &quot;additionalInformation&quot;: null,&#10;  &quot;diseasesID&quot;: [&#10;    &quot;645786709bc82f40001c3353&quot;&#10;  ]&#10;}" />
                           <option name="type" value="JSON" />
                         </bodyState>
                       </option>
                       <option name="description" value="{{baseUrl}}/api/medicine/updatemedicine/:id" />
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
+                          </headerState>
+                        </list>
+                      </option>
                       <option name="id" value="8683778f-78ba-4d85-bfd7-a86352d073c6" />
                       <option name="method" value="PUT" />
                       <option name="name" value="updatemedicine" />
@@ -240,6 +268,7 @@
                         <list>
                           <pathVariableState>
                             <option name="key" value="id" />
+                            <option name="value" value="6457abf52bffc8068b055772" />
                           </pathVariableState>
                         </list>
                       </option>
@@ -253,9 +282,9 @@
                 <option name="auth">
                   <authState>
                     <option name="bearer">
-                      <iz>
+                      <iU>
                         <option name="token" value="{{token}}" />
-                      </iz>
+                      </iU>
                     </option>
                     <option name="type" value="BEARER" />
                   </authState>
@@ -268,11 +297,19 @@
                     <requestState>
                       <option name="body">
                         <bodyState>
-                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;name&quot;:&quot;second disease&quot;,&#13;&#10;&quot;description&quot;:&quot;hi meidince&quot;,&#13;&#10;&quot;syndromesList&quot;:[&#13;&#10;&quot;hi&quot;,&#13;&#10;&quot;by&quot;&#13;&#10;&#13;&#10;]&#13;&#10;&#13;&#10;}" />
+                          <option name="raw" value="{&#10;  &quot;name&quot;: &quot;headaches&quot;,&#10;  &quot;description&quot;: &quot;The International Headache Society classifies headaches into two main types: primary headache and secondary headache.&quot;,&#10;  &quot;symptomsList&quot;: [&#10;    &quot;By definition, a headache is a pain in the head. But the type, location, and severity of pain are highly variable. And for migraine, there can be profound symptoms without a headache.&quot;&#10;  ],&#10;  &quot;treatmentList&quot;: [&#10;    &quot;For infrequent headaches, over-the-counter pain relievers are convenient, effective, and relatively safe. Examples include aspirin, acetaminophen (Tylenol), ibuprofen (Advil, Motrin), and naproxen (Aleve). Some people get more pain relief with combination pain relievers that contain caffeine.&quot;&#10;  ],&#10;  &quot;preventionList&quot;: [&#10;    &quot;Relaxation techniques and avoidance of stressful situations may help to prevent headaches. Many things can trigger a headache. Identifying and correcting one or more triggers may reduce headache frequency and severity.&quot;&#10;  ],&#10;  &quot;diagnosisList&quot;: [&#10;    &#10;  ]&#10;}" />
                           <option name="type" value="JSON" />
                         </bodyState>
                       </option>
                       <option name="description" value="/api/disease/adddisease" />
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
+                          </headerState>
+                        </list>
+                      </option>
                       <option name="id" value="a335c5c8-f3a7-4811-886c-6af92019920e" />
                       <option name="method" value="POST" />
                       <option name="name" value="adddisease" />
@@ -299,6 +336,14 @@
                         </bodyState>
                       </option>
                       <option name="description" value="/api/disease/getalldisease" />
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
+                          </headerState>
+                        </list>
+                      </option>
                       <option name="id" value="3659ee98-bb6b-494c-b0a4-1cdf803d6b28" />
                       <option name="method" value="GET" />
                       <option name="name" value="getalldisease" />
@@ -335,6 +380,16 @@
                 <option name="sortWeight" value="3000000" />
               </folderState>
               <folderState>
+                <option name="auth">
+                  <authState>
+                    <option name="bearer">
+                      <iU>
+                        <option name="token" value="{{token}}" />
+                      </iU>
+                    </option>
+                    <option name="type" value="BEARER" />
+                  </authState>
+                </option>
                 <option name="description" value="/api/transaction/" />
                 <option name="id" value="a8cd8184-c27e-43d8-8840-a8cc584da8d5" />
                 <option name="name" value="Transaction" />
@@ -343,15 +398,23 @@
                     <requestState>
                       <option name="body">
                         <bodyState>
-                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;myStatusValue&quot;:&quot;DONE&quot;&#13;&#10;&#13;&#10;}" />
+                          <option name="raw" value="{&#13;&#10;  &quot;userId&quot;: &quot;&quot;,&#10;  &quot;createdAt&quot;: 15,&#10;  &quot;medicineId&quot;: &quot;&quot;,&#10;  &quot;myStatusValue&quot;: &quot;PENDING&quot;,&#10;  &quot;receiverId&quot;: &quot;&quot;,&#10;  &quot;receiverName&quot;: &quot;&quot;,&#10;  &quot;senderId&quot;: &quot;&quot;,&#10;  &quot;senderName&quot;: &quot;&quot;,&#10;  &quot;quantity&quot;: 15,&#10;  &quot;donationReqeustId&quot;: null&#13;&#10;}" />
                           <option name="type" value="JSON" />
                         </bodyState>
                       </option>
                       <option name="description" value="/api/transaction/addtransaction" />
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
+                          </headerState>
+                        </list>
+                      </option>
                       <option name="id" value="ce19f134-666d-40f6-85b7-4db6817a1a96" />
                       <option name="method" value="POST" />
                       <option name="name" value="addtransaction" />
-                      <option name="url" value="http://localhost:3000/api/transaction/addtransaction" />
+                      <option name="url" value="{{baseUrl}}/api/transaction/addtransaction" />
                     </requestState>
                     <requestState>
                       <option name="body">
@@ -374,10 +437,18 @@
                         </bodyState>
                       </option>
                       <option name="description" value="/api/transaction/gettransactionbyuserid/64108ee40b2b5e15816989c3" />
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
+                          </headerState>
+                        </list>
+                      </option>
                       <option name="id" value="53f7ac01-8d44-4472-8497-85b5dd71a269" />
                       <option name="method" value="GET" />
                       <option name="name" value="gettransactionbyuserid" />
-                      <option name="url" value="http://localhost:3000/api/transaction/gettransactionbyuserid/64108ee40b2b5e15816989c3" />
+                      <option name="url" value="{{baseUrl}}/api/transaction/gettransactionbyuserid" />
                     </requestState>
                     <requestState>
                       <option name="body">
@@ -387,10 +458,18 @@
                         </bodyState>
                       </option>
                       <option name="description" value="/api/transaction/getalltransaction" />
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
+                          </headerState>
+                        </list>
+                      </option>
                       <option name="id" value="0e16edd9-ef95-40b9-b999-adc764389c85" />
                       <option name="method" value="GET" />
                       <option name="name" value="getalltransaction" />
-                      <option name="url" value="http://localhost:3000/api/transaction/getalltransaction" />
+                      <option name="url" value="{{baseUrl}}/api/transaction/getalltransaction" />
                     </requestState>
                     <requestState>
                       <option name="body">
@@ -408,15 +487,31 @@
                     <requestState>
                       <option name="body">
                         <bodyState>
-                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;myStatusValue&quot;:&quot;DONE&quot;&#13;&#10;&#13;&#10;}" />
+                          <option name="raw" value="{&#10;  &quot;userId&quot;: &quot;&quot;,&#10;  &quot;createdAt&quot;: 15,&#10;  &quot;medicineId&quot;: &quot;&quot;,&#10;  &quot;myStatusValue&quot;: &quot;PENDING&quot;,&#10;  &quot;receiverId&quot;: &quot;&quot;,&#10;  &quot;receiverName&quot;: &quot;&quot;,&#10;  &quot;senderId&quot;: &quot;&quot;,&#10;  &quot;senderName&quot;: &quot;&quot;,&#10;  &quot;quantity&quot;: 15,&#10;  &quot;donationReqeustId&quot;: null&#10;}" />
                           <option name="type" value="JSON" />
                         </bodyState>
                       </option>
                       <option name="description" value="/api/transaction/updatetransaction/63fff3de29d9203077c0c5a0" />
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
+                          </headerState>
+                        </list>
+                      </option>
                       <option name="id" value="1dfc3e75-8b02-40fd-a076-34987422c8d9" />
                       <option name="method" value="PUT" />
                       <option name="name" value="updatetransaction" />
-                      <option name="url" value="http://localhost:3000/api/transaction/updatetransaction/63fff3de29d9203077c0c5a0" />
+                      <option name="pathVariables">
+                        <list>
+                          <pathVariableState>
+                            <option name="key" value="id" />
+                            <option name="value" value="6457ba7e359b136a3a42b70d" />
+                          </pathVariableState>
+                        </list>
+                      </option>
+                      <option name="url" value="{{baseUrl}}/api/transaction/updatetransaction/:id" />
                     </requestState>
                   </list>
                 </option>
@@ -609,6 +704,51 @@
                 </option>
                 <option name="sortWeight" value="7000000" />
               </folderState>
+              <folderState>
+                <option name="auth">
+                  <authState>
+                    <option name="bearer">
+                      <iU>
+                        <option name="token" value="{{token}}" />
+                      </iU>
+                    </option>
+                    <option name="type" value="BEARER" />
+                  </authState>
+                </option>
+                <option name="id" value="1b420c6f-a47b-4388-bd15-7b76baafce54" />
+                <option name="name" value="DonationRequest" />
+                <option name="requests">
+                  <list>
+                    <requestState>
+                      <option name="id" value="26fece8c-11b7-4938-b5b5-92de691c9c5f" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="getAll" />
+                      <option name="url" value="{{baseUrl}}/api/donationrequest/getalldonationrequest" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#10;  &quot;collected&quot;: 100,&#10;  &quot;needed&quot;: 200,&#10;  &quot;conteibuterCount&quot;: 20,&#10;  &quot;medicineId&quot;: &quot;6457abf52bffc8068b055772&quot;,&#10;  &quot;endDate&quot;: 1683472245014&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
+                          </headerState>
+                        </list>
+                      </option>
+                      <option name="id" value="af3f0370-13dc-4ee1-9126-0ed1c06f813c" />
+                      <option name="method" value="POST" />
+                      <option name="name" value="add" />
+                      <option name="url" value="{{baseUrl}}/api/donationrequest/adddonationrequest" />
+                    </requestState>
+                  </list>
+                </option>
+                <option name="sortWeight" value="8000000" />
+              </folderState>
             </list>
           </option>
           <option name="id" value="99240083-0ddc-43ec-957e-cfd8a78d33d0" />
@@ -619,9 +759,9 @@
                 <option name="auth">
                   <authState>
                     <option name="bearer">
-                      <iz>
+                      <iU>
                         <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYSIsImNyZWF0ZWQiOjE2Nzk3NTY3ODkzNTgsImV4cCI6MTY4MDM2MTU4OX0.-U248bTiS4YjrGcYqsHUOp78qSk7J-sfQdmCs9c9_WR8lv75ayzRDnlOren35zSWJMCrKFwUxKNY8yUvfTWl1w" />
-                      </iz>
+                      </iU>
                     </option>
                     <option name="type" value="BEARER" />
                   </authState>

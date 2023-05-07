@@ -2,12 +2,18 @@ package com.example.medicalservice
 
 import android.os.Build
 import android.util.Log
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
+import androidx.work.WorkManager
 import coil.ImageLoader
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import com.example.domain.usecase.OneTimeSyncWorkUseCase
 import com.example.functions.snackbar.BaseSnackBarManager
 import com.example.functions.snackbar.SnackBarManager
+import com.example.worker.SyncWorker
 import kotlinx.coroutines.CoroutineExceptionHandler
+import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Factory
@@ -39,5 +45,19 @@ class AppModule {
 
     @Single([SnackBarManager::class])
     fun provideSnackBarManager() = BaseSnackBarManager()
+
+    context (Scope)
+            @Factory
+    fun provideOneTimeSyncUseCase() = OneTimeSyncWorkUseCase {
+        val workRequest = OneTimeWorkRequestBuilder<SyncWorker>()
+            .setConstraints(SyncWorker.workConstraints)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .addTag(SyncWorker.workName)
+            .build()
+
+        val workManager = WorkManager.getInstance(androidApplication())
+        workManager.enqueue(workRequest)
+        workManager.getWorkInfoByIdLiveData(workRequest.id)
+    }
 }
 

@@ -1,3 +1,6 @@
 package com.example.domain.usecase
 
-fun interface GetDonationRequestsUseCase : suspend () -> List<com.example.model.app.DonationRequestView>
+import androidx.paging.PagingSource
+import com.example.model.app.DonationRequestView
+
+fun interface GetDonationRequestsUseCase : () -> PagingSource<Int, DonationRequestView>

@@ -1,3 +1,5 @@
 package com.example.domain.usecase
 
-fun interface GetCurrentUserTransactionsUseCase : suspend () -> List<com.example.model.app.TransactionView>
+import androidx.paging.PagingSource
+
+fun interface GetCurrentUserTransactionsUseCase : () -> PagingSource<Int, com.example.model.app.TransactionView>

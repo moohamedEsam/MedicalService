@@ -1,7 +1,6 @@
 package com.example.model.app
 
 import com.example.model.serializers.DateSerializer
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.util.Date
 
@@ -19,5 +18,5 @@ data class Transaction(
     val senderId: String,
     val senderName: String,
     val status: TransactionView.Status,
-    @Contextual val donationRequestId: String? = null,
+//    @Contextual val donationRequestId: String? = null,
 )

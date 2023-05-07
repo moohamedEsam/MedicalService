@@ -5,7 +5,7 @@ import java.util.UUID
 import kotlin.random.Random
 
 data class DonationRequestView(
-    val medicine: Medicine,
+    val medicine: MedicineView,
     val collected: Int,
     val needed: Int,
     val contributorsCount: Int,
@@ -16,7 +16,7 @@ data class DonationRequestView(
 }
 
 fun DonationRequestView.Companion.empty() = DonationRequestView(
-    medicine = Medicine.empty(),
+    medicine = MedicineView.empty(),
     collected = 0,
     needed = 0,
     contributorsCount = 0,
@@ -30,10 +30,7 @@ fun dummyDonationRequests() = List(10) {
         needed = needed,
         collected = collected,
         contributorsCount = Random.nextInt(1, 100),
-        medicine = Medicine.empty().copy(
-            name = "Paracetamol",
-            description = "Paracetamol is a painkiller and a fever reducer (antipyretic). It is used to treat many conditions such as headache, muscle aches, arthritis, backache, toothaches, colds, and fevers. It is also used to treat pain and fever after surgery. Paracetamol is in a class of medications called analgesics (pain relievers) and antipyretics (fever reducers). It works by blocking the release of certain chemical messengers that cause pain and fever in the body."
-        ),
+        medicine = MedicineView.paracetamol(),
         endDate = Date().time + Random.nextLong(1000000000)
     )
 }

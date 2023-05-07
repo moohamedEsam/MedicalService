@@ -1,5 +1,6 @@
 package com.example.model.app
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
@@ -8,10 +9,14 @@ data class Disease(
     val id: String,
     val name: String,
     val description: String,
+    @SerialName("symptomsList")
     val symptoms: List<String>,
+    @SerialName("treatmentList")
     val treatment: List<String>,
+    @SerialName("preventionList")
     val prevention: List<String>,
-    val diagnosis: List<String>,
+    @SerialName("diagnosisList")
+    val diagnosis: List<String>
 ){
     companion object
 }

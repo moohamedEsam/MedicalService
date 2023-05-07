@@ -4,20 +4,27 @@ import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.database.models.TransactionEntity
-import com.example.database.models.TransactionEntityView
+import androidx.room.Transaction
+import com.example.database.models.transaction.TransactionEntity
+import com.example.database.models.transaction.TransactionEntityView
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TransactionDao {
 
     @Query("SELECT * FROM transactions")
-    suspend fun getTransactions(): DataSource.Factory<Int, TransactionEntity>
+    @Transaction
+    fun getTransactions(): DataSource.Factory<Int, TransactionEntityView>
 
     @Query("SELECT * FROM transactions WHERE id = :id")
-    suspend fun getTransactionById(id: String): TransactionEntityView?
+    @Transaction
+    fun getTransactionById(id: String): Flow<TransactionEntityView?>
 
     @Query("DELETE FROM transactions WHERE id = :id")
     suspend fun delete(id: String)
+
+    @Query("DELETE FROM transactions")
+    suspend fun deleteAll()
 
     @Query("UPDATE transactions SET status = :status WHERE id = :id")
     suspend fun updateStatus(id: String, status: String)
@@ -27,4 +34,7 @@ interface TransactionDao {
 
     @Insert
     suspend fun insert(transaction: TransactionEntity)
+
+    @Insert
+    suspend fun insertAll(transactions: List<TransactionEntity>)
 }

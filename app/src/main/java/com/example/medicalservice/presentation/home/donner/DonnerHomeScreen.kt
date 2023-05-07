@@ -7,10 +7,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -30,11 +30,15 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
+import com.example.composecomponents.loadStateItem
 import com.example.composecomponents.textField.OutlinedSearchTextField
 import com.example.medicalservice.presentation.components.UrgentDonationList
 import com.example.medicalservice.presentation.components.color
-import com.example.model.app.empty
-import com.example.model.app.emptyDonor
+import com.example.model.app.TransactionView
+import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -80,13 +84,13 @@ private fun DonnerHomeScreenContent(
         )
 
         UrgentDonationList(
-            donationRequestViews = state.donationRequestViews,
+            donationRequestViewPagingData = state.donationRequestViews,
             title = "Urgent Donations",
             onDonationRequestClick = { onDonateClick(it.id) },
         )
 
         RecentTransactions(
-            transactionViews = state.transactionViews,
+            transactionViewsFlow = state.transactionViews,
             onTransactionClick = { onTransactionClick(it.id) },
             modifier = Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp / 2).dp),
             onMedicineClick = onMedicineClick
@@ -103,11 +107,12 @@ private fun DonnerScreenHeader(
 
 @Composable
 private fun RecentTransactions(
-    transactionViews: List<com.example.model.app.TransactionView>,
+    transactionViewsFlow: Flow<PagingData<TransactionView>>,
     modifier: Modifier = Modifier,
-    onTransactionClick: (com.example.model.app.TransactionView) -> Unit,
+    onTransactionClick: (TransactionView) -> Unit,
     onMedicineClick: (String) -> Unit
 ) {
+    val transactionViews = transactionViewsFlow.collectAsLazyPagingItems()
     val dateFormatter by remember {
         mutableStateOf(SimpleDateFormat("MMMM dd", Locale.getDefault()))
     }
@@ -117,6 +122,7 @@ private fun RecentTransactions(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(transactionViews) { transaction ->
+            if (transaction == null) return@items
             TransactionItem(
                 transactionView = transaction,
                 onClick = { onTransactionClick(transaction) },
@@ -124,13 +130,14 @@ private fun RecentTransactions(
                 onMedicineClick = { onMedicineClick(it) }
             )
         }
+        loadStateItem(transactionViews.loadState, spacerModifier = Modifier.height(32.dp))
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TransactionItem(
-    transactionView: com.example.model.app.TransactionView,
+    transactionView: TransactionView,
     modifier: Modifier = Modifier,
     dateFormat: SimpleDateFormat,
     onClick: () -> Unit,
@@ -181,19 +188,7 @@ private fun TransactionItem(
 private fun DonnerHomeScreenPreview() {
     Box {
         DonnerHomeScreenContent(
-            state = DonnerHomeState(
-                donationRequestViews = com.example.model.app.dummyDonationRequests(),
-                user = com.example.model.app.User.emptyDonor().copy(username = "mohamed"),
-                transactionViews = listOf(
-                    com.example.model.app.TransactionView.empty().copy(
-                        medicine = com.example.model.app.Medicine.empty().copy(name = "Panadol"),
-                        receiverName = "Medical Service",
-                        quantity = 10,
-                        status = com.example.model.app.TransactionView.Status.Delivered,
-                        donationRequestView = com.example.model.app.dummyDonationRequests().random()
-                    )
-                )
-            ),
+            state = DonnerHomeState(),
             onTransactionClick = {},
             onDonateClick = {},
             onMedicineClick = {},
