@@ -157,7 +157,7 @@ private fun VerticalDonationItem(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(donationRequestView.medicine.name, fontWeight = FontWeight.Bold)
-            Text(donationRequestView.medicine.description, maxLines = 1)
+            Text(donationRequestView.medicine.uses.firstOrNull()?:"", maxLines = 1)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,

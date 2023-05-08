@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.domain.*
-import com.example.model.app.MedicineView
-import com.example.model.app.paracetamol
+import com.example.model.app.medicine.MedicineView
+import com.example.model.app.medicine.paracetamol
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.random.Random
@@ -95,7 +95,7 @@ private fun MedicineDiseases(
 @Composable
 private fun MedicineDescription(medicine: MedicineView) {
     Text(text = "Description", style = MaterialTheme.typography.headlineMedium)
-    Text(text = medicine.description, style = MaterialTheme.typography.bodyLarge)
+    Text(text = medicine.uses.joinToString("\n"), style = MaterialTheme.typography.bodyLarge)
 }
 
 @Composable

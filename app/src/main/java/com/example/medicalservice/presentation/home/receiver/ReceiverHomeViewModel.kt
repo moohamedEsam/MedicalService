@@ -2,7 +2,7 @@ package com.example.medicalservice.presentation.home.receiver
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.usecase.GetCurrentUserUseCase
+import com.example.domain.usecase.user.GetCurrentUserUseCase
 import com.example.model.app.emptyReceiver
 
 import kotlinx.coroutines.CoroutineExceptionHandler

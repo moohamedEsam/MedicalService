@@ -14,9 +14,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.model.app.DiseaseView
-import com.example.model.app.Medicine
 import com.example.model.app.headache
+import com.example.model.app.medicine.Medicine
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -150,7 +149,7 @@ private fun DiseaseDiagnosis(diagnosis: List<String>) {
 }
 
 @Composable
-private fun DiseaseMedicines(medicines: List<com.example.model.app.Medicine>, onMedicineClick: (String) -> Unit) {
+private fun DiseaseMedicines(medicines: List<Medicine>, onMedicineClick: (String) -> Unit) {
     Text(text = "Medicines", style = MaterialTheme.typography.headlineMedium)
     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         items(medicines) { medicine ->
@@ -166,7 +165,7 @@ private fun DiseaseMedicines(medicines: List<com.example.model.app.Medicine>, on
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MedicineItem(
-    medicine: com.example.model.app.Medicine,
+    medicine: Medicine,
     onMedicineClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -180,7 +179,7 @@ private fun MedicineItem(
                 .verticalScroll(rememberScrollState()),
         ) {
             Text(text = medicine.name, style = MaterialTheme.typography.headlineMedium)
-            Text(text = medicine.description, style = MaterialTheme.typography.bodyLarge)
+            Text(text = medicine.uses.firstOrNull()?:"", style = MaterialTheme.typography.bodyLarge)
         }
     }
 }

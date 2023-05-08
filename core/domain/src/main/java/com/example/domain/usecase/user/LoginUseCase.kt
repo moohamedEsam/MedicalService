@@ -1,4 +1,4 @@
-package com.example.domain.usecase
+package com.example.domain.usecase.user
 
 import com.example.common.models.Result
 import com.example.model.app.Credentials

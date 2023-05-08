@@ -36,9 +36,7 @@ fun MedicalServiceNavGraph(
     NavHost(
         navController = navHostController,
         startDestination = startDestination,
-        modifier = modifier.padding(
-            top = paddingValues.calculateTopPadding(),
-        )
+        modifier = modifier.padding(paddingValues)
     ) {
         loginScreen(
             logo = R.drawable.meidcal_service,

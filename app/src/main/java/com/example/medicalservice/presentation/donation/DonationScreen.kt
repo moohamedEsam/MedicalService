@@ -168,7 +168,7 @@ private fun DonationHeader(
         }
     }
     Text(
-        text = donationRequestView.medicine.description,
+        text = donationRequestView.medicine.uses.firstOrNull()?:"",
         style = MaterialTheme.typography.bodyMedium,
         maxLines = 2
     )

@@ -2,7 +2,7 @@ package com.example.medicalservice.presentation.disease
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.usecase.GetDiseaseDetailsUseCase
+import com.example.domain.usecase.disease.GetDiseaseDetailsUseCase
 import com.example.model.app.empty
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +21,7 @@ class DiseaseViewModel(
 
     init {
         viewModelScope.launch(coroutineExceptionHandler) {
-            _disease.value = getDiseaseDetailsUseCase(diseaseId)
+            getDiseaseDetailsUseCase(diseaseId).collect(_disease::emit)
         }
     }
 }

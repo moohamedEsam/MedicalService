@@ -14,9 +14,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.example.model.app.MedicineView
 import com.example.model.app.empty
-import com.example.model.app.paracetamol
+import com.example.model.app.medicine.MedicineView
+import com.example.model.app.medicine.paracetamol
 import java.text.SimpleDateFormat
 import java.util.*
 

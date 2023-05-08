@@ -67,6 +67,8 @@ fun Project.configureKotlinAndroid(
 
         kotlinOptions {
             jvmTarget = JavaVersion.VERSION_17.toString()
+            freeCompilerArgs = listOf("-Xcontext-receivers")
+
         }
 
     }

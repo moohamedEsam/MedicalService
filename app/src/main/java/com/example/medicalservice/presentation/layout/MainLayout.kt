@@ -118,7 +118,7 @@ fun BottomBar(navHostController: NavHostController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 32.dp, start = 16.dp, end = 16.dp)
-            .shadow(8.dp, RoundedCornerShape(percent = 15))
+            .shadow(8.dp, RoundedCornerShape(percent = 15)),
     ) {
         NavigationBarItem(
             selected = currentRoute == HomeScreenRoute,

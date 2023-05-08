@@ -1,5 +1,7 @@
 package com.example.model.app
 
+import com.example.model.app.medicine.MedicineView
+import com.example.model.app.medicine.empty
 import java.util.Date
 
 data class TransactionView(

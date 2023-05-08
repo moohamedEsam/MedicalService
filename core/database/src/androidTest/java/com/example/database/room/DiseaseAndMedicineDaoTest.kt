@@ -10,8 +10,8 @@ import com.example.database.models.medicine.toEntity
 import com.example.database.room.dao.DiseaseDao
 import com.example.database.room.dao.MedicineDao
 import com.example.model.app.Disease
-import com.example.model.app.Medicine
-import com.example.model.app.empty
+import com.example.model.app.medicine.Medicine
+import com.example.model.app.medicine.empty
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers

@@ -2,7 +2,7 @@ package com.example.common.functions
 
 import android.content.Context
 
-const val fileName = "mohamed"
+const val fileName = "prefs"
 const val tokenKey = "token"
 
 

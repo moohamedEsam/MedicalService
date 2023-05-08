@@ -2,12 +2,12 @@ package com.example.database.models.medicine
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.model.app.Medicine
+import com.example.model.app.medicine.Medicine
 
 @Entity(tableName = "medicines")
 data class MedicineEntity(
     val name: String,
-    val description: String,
+    val uses: List<String>,
     val sideEffects: List<String>,
     val precautions: List<String>,
     val overDoes: List<String>,
@@ -17,7 +17,7 @@ data class MedicineEntity(
 fun MedicineEntity.toMedicine() = Medicine(
     id = id,
     name = name,
-    description = description,
+    uses = uses,
     sideEffects = sideEffects,
     precautions = precautions,
     overdoes = overDoes,
@@ -26,7 +26,7 @@ fun MedicineEntity.toMedicine() = Medicine(
 fun Medicine.toEntity() = MedicineEntity(
     id = id,
     name = name,
-    description = description,
+    uses = uses,
     sideEffects = sideEffects,
     precautions = precautions,
     overDoes = overdoes,

@@ -1,8 +1,8 @@
 package com.example.data.medicine
 
 import androidx.paging.PagingSource
-import com.example.model.app.Medicine
-import com.example.model.app.MedicineView
+import com.example.model.app.medicine.Medicine
+import com.example.model.app.medicine.MedicineView
 import kotlinx.coroutines.flow.Flow
 
 interface MedicineRepository {

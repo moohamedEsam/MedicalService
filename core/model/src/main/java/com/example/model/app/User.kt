@@ -1,5 +1,6 @@
 package com.example.model.app
 
+import com.example.model.app.medicine.Medicine
 import kotlinx.serialization.Serializable
 
 sealed interface User {

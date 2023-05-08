@@ -2,8 +2,10 @@ package com.example.network
 
 import com.example.common.functions.tryWrapper
 import com.example.common.models.Result
+import com.example.model.app.Credentials
 import com.example.model.app.DiseaseView
 import com.example.model.app.Symptom
+import com.example.model.app.medicine.Medicine
 import com.example.network.models.NetworkTransaction
 import com.example.network.models.RemoteResponse
 import com.example.network.models.asDomainModel
@@ -14,6 +16,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import org.koin.core.annotation.Single
 
@@ -21,13 +24,16 @@ import org.koin.core.annotation.Single
 class KtorRemoteDataSource(
     private val client: HttpClient
 ) : RemoteDataSource {
-    override suspend fun login(credentials: com.example.model.app.Credentials): Result<com.example.model.app.Token> =
+    override suspend fun login(credentials: Credentials): Result<com.example.model.app.Token> =
         tryWrapper {
             val response = client.post(EndPoints.LOGIN) {
                 setBody(credentials)
                 contentType(ContentType.Application.Json)
             }
-            mapResponse(response.body())
+            if (response.status == HttpStatusCode.OK)
+                Result.Success(response.body())
+            else
+                Result.Error("wrong username or password")
         }
 
     override suspend fun register(register: com.example.model.app.Register): Result<Unit> =
@@ -45,7 +51,7 @@ class KtorRemoteDataSource(
             mapResponse(response.body())
         }
 
-    override suspend fun getMedicines(): Result<List<com.example.model.app.Medicine>> = tryWrapper {
+    override suspend fun getMedicines(): Result<List<Medicine>> = tryWrapper {
         val response = client.get(EndPoints.MEDICINE)
         mapResponse(response.body())
     }

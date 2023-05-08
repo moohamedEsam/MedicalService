@@ -8,7 +8,7 @@ import androidx.work.WorkManager
 import coil.ImageLoader
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
-import com.example.domain.usecase.OneTimeSyncWorkUseCase
+import com.example.domain.usecase.sync.OneTimeSyncWorkUseCase
 import com.example.functions.snackbar.BaseSnackBarManager
 import com.example.functions.snackbar.SnackBarManager
 import com.example.worker.SyncWorker

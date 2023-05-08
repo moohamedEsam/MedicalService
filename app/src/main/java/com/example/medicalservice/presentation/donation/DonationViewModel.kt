@@ -5,19 +5,27 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.example.domain.usecase.GetDonationRequestByIdUseCase
-import com.example.domain.usecase.GetDonationRequestsUseCase
+import com.example.common.models.SnackBarEvent
+import com.example.domain.usecase.donationRequest.GetDonationRequestByIdUseCase
+import com.example.domain.usecase.donationRequest.GetDonationRequestsUseCase
+import com.example.domain.usecase.transaction.CreateTransactionUseCase
+import com.example.functions.snackbar.SnackBarManager
+import com.example.model.app.Transaction
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
+import java.util.UUID
 
 @KoinViewModel
 class DonationViewModel(
     private val getDonationRequestsUseCase: GetDonationRequestsUseCase,
     private val getDonationRequestByIdUseCase: GetDonationRequestByIdUseCase,
+    private val createTransactionUseCase: CreateTransactionUseCase,
+    private val snackBarManager: SnackBarManager,
     private val initialDonationRequestId: String? = null,
     coroutineExceptionHandler: CoroutineExceptionHandler
 ) : ViewModel() {
@@ -61,7 +69,31 @@ class DonationViewModel(
     }
 
 
-    private fun onDonateClick() {
-
+    private fun onDonateClick(): Job = viewModelScope.launch {
+        if (!_uiState.value.isDonateButtonEnabled) return@launch
+        if (_uiState.value.selectedDonationRequest == null) return@launch
+        val transaction = createTransactionFromCurrentUIState()
+        val result = createTransactionUseCase(transaction)
+        result.ifSuccess {
+            val event = SnackBarEvent("Donation sent successfully", actionLabel = "View")
+            snackBarManager.showSnackBarEvent(event)
+        }
+        result.ifFailure {
+            val event = SnackBarEvent(
+                it ?: "Failed to send donation",
+                actionLabel = "Retry",
+                action = ::onDonateClick
+            )
+            snackBarManager.showSnackBarEvent(event)
+        }
     }
+
+    private fun createTransactionFromCurrentUIState() = Transaction(
+        medicineId = _uiState.value.selectedDonationRequest!!.medicine.id,
+        quantity = _uiState.value.quantity.toInt(),
+        receiverId = UUID.randomUUID().toString(),
+        receiverName = "Medical Service",
+        senderId = UUID.randomUUID().toString(),
+        senderName = "mohamed",
+    )
 }

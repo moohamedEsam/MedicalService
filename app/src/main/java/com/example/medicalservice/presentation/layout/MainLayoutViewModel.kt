@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import com.example.common.models.SnackBarEvent
-import com.example.domain.usecase.OneTimeSyncWorkUseCase
+import com.example.domain.usecase.sync.OneTimeSyncWorkUseCase
 import com.example.functions.snackbar.SnackBarManager
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel

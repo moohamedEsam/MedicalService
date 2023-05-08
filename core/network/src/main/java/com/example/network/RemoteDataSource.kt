@@ -5,7 +5,7 @@ import com.example.model.app.Credentials
 import com.example.model.app.Disease
 import com.example.model.app.DiseaseView
 import com.example.model.app.DonationRequest
-import com.example.model.app.Medicine
+import com.example.model.app.medicine.Medicine
 import com.example.model.app.Register
 import com.example.model.app.Symptom
 import com.example.model.app.Token

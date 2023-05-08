@@ -1,5 +1,8 @@
 package com.example.model.app
 
+import com.example.model.app.medicine.Medicine
+import com.example.model.app.medicine.empty
+
 data class DiseaseView(
     val id: String,
     val name: String,
@@ -52,23 +55,23 @@ fun DiseaseView.Companion.headache() = DiseaseView(
     medicines = listOf(
         Medicine.empty().copy(
             name = "Paracetamol",
-            description = "Paracetamol is a painkiller used to treat mild to moderate pain, such as headaches, toothaches, backaches, arthritis, menstrual cramps, colds, and fevers. It is also used to reduce fever in people with cancer."
+            uses = listOf("Paracetamol is a painkiller used to treat mild to moderate pain, such as headaches, toothaches, backaches, arthritis, menstrual cramps, colds, and fevers. It is also used to reduce fever in people with cancer.")
         ),
         Medicine.empty().copy(
             name = "Ibuprofen",
-            description = "Ibuprofen is a nonsteroidal anti-inflammatory drug (NSAID). It works by reducing hormones that cause inflammation and pain in the body. Ibuprofen is used to reduce fever and treat pain or inflammation caused by many conditions such as headache, toothache, back pain, arthritis, menstrual cramps, or minor injury."
+            uses = listOf("Ibuprofen is a nonsteroidal anti-inflammatory drug (NSAID). It works by reducing hormones that cause inflammation and pain in the body. Ibuprofen is used to reduce fever and treat pain or inflammation caused by many conditions such as headache, toothache, back pain, arthritis, menstrual cramps, or minor injury.")
         ),
         Medicine.empty().copy(
             name = "Aspirin",
-            description = "Aspirin is a pain reliever and a fever reducer. It is used to treat pain or inflammation caused by many conditions such as headache, toothache, back pain, arthritis, menstrual cramps, or minor injury."
+            uses = listOf("Aspirin is a pain reliever and a fever reducer. It is used to treat pain or inflammation caused by many conditions such as headache, toothache, back pain, arthritis, menstrual cramps, or minor injury.")
         ),
         Medicine.empty().copy(
             name = "Acetaminophen",
-            description = "Acetaminophen is a pain reliever and a fever reducer. It is used to treat pain or inflammation caused by many conditions such as headache, toothache, back pain, arthritis, menstrual cramps, or minor injury."
+            uses = listOf("Acetaminophen is a pain reliever and a fever reducer. It is used to treat pain or inflammation caused by many conditions such as headache, toothache, back pain, arthritis, menstrual cramps, or minor injury.")
         ),
         Medicine.empty().copy(
             name = "Naproxen",
-            description = "Naproxen is a nonsteroidal anti-inflammatory drug (NSAID). It works by reducing hormones that cause inflammation and pain in the body. Naproxen is used to reduce fever and treat pain or inflammation caused by many conditions such as headache, toothache, back pain, arthritis, menstrual cramps, or minor injury."
+            uses = listOf("Naproxen is a nonsteroidal anti-inflammatory drug (NSAID). It works by reducing hormones that cause inflammation and pain in the body. Naproxen is used to reduce fever and treat pain or inflammation caused by many conditions such as headache, toothache, back pain, arthritis, menstrual cramps, or minor injury.")
         ),
     )
 )

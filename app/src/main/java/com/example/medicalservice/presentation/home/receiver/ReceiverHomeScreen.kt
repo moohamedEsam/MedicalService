@@ -20,6 +20,8 @@ import com.example.domain.*
 import com.example.model.app.User
 import com.example.model.app.empty
 import com.example.model.app.emptyReceiver
+import com.example.model.app.medicine.Medicine
+import com.example.model.app.medicine.empty
 import org.koin.androidx.compose.koinViewModel
 import java.util.*
 
@@ -163,10 +165,10 @@ private fun ReceiverHomeScreenPreview() {
                 com.example.model.app.Disease.empty().copy(name = "Asthma")
             ),
             suggestedMedicines = listOf(
-                com.example.model.app.Medicine.empty().copy(name = "Paracetamol"),
-                com.example.model.app.Medicine.empty().copy(name = "Aspirin"),
-                com.example.model.app.Medicine.empty().copy(name = "Ibuprofen"),
-                com.example.model.app.Medicine.empty().copy(name = "Diphenhydramine"),
+                Medicine.empty().copy(name = "Paracetamol"),
+                Medicine.empty().copy(name = "Aspirin"),
+                Medicine.empty().copy(name = "Ibuprofen"),
+                Medicine.empty().copy(name = "Diphenhydramine"),
             ),
             username = "John Doe",
         ),

@@ -7,11 +7,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.auth.login.LoginScreenRoute
+import com.example.common.functions.loadTokenFromSharedPref
+import com.example.medicalservice.presentation.home.navigation.HomeScreenRoute
 import com.example.medicalservice.presentation.layout.MedicalServiceLayout
 import com.example.medicalservice.ui.theme.MedicalServiceTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        val alreadyLoggedIn: Boolean = loadTokenFromSharedPref(this) != null
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         setContent {
             MedicalServiceTheme {
@@ -20,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MedicalServiceLayout()
+                    MedicalServiceLayout(startDestination = if (alreadyLoggedIn) HomeScreenRoute else LoginScreenRoute)
                 }
             }
         }

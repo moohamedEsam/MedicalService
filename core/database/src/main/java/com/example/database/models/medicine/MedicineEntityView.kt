@@ -6,7 +6,7 @@ import androidx.room.Relation
 import com.example.database.models.disease.DiseaseEntity
 import com.example.database.models.disease.DiseaseMedicineCrossRef
 import com.example.database.models.disease.toDisease
-import com.example.model.app.MedicineView
+import com.example.model.app.medicine.MedicineView
 
 data class MedicineEntityView(
     @Embedded val medicineEntity: MedicineEntity,
@@ -25,7 +25,7 @@ data class MedicineEntityView(
 
 fun MedicineEntityView.toMedicineView() = MedicineView(
     name = medicineEntity.name,
-    description = medicineEntity.description,
+    uses = medicineEntity.uses,
     sideEffects = medicineEntity.sideEffects,
     precautions = medicineEntity.precautions,
     overDoes = medicineEntity.overDoes,

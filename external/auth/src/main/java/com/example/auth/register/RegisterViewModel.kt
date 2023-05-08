@@ -8,7 +8,7 @@ import com.example.common.models.dataType.Password
 import com.example.common.models.dataType.PasswordConfirmation
 import com.example.common.models.dataType.Phone
 import com.example.common.models.dataType.Username
-import com.example.domain.usecase.RegisterUseCase
+import com.example.domain.usecase.user.RegisterUseCase
 import com.example.functions.snackbar.SnackBarManager
 import com.example.model.app.Register
 import kotlinx.coroutines.flow.MutableStateFlow

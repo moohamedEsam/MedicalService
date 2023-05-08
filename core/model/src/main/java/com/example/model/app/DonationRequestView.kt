@@ -1,5 +1,8 @@
 package com.example.model.app
 
+import com.example.model.app.medicine.MedicineView
+import com.example.model.app.medicine.empty
+import com.example.model.app.medicine.paracetamol
 import java.util.Date
 import java.util.UUID
 import kotlin.random.Random

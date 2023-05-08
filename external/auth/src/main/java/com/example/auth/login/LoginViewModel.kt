@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.common.models.SnackBarEvent
 import com.example.common.models.dataType.Email
 import com.example.common.models.dataType.Password
-import com.example.domain.usecase.LoginUseCase
+import com.example.domain.usecase.user.LoginUseCase
 import com.example.functions.snackbar.SnackBarManager
 import com.example.model.app.Credentials
 import kotlinx.coroutines.Job

@@ -114,7 +114,7 @@ private fun DonationListItem(
         )
         Column(modifier = Modifier.padding(16.dp)) {
             Text(donationRequestView.medicine.name, fontWeight = FontWeight.Bold)
-            Text(donationRequestView.medicine.description, maxLines = 2)
+            Text(donationRequestView.medicine.uses.firstOrNull() ?: "", maxLines = 2)
             val progress =
                 donationRequestView.collected.toFloat() / donationRequestView.needed.toFloat()
             LinearProgressIndicator(

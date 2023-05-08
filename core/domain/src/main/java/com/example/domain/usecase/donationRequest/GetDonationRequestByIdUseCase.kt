@@ -1,4 +1,4 @@
-package com.example.domain.usecase
+package com.example.domain.usecase.donationRequest
 
 import com.example.model.app.DonationRequestView
 import kotlinx.coroutines.flow.Flow

@@ -134,13 +134,7 @@
                     <requestState>
                       <option name="auth">
                         <authState>
-                          <option name="basic">
-                            <basicAuthState>
-                              <option name="pass" value="arafa" />
-                              <option name="username" value="mohamed" />
-                            </basicAuthState>
-                          </option>
-                          <option name="type" value="BASIC" />
+                          <option name="type" value="NO_AUTH" />
                         </authState>
                       </option>
                       <option name="body">

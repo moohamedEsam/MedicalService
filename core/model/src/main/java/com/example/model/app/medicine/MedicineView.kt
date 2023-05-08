@@ -1,8 +1,11 @@
-package com.example.model.app
+package com.example.model.app.medicine
+
+import com.example.model.app.Disease
+import com.example.model.app.empty
 
 data class MedicineView(
     val name: String,
-    val description: String,
+    val uses: List<String>,
     val diseases: List<Disease>,
     val sideEffects: List<String>,
     val precautions: List<String>,
@@ -19,7 +22,7 @@ fun MedicineView.Companion.empty() = MedicineView(
     precautions = emptyList(),
     overDoes = emptyList(),
     id = "",
-    description = "",
+    uses = emptyList(),
 )
 
 fun MedicineView.Companion.paracetamol() = MedicineView(
@@ -39,7 +42,7 @@ fun MedicineView.Companion.paracetamol() = MedicineView(
         "Breastfeeding",
         "Liver disease",
     ),
-    description = "Paracetamol is a painkiller used to treat mild to moderate pain. It is also used to treat fever and headaches. It is available on prescription as tablets, capsules, and liquid. It is also available to buy from pharmacies without a prescription as tablets, capsules, and liquid. Paracetamol is also available as a soluble powder to make a liquid to drink.",
+    uses = listOf("Paracetamol is a painkiller used to treat mild to moderate pain. It is also used to treat fever and headaches. It is available on prescription as tablets, capsules, and liquid. It is also available to buy from pharmacies without a prescription as tablets, capsules, and liquid. Paracetamol is also available as a soluble powder to make a liquid to drink."),
     overDoes = listOf("If you take too much paracetamol, you may get side effects such as feeling sick, being sick, stomach pain, loss of appetite, sweating, a fast heart rate, and confusion. These side effects are more likely if you take more than 8 tablets in 24 hours. If you take too much paracetamol, you may get side effects such as feeling sick, being sick, stomach pain, loss of appetite, sweating, a fast heart rate, and confusion. These side effects are more likely if you take more than 8 tablets in 24 hours."),
     id = "1",
 )
