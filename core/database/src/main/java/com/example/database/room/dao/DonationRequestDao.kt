@@ -13,11 +13,15 @@ import kotlinx.coroutines.flow.Flow
 interface DonationRequestDao {
 
     @Query("SELECT * FROM donationRequests")
+    @Transaction
     fun getDonationRequests(): DataSource.Factory<Int, DonationRequestEntityView>
 
     @Query("SELECT * FROM donationRequests WHERE id = :id")
     @Transaction
     fun getDonationRequestById(id: String): Flow<DonationRequestEntityView?>
+
+    @Query("update donationRequests set isBookmarked = :isBookmarked where id = :id")
+    suspend fun setDonationRequestBookmark(id: String, isBookmarked: Boolean)
 
     @Insert
     suspend fun insert(donationRequest: DonationRequestEntity)

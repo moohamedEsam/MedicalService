@@ -13,6 +13,7 @@ data class DonationRequestView(
     val needed: Int,
     val contributorsCount: Int,
     val id: String,
+    val isBookmarked: Boolean = false,
     val endDate: Long = Date().time,
 ) {
     companion object

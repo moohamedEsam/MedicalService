@@ -8,6 +8,8 @@ import com.example.common.models.dataType.Password
 import com.example.common.models.dataType.PasswordConfirmation
 import com.example.common.models.dataType.Phone
 import com.example.common.models.dataType.Username
+import com.example.common.navigation.AppNavigator
+import com.example.common.navigation.Destination
 import com.example.domain.usecase.user.RegisterUseCase
 import com.example.functions.snackbar.SnackBarManager
 import com.example.model.app.Register
@@ -21,6 +23,7 @@ import org.koin.android.annotation.KoinViewModel
 class RegisterViewModel(
     private val registerUseCase: RegisterUseCase,
     private val snackBarManager: SnackBarManager,
+    private val appNavigator: AppNavigator
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RegisterScreenState())
     val uiState = _uiState.asStateFlow()
@@ -46,14 +49,24 @@ class RegisterViewModel(
             is RegisterScreenEvent.RegisterClicked -> {
                 if (!uiState.value.registerEnabled) return
                 _uiState.update { it.copy(isLoading = true) }
-                register(event.onSuccess)
+                register {
+                    val snackBarEvent = SnackBarEvent(
+                        message = "Registered successfully",
+                        actionLabel = "Ok",
+                        action = {}
+                    )
+                    snackBarManager.showSnackBarEvent(snackBarEvent)
+                    appNavigator.navigateBack()
+                }
                 _uiState.update { it.copy(isLoading = false) }
-
             }
+
+            RegisterScreenEvent.LocationClicked -> viewModelScope.launch { appNavigator.navigateTo(Destination.Map.route) }
+            RegisterScreenEvent.LoginClicked -> viewModelScope.launch { appNavigator.navigateBack() }
         }
     }
 
-    fun register(onRegisterSuccess: () -> Unit) {
+    fun register(onRegisterSuccess: suspend () -> Unit) {
         viewModelScope.launch {
             val result = registerUseCase(getCurrentRegister())
             result.ifFailure {

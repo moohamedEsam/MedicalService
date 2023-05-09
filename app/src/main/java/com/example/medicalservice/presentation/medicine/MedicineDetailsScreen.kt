@@ -24,13 +24,12 @@ import kotlin.random.Random
 @Composable
 fun MedicineDetailsScreen(
     medicineId: String,
-    onDiseaseClick: (String) -> Unit,
     viewModel: MedicineDetailsViewModel = koinViewModel { parametersOf(medicineId) }
 ) {
     val medicine by viewModel.medicine.collectAsState()
     MedicineDetailsScreenContent(
         medicine = medicine,
-        onDiseaseClick = onDiseaseClick
+        onDiseaseClick = viewModel::onDiseaseClick
     )
 }
 

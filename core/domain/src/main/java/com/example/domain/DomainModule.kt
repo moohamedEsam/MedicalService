@@ -11,6 +11,7 @@ import com.example.domain.usecase.disease.GetDiseaseDetailsUseCase
 import com.example.domain.usecase.disease.PredictDiseaseBySymptomsUseCase
 import com.example.domain.usecase.donationRequest.GetDonationRequestByIdUseCase
 import com.example.domain.usecase.donationRequest.GetDonationRequestsUseCase
+import com.example.domain.usecase.donationRequest.SetDonationRequestBookmarkUseCase
 import com.example.domain.usecase.medicine.GetMedicineDetailsUseCase
 import com.example.domain.usecase.medicine.GetMedicinesUseCase
 import com.example.domain.usecase.sync.OneTimeSyncWorkUseCase
@@ -79,6 +80,10 @@ class DomainModule {
     @Factory
     fun provideDonationRequestByIdUseCase(donationRepository: DonationRepository) =
         GetDonationRequestByIdUseCase(donationRepository::getDonationRequest)
+
+    @Factory
+    fun provideSetDonationRequestBookmarkUseCase(donationRepository: DonationRepository) =
+        SetDonationRequestBookmarkUseCase(donationRepository::setDonationRequestBookmark)
 
 
     @Factory

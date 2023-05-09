@@ -32,50 +32,33 @@ import com.example.auth.register.pages.LocationPage
 import com.example.auth.register.pages.PasswordPage
 import com.example.auth.register.pages.PhoneAndUserTypePage
 import com.example.auth.register.pages.RegisterPages
-import com.example.common.models.dataType.Email
-import com.example.common.models.dataType.Password
-import com.example.common.models.dataType.PasswordConfirmation
-import com.example.common.models.dataType.Phone
-import com.example.common.models.dataType.Username
-import com.example.model.app.UserType
 import org.koin.androidx.compose.get
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RegisterScreen(
     logo: Any,
-    onRegistered: () -> Unit,
-    onLocationRequested: () -> Unit,
     lat: Double = 0.0,
     lng: Double = 0.0,
     viewModel: RegisterViewModel = koinViewModel(),
     imageLoader: ImageLoader = get()
 ) {
     if (lat != 0.0 && lng != 0.0) {
-        viewModel.handleEvent(RegisterScreenEvent.LocationChanged(
-            com.example.model.app.Location(
-                lat,
-                lng
+        viewModel.handleEvent(
+            RegisterScreenEvent.LocationChanged(
+                com.example.model.app.Location(
+                    lat,
+                    lng
+                )
             )
-        ))
+        )
     }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     RegisterScreenContent(
         logo = logo,
         state = state,
-        onUsernameValueChange = { viewModel.handleEvent(RegisterScreenEvent.UsernameChanged(it)) },
-        onEmailValueChange = { viewModel.handleEvent(RegisterScreenEvent.EmailChanged(it)) },
-        onPasswordValueChange = { viewModel.handleEvent(RegisterScreenEvent.PasswordChanged(it)) },
-        onConfirmPasswordValueChange = {
-            viewModel.handleEvent(RegisterScreenEvent.PasswordConfirmationChanged(it))
-        },
-        onPhoneValueChange = { viewModel.handleEvent(RegisterScreenEvent.PhoneChanged(it)) },
-        onUserTypeChange = { viewModel.handleEvent(RegisterScreenEvent.UserTypeChanged(it)) },
-        onLocationRequested = onLocationRequested,
         imageLoader = imageLoader,
-        onRegisterButtonClick = {
-            viewModel.handleEvent(RegisterScreenEvent.RegisterClicked(onSuccess = onRegistered))
-        }
+        onEvent = viewModel::handleEvent
     )
 }
 
@@ -84,15 +67,8 @@ fun RegisterScreen(
 private fun RegisterScreenContent(
     logo: Any,
     state: RegisterScreenState,
-    onUsernameValueChange: (String) -> Unit,
-    onEmailValueChange: (String) -> Unit,
-    onPasswordValueChange: (String) -> Unit,
-    onConfirmPasswordValueChange: (String) -> Unit,
-    onPhoneValueChange: (String) -> Unit,
-    onUserTypeChange: (UserType) -> Unit,
-    onLocationRequested: () -> Unit,
+    onEvent: (RegisterScreenEvent) -> Unit,
     imageLoader: ImageLoader,
-    onRegisterButtonClick: () -> Unit,
 ) {
     val pagerState = rememberPagerState()
     var pageToScroll by remember { mutableStateOf(pagerState.currentPage) }
@@ -106,26 +82,15 @@ private fun RegisterScreenContent(
         ProgressIndicator(state.progress)
         LogoImage(logo, imageLoader)
         RegisterPager(
-            email = state.email,
-            onEmailValueChange = onEmailValueChange,
-            username = state.username,
-            onUsernameValueChange = onUsernameValueChange,
-            password = state.password,
-            onPasswordValueChange = onPasswordValueChange,
-            confirmPassword = state.passwordConfirmation,
-            onConfirmPasswordValueChange = onConfirmPasswordValueChange,
-            phone = state.phone,
-            onPhoneValueChange = onPhoneValueChange,
-            userType = state.userType,
-            onUserTypeChange = onUserTypeChange,
-            location = state.location,
-            onLocationRequested = onLocationRequested,
             pagerState = pagerState,
+            state = state,
+            onEvent = onEvent,
         )
+
         RegisterActionRow(
             pageToScroll = pageToScroll,
             pagerState = pagerState,
-            onRegisterButtonClick = onRegisterButtonClick,
+            onRegisterButtonClick = { onEvent(RegisterScreenEvent.RegisterClicked) },
             onPageChangeClick = { pageToScroll = it },
             registerButtonEnabled = state.registerEnabled
         )
@@ -174,21 +139,9 @@ private fun RegisterActionRow(
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 private fun RegisterPager(
-    email: Email,
-    onEmailValueChange: (String) -> Unit,
-    username: Username,
-    onUsernameValueChange: (String) -> Unit,
-    password: Password,
-    onPasswordValueChange: (String) -> Unit,
-    confirmPassword: PasswordConfirmation,
-    onConfirmPasswordValueChange: (String) -> Unit,
-    phone: Phone,
-    onPhoneValueChange: (String) -> Unit,
-    userType: UserType,
-    onUserTypeChange: (UserType) -> Unit,
+    state: RegisterScreenState,
+    onEvent: (RegisterScreenEvent) -> Unit,
     pagerState: PagerState,
-    location: com.example.model.app.Location,
-    onLocationRequested: () -> Unit,
 ) {
     HorizontalPager(
         pageCount = RegisterPages.values().size,
@@ -200,33 +153,41 @@ private fun RegisterPager(
         when (RegisterPages.values().find { it.ordinal == pageNumber }) {
             RegisterPages.EmailAndUsername -> {
                 EmailAndUsernamePage(
-                    email = email,
-                    onEmailValueChange = onEmailValueChange,
-                    username = username,
-                    onUsernameValueChange = onUsernameValueChange
+                    email = state.email,
+                    onEmailValueChange = { onEvent(RegisterScreenEvent.EmailChanged(it)) },
+                    username = state.username,
+                    onUsernameValueChange = { onEvent(RegisterScreenEvent.UsernameChanged(it)) }
                 )
             }
 
             RegisterPages.Password -> {
                 PasswordPage(
-                    password = password,
-                    onPasswordValueChange = onPasswordValueChange,
-                    confirmPassword = confirmPassword,
-                    onConfirmPasswordValueChange = onConfirmPasswordValueChange
+                    password = state.password,
+                    onPasswordValueChange = { onEvent(RegisterScreenEvent.PasswordChanged(it)) },
+                    confirmPassword = state.passwordConfirmation,
+                    onConfirmPasswordValueChange = {
+                        onEvent(
+                            RegisterScreenEvent.PasswordConfirmationChanged(
+                                it
+                            )
+                        )
+                    }
                 )
             }
 
             RegisterPages.PhoneAndUserType -> {
                 PhoneAndUserTypePage(
-                    phone = phone,
-                    onPhoneValueChange = onPhoneValueChange,
-                    userType = userType,
-                    onUserTypeValueChange = onUserTypeChange
+                    phone = state.phone,
+                    onPhoneValueChange = { onEvent(RegisterScreenEvent.PhoneChanged(it)) },
+                    userType = state.userType,
+                    onUserTypeValueChange = { onEvent(RegisterScreenEvent.UserTypeChanged(it)) }
                 )
             }
 
             RegisterPages.Location -> {
-                LocationPage(location = location, onLocationRequested = onLocationRequested)
+                LocationPage(
+                    location = state.location,
+                    onLocationRequested = { onEvent(RegisterScreenEvent.LocationClicked) })
             }
 
             RegisterPages.Done -> {
@@ -279,16 +240,9 @@ fun RegisterScreenPreview() {
     Surface {
         RegisterScreenContent(
             logo = "",
-            onUsernameValueChange = {},
-            onEmailValueChange = {},
-            onPasswordValueChange = {},
-            onConfirmPasswordValueChange = {},
-            onPhoneValueChange = {},
-            onUserTypeChange = {},
-            onLocationRequested = {},
             imageLoader = ImageLoader(LocalContext.current),
-            onRegisterButtonClick = {},
-            state = RegisterScreenState()
+            state = RegisterScreenState(),
+            onEvent = {}
         )
     }
 }

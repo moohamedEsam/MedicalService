@@ -8,11 +8,14 @@ import androidx.work.WorkManager
 import coil.ImageLoader
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import com.example.common.navigation.NavigationIntent
 import com.example.domain.usecase.sync.OneTimeSyncWorkUseCase
 import com.example.functions.snackbar.BaseSnackBarManager
 import com.example.functions.snackbar.SnackBarManager
 import com.example.worker.SyncWorker
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.Channel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.ComponentScan
@@ -45,6 +48,12 @@ class AppModule {
 
     @Single([SnackBarManager::class])
     fun provideSnackBarManager() = BaseSnackBarManager()
+
+    @Single
+    fun provideNavigationChannel() = Channel<NavigationIntent>(
+        capacity = Channel.UNLIMITED,
+        onBufferOverflow = BufferOverflow.DROP_LATEST
+    )
 
     context (Scope)
             @Factory

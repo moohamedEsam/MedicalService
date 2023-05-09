@@ -1,32 +1,14 @@
 package com.example.medicalservice.presentation.donation
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import com.example.common.navigation.Destination
 
-const val DonationScreenRoute = "donation"
-
-fun NavGraphBuilder.donationScreen(
-    onNavigateToMedicineScreen: (String) -> Unit,
-) {
+fun NavGraphBuilder.donationScreen() {
     composable(
-        route = "$DonationScreenRoute/{donationRequestId}",
-        arguments = listOf(
-            navArgument("donationRequestId") {
-                type = NavType.StringType
-            }
-        )
+        route = Destination.DonationDetails.fullRoute,
     ) {
-        val donationRequestId = it.arguments?.getString("donationRequestId") ?: " "
-        DonationScreen(
-            donationRequestId = donationRequestId,
-            onMedicineReadMoreClick = onNavigateToMedicineScreen
-        )
+        val donationRequestId = it.arguments?.getString(Destination.DonationDetails.donationIdKey) ?: " "
+        DonationScreen(donationRequestId = donationRequestId)
     }
-}
-
-fun NavHostController.navigateToDonationScreen(donationRequestId: String? = " ") {
-    navigate("$DonationScreenRoute/$donationRequestId")
 }

@@ -5,9 +5,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.example.common.navigation.AppNavigator
+import com.example.common.navigation.Destination
+import com.example.domain.usecase.donationRequest.GetDonationRequestsUseCase
+import com.example.domain.usecase.donationRequest.SetDonationRequestBookmarkUseCase
 import com.example.domain.usecase.transaction.GetCurrentUserTransactionsUseCase
 import com.example.domain.usecase.user.GetCurrentUserUseCase
-import com.example.domain.usecase.donationRequest.GetDonationRequestsUseCase
 import com.example.model.app.emptyDonor
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +23,8 @@ class DonnerHomeViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getDonationRequestsUseCase: GetDonationRequestsUseCase,
     private val getCurrentUserTransactionsUseCase: GetCurrentUserTransactionsUseCase,
+    private val setDonationRequestBookmarkUseCase: SetDonationRequestBookmarkUseCase,
+    private val appNavigator: AppNavigator,
     coroutineExceptionHandler: CoroutineExceptionHandler
 ) : ViewModel() {
     private val donationPager = Pager(
@@ -60,6 +65,14 @@ class DonnerHomeViewModel(
         when (event) {
             is DonnerHomeScreenEvent.OnQueryChange ->
                 _uiState.value = _uiState.value.copy(query = event.query)
+
+            is DonnerHomeScreenEvent.OnDonationRequestBookmarkClick -> {
+                val donationRequest = event.donationRequest
+                setDonationRequestBookmarkUseCase(donationRequest.id, !donationRequest.isBookmarked)
+            }
+            is DonnerHomeScreenEvent.OnDonationRequestClick -> appNavigator.navigateTo(Destination.DonationDetails(event.donationRequestId))
+            is DonnerHomeScreenEvent.OnMedicineClick -> appNavigator.navigateTo(Destination.MedicineDetails(event.medicineId))
+            is DonnerHomeScreenEvent.OnTransactionClick -> Unit
         }
     }
 }

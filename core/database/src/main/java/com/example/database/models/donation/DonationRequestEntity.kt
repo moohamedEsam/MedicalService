@@ -12,6 +12,7 @@ data class DonationRequestEntity(
     val needed: Int,
     val contributorsCount: Int,
     val endDate: Long = Date().time,
+    val isBookmarked: Boolean = false,
     @PrimaryKey val id: String,
 )
 

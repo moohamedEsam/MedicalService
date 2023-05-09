@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import com.example.common.models.SnackBarEvent
+import com.example.common.navigation.AppNavigator
+import com.example.common.navigation.Destination
 import com.example.domain.usecase.sync.OneTimeSyncWorkUseCase
 import com.example.functions.snackbar.SnackBarManager
 import kotlinx.coroutines.launch
@@ -13,10 +15,21 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class MainLayoutViewModel(
     private val oneTimeSyncWorkUseCase: OneTimeSyncWorkUseCase,
-    private val snackBarManager: SnackBarManager
+    private val snackBarManager: SnackBarManager,
+    private val appNavigator: AppNavigator
 ) : ViewModel() {
 
-    fun sync(owner: LifecycleOwner) {
+    fun handleEvent(event: MainLayoutScreenEvent) = viewModelScope.launch {
+        when (event) {
+            MainLayoutScreenEvent.NavigateToDonationsList -> onDonationsListClick()
+            MainLayoutScreenEvent.NavigateToHome -> onHomeClick()
+            MainLayoutScreenEvent.NavigateToMyDonations -> Unit
+            MainLayoutScreenEvent.NavigateToSearch -> Unit
+            is MainLayoutScreenEvent.SyncClicked -> sync(event.owner)
+        }
+    }
+
+    private fun sync(owner: LifecycleOwner) {
         oneTimeSyncWorkUseCase.invoke().observe(owner) {
             viewModelScope.launch {
                 when (it.state) {
@@ -28,5 +41,37 @@ class MainLayoutViewModel(
                 }
             }
         }
+    }
+
+    private fun onHomeClick() = viewModelScope.launch {
+        appNavigator.navigateTo(
+            Destination.Home.fullRoute,
+            singleTop = true,
+            popUpTo = Destination.Home.fullRoute
+        )
+    }
+
+    private fun onDonationsListClick() = viewModelScope.launch {
+        appNavigator.navigateTo(
+            Destination.DonationsList.fullRoute,
+            singleTop = true,
+            popUpTo = Destination.Home.fullRoute
+        )
+    }
+
+    fun onMyDonationsListClick() = viewModelScope.launch {
+        appNavigator.navigateTo(
+            Destination.MyDonationsList.fullRoute,
+            singleTop = true,
+            popUpTo = Destination.Home.fullRoute
+        )
+    }
+
+    fun onSearchClick() = viewModelScope.launch {
+        appNavigator.navigateTo(
+            Destination.Search.fullRoute,
+            singleTop = true,
+            popUpTo = Destination.Home.fullRoute
+        )
     }
 }

@@ -1,13 +1,8 @@
 package com.example.medicalservice.presentation.donation
 
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.PagingData
 import com.example.common.models.ValidationResult
-import com.example.medicalservice.presentation.components.UrgentDonationList
 import com.example.model.app.DonationRequestView
-import com.example.model.app.dummyDonationRequests
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -34,20 +29,4 @@ data class DonationScreenState(
     else if (quantity.toInt() !in quantityRange)
         ValidationResult.Invalid("Value must be between ${quantityRange.first} and ${quantityRange.last}")
     else ValidationResult.Valid
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun DonationScreenStatePreview() {
-    Surface {
-        UrgentDonationList(
-            donationRequestViewPagingData = flowOf(
-                PagingData.from(
-                    dummyDonationRequests()
-                )
-            ),
-            title = "Urgent Donation Requests"
-        )
-    }
-
 }

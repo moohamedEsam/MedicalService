@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.common.models.SnackBarEvent
 import com.example.common.models.dataType.Email
 import com.example.common.models.dataType.Password
+import com.example.common.navigation.AppNavigator
+import com.example.common.navigation.Destination
 import com.example.domain.usecase.user.LoginUseCase
 import com.example.functions.snackbar.SnackBarManager
 import com.example.model.app.Credentials
@@ -18,12 +20,13 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class LoginViewModel(
     private val loginUseCase: LoginUseCase,
-    private val snackBarManager: SnackBarManager
+    private val snackBarManager: SnackBarManager,
+    private val appNavigator: AppNavigator
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginScreenState())
     val uiState = _uiState.asStateFlow()
 
-    fun handleEvent(event: LoginScreenEvent) {
+    fun handleEvent(event: LoginScreenEvent): Job = viewModelScope.launch {
         when (event) {
             is LoginScreenEvent.EmailChanged -> {
                 _uiState.update { it.copy(email = Email(event.value)) }
@@ -34,30 +37,37 @@ class LoginViewModel(
             }
 
             is LoginScreenEvent.LoginClicked -> {
-                if (!uiState.value.loginEnabled) return
+                if (!uiState.value.loginEnabled) return@launch
                 _uiState.update { it.copy(isLoading = true) }
-                login { event.onSuccess() }
+                val result = login()
+                result.ifSuccess {
+                    appNavigator.navigateTo(
+                        Destination.Home(),
+                        popUpTo = Destination.Login.fullRoute,
+                        inclusive = true
+                    )
+                }
+                result.ifFailure {
+                    val snackBarEvent = SnackBarEvent(it ?: "", "Retry") {
+                        handleEvent(event)
+                    }
+                    snackBarManager.showSnackBarEvent(snackBarEvent)
+                }
                 _uiState.update { it.copy(isLoading = false) }
             }
+
+            LoginScreenEvent.RegisterClicked -> appNavigator.navigateTo(
+                Destination.Register().invoke()
+            )
+
         }
     }
 
-    private fun login(onLoggedIn: () -> Unit): Job = viewModelScope.launch {
-        val result = loginUseCase(
-            Credentials(
-                uiState.value.email.value,
-                uiState.value.password.value
-            )
+    private suspend fun login() = loginUseCase(
+        Credentials(
+            uiState.value.email.value,
+            uiState.value.password.value
         )
-        result.ifFailure {
-            val event = SnackBarEvent(
-                message = it ?: "Unknown error",
-                action = { login(onLoggedIn) },
-                actionLabel = "Retry"
-            )
-            snackBarManager.showSnackBarEvent(event)
-        }
-        result.ifSuccess { onLoggedIn() }
-    }
+    )
 
 }

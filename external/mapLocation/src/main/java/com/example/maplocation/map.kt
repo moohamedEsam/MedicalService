@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Geocoder
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,7 +23,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -33,12 +31,10 @@ import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import org.koin.androidx.compose.koinViewModel
-import org.koin.androidx.compose.viewModel
 
 @Composable
 fun MapScreen(
     viewModel: MapViewModel = koinViewModel(),
-    onLocationPicked: (LatLng) -> Unit = {}
 ) {
     val cameraPosition = rememberCameraPositionState()
     val address by viewModel.address.collectAsState()
@@ -96,7 +92,7 @@ fun MapScreen(
         LocationConfirmButton(
             address,
             modifier = Modifier.align(Alignment.BottomEnd),
-            onLocationPicked
+            onLocationPicked = viewModel::onLocationPicked
         )
     }
     if (showDialog) {
@@ -230,12 +226,4 @@ private fun LocationTextField(
                 }
             }
     }
-}
-
-@Preview
-@Composable
-fun mapPreview() {
-    MapScreen(
-        onLocationPicked = {}
-    )
 }

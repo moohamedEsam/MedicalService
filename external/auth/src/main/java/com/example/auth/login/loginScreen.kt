@@ -44,8 +44,6 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun LoginScreen(
     logo: Any,
-    onLoggedIn: () -> Unit,
-    onRegisterClick: () -> Unit,
     imageLoader: ImageLoader = get(),
     viewModel: LoginViewModel = koinViewModel()
 ) {
@@ -53,11 +51,8 @@ fun LoginScreen(
     LoginScreenContent(
         logo = logo,
         state = uiState,
-        onEmailValueChange = { viewModel.handleEvent(LoginScreenEvent.EmailChanged(it)) },
-        onPasswordValueChange = { viewModel.handleEvent(LoginScreenEvent.PasswordChanged(it)) },
-        onLoginButtonClick = { viewModel.handleEvent(LoginScreenEvent.LoginClicked(onSuccess = onLoggedIn)) },
-        onRegisterClick = onRegisterClick,
-        imageLoader = imageLoader
+        imageLoader = imageLoader,
+        onEvent = viewModel::handleEvent
     )
 }
 
@@ -65,10 +60,7 @@ fun LoginScreen(
 private fun LoginScreenContent(
     logo: Any,
     state: LoginScreenState,
-    onEmailValueChange: (String) -> Unit,
-    onPasswordValueChange: (String) -> Unit,
-    onLoginButtonClick: () -> Unit,
-    onRegisterClick: () -> Unit,
+    onEvent: (LoginScreenEvent) -> Unit,
     imageLoader: ImageLoader
 ) {
     Column(
@@ -98,7 +90,7 @@ private fun LoginScreenContent(
                 validation = state.email.validationResult,
                 label = "Email",
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = onEmailValueChange,
+                onValueChange = { onEvent(LoginScreenEvent.EmailChanged(it)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 testTag = "email",
                 leadingIcon = {
@@ -113,7 +105,7 @@ private fun LoginScreenContent(
                 value = state.password.value,
                 validation = state.password.validationResult,
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = onPasswordValueChange,
+                onValueChange = { onEvent(LoginScreenEvent.PasswordChanged(it)) },
                 testTag = "password"
             )
 
@@ -128,7 +120,7 @@ private fun LoginScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("login"),
-                onClick = onLoginButtonClick,
+                onClick = { onEvent(LoginScreenEvent.LoginClicked) },
                 label = "Login"
             )
             Row(
@@ -138,7 +130,7 @@ private fun LoginScreenContent(
                 Text("Remember me")
             }
 
-            TextButton(onClick = onRegisterClick) {
+            TextButton(onClick = { onEvent(LoginScreenEvent.RegisterClicked) }) {
                 Text(
                     buildAnnotatedString {
                         withStyle(SpanStyle(color = MaterialTheme.colorScheme.onSurface)) {
@@ -165,11 +157,8 @@ fun LoginScreenContentPreview() {
         LoginScreenContent(
             logo = "",
             state = LoginScreenState(),
-            onEmailValueChange = {},
-            onPasswordValueChange = {},
-            onLoginButtonClick = {},
-            onRegisterClick = {},
-            imageLoader = ImageLoader.Builder(LocalContext.current).build()
+            imageLoader = ImageLoader.Builder(LocalContext.current).build(),
+            onEvent = {}
         )
     }
 }

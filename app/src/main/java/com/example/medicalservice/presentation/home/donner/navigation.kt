@@ -2,18 +2,10 @@ package com.example.medicalservice.presentation.home.donner
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.example.medicalservice.presentation.home.navigation.HomeScreenRoute
+import com.example.common.navigation.Destination
 
-fun NavGraphBuilder.donnerHome(
-    onNavigateToMedicineScreen: (String) -> Unit,
-    onNavigateToDonateScreen: (String?) -> Unit,
-    onNavigateToTransactionScreen: (String) -> Unit
-) {
-    composable(HomeScreenRoute) {
-        DonnerHomeScreen(
-            onMedicineClick = onNavigateToMedicineScreen,
-            onDonateClick = onNavigateToDonateScreen,
-            onTransactionClick = onNavigateToTransactionScreen
-        )
+fun NavGraphBuilder.donnerHome() {
+    composable(Destination.Home.fullRoute) {
+        DonnerHomeScreen()
     }
 }

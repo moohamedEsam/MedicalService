@@ -24,13 +24,12 @@ private const val SEPARATOR = "\n\n"
 @Composable
 fun DiseaseScreen(
     diseaseId: String,
-    onMedicineClick: (String) -> Unit,
     viewModel: DiseaseViewModel = koinViewModel { parametersOf(diseaseId) }
 ) {
     val disease by viewModel.disease.collectAsState()
     DiseaseScreenContent(
         disease = disease,
-        onMedicineClick = onMedicineClick
+        onMedicineClick = viewModel::onMedicineClick
     )
 }
 

@@ -42,7 +42,6 @@ import org.koin.core.parameter.parametersOf
 @Composable
 fun DonationScreen(
     donationRequestId: String,
-    onMedicineReadMoreClick: (String) -> Unit,
     viewModel: DonationViewModel = koinViewModel { parametersOf(donationRequestId) }
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -50,7 +49,6 @@ fun DonationScreen(
         state = uiState,
         modifier = Modifier,
         onEvent = viewModel::handleEvent,
-        onMedicineReadMoreClick = onMedicineReadMoreClick
     )
 }
 
@@ -58,7 +56,6 @@ fun DonationScreen(
 private fun DonationScreen(
     state: DonationScreenState,
     modifier: Modifier = Modifier,
-    onMedicineReadMoreClick: (String) -> Unit = {},
     onEvent: (DonationScreenEvent) -> Unit = {},
 ) {
     Column(
@@ -69,10 +66,7 @@ private fun DonationScreen(
     ) {
         DonationHeader(
             state = state,
-            onDonationRequestClick = { onEvent(DonationScreenEvent.OnDonationRequestSelected(it)) },
-            onQueryChange = { onEvent(DonationScreenEvent.OnQueryChange(it)) },
-            onChooseAnotherDonationRequest = { onEvent(DonationScreenEvent.OnChooseAnotherDonationRequest) },
-            onMedicineReadMoreClick = onMedicineReadMoreClick
+            onEvent = onEvent,
         )
         DonationBody(
             state = state,
@@ -84,10 +78,7 @@ private fun DonationScreen(
 @Composable
 private fun DonationHeader(
     state: DonationScreenState,
-    onDonationRequestClick: (DonationRequestView) -> Unit,
-    onQueryChange: (String) -> Unit,
-    onChooseAnotherDonationRequest: () -> Unit,
-    onMedicineReadMoreClick: (String) -> Unit = {},
+    onEvent: (DonationScreenEvent) -> Unit,
 ) {
     AnimatedVisibility(
         visible = state.selectedDonationRequest == null,
@@ -97,8 +88,9 @@ private fun DonationHeader(
             DonationHeader(
                 query = state.query,
                 donationRequestViews = state.donationRequestViews,
-                onDonationRequestClick = onDonationRequestClick,
-                onQueryChange = onQueryChange
+                onDonationRequestClick = { onEvent(DonationScreenEvent.OnDonationRequestSelected(it)) },
+                onQueryChange = { onEvent(DonationScreenEvent.OnQueryChange(it)) },
+                onDonationRequestBookmarkClick = { onEvent(DonationScreenEvent.OnDonationRequestBookmarkClick(it)) },
             )
         }
     }
@@ -110,8 +102,8 @@ private fun DonationHeader(
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             DonationHeader(
                 donationRequestView = state.selectedDonationRequest,
-                onChooseAnotherDonationRequest = onChooseAnotherDonationRequest,
-                onMedicineReadMoreClick = onMedicineReadMoreClick
+                onChooseAnotherDonationRequest = { onEvent(DonationScreenEvent.OnChooseAnotherDonationRequest) },
+                onMedicineReadMoreClick = { onEvent(DonationScreenEvent.OnMedicineReadMoreClick) }
             )
         }
     }
@@ -123,6 +115,8 @@ private fun DonationHeader(
     donationRequestViews: Flow<PagingData<DonationRequestView>>,
     onDonationRequestClick: (DonationRequestView) -> Unit,
     onQueryChange: (String) -> Unit,
+    onDonationRequestBookmarkClick: (DonationRequestView) -> Unit = {},
+    onSeeAllClick: () -> Unit = {}
 ) {
     OutlinedSearchTextField(
         query = query,
@@ -135,7 +129,9 @@ private fun DonationHeader(
         donationRequestViewPagingData = donationRequestViews,
         title = "Donations Requests",
         isDonateButtonVisible = false,
-        onDonationRequestCardClick = { onDonationRequestClick(it) }
+        onDonationRequestCardClick = { onDonationRequestClick(it) },
+        onBookmarkClick = onDonationRequestBookmarkClick,
+        onSeeAllClick = onSeeAllClick
     )
 }
 
@@ -162,13 +158,16 @@ private fun DonationHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = donationRequestView.medicine.name, style = MaterialTheme.typography.headlineSmall)
+        Text(
+            text = donationRequestView.medicine.name,
+            style = MaterialTheme.typography.headlineSmall
+        )
         TextButton(onClick = { onMedicineReadMoreClick(donationRequestView.medicine.id) }) {
             Text(text = "Read more", style = MaterialTheme.typography.bodyMedium)
         }
     }
     Text(
-        text = donationRequestView.medicine.uses.firstOrNull()?:"",
+        text = donationRequestView.medicine.uses.firstOrNull() ?: "",
         style = MaterialTheme.typography.bodyMedium,
         maxLines = 2
     )

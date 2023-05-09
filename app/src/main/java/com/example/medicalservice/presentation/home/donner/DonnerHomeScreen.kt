@@ -45,18 +45,12 @@ import java.util.Locale
 
 @Composable
 fun DonnerHomeScreen(
-    onMedicineClick: (String) -> Unit,
-    onDonateClick: (String?) -> Unit,
-    onTransactionClick: (String) -> Unit,
     viewModel: DonnerHomeViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     DonnerHomeScreenContent(
         state = state,
         onEvent = viewModel::handleEvent,
-        onMedicineClick = onMedicineClick,
-        onDonateClick = onDonateClick,
-        onTransactionClick = onTransactionClick
     )
 
 }
@@ -65,9 +59,6 @@ fun DonnerHomeScreen(
 private fun DonnerHomeScreenContent(
     state: DonnerHomeState,
     onEvent: (DonnerHomeScreenEvent) -> Unit,
-    onMedicineClick: (String) -> Unit,
-    onDonateClick: (String?) -> Unit,
-    onTransactionClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -86,14 +77,15 @@ private fun DonnerHomeScreenContent(
         UrgentDonationList(
             donationRequestViewPagingData = state.donationRequestViews,
             title = "Urgent Donations",
-            onDonationRequestClick = { onDonateClick(it.id) },
+            onDonationRequestClick = { onEvent(DonnerHomeScreenEvent.OnDonationRequestClick(it.id)) },
+            onBookmarkClick = { onEvent(DonnerHomeScreenEvent.OnDonationRequestBookmarkClick(it)) },
         )
 
         RecentTransactions(
             transactionViewsFlow = state.transactionViews,
-            onTransactionClick = { onTransactionClick(it.id) },
+            onTransactionClick = { onEvent(DonnerHomeScreenEvent.OnTransactionClick(it.id)) },
             modifier = Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp / 2).dp),
-            onMedicineClick = onMedicineClick
+            onMedicineClick = { onEvent(DonnerHomeScreenEvent.OnMedicineClick(it)) }
         )
     }
 }
@@ -189,9 +181,6 @@ private fun DonnerHomeScreenPreview() {
     Box {
         DonnerHomeScreenContent(
             state = DonnerHomeState(),
-            onTransactionClick = {},
-            onDonateClick = {},
-            onMedicineClick = {},
             onEvent = {}
         )
     }

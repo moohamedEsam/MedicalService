@@ -1,23 +1,14 @@
 package com.example.medicalservice.presentation.disease
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.example.common.navigation.Destination
 
-
-const val DiseaseScreen = "disease"
-
-fun NavGraphBuilder.diseaseScreen(
-    onMedicineClick: (String) -> Unit
-) {
+fun NavGraphBuilder.diseaseScreen() {
     composable(
-        route = "$DiseaseScreen/{diseaseId}"
+        route = Destination.DiseaseDetails.fullRoute
     ) { backStackEntry ->
-        val diseaseId = backStackEntry.arguments?.getString("diseaseId") ?: return@composable
-        DiseaseScreen(diseaseId = diseaseId, onMedicineClick = onMedicineClick)
+        val diseaseId = backStackEntry.arguments?.getString(Destination.DiseaseDetails.diseaseIdKey) ?: return@composable
+        DiseaseScreen(diseaseId = diseaseId)
     }
-}
-
-fun NavHostController.navigateToDiseaseScreen(diseaseId: String) {
-    navigate("$DiseaseScreen/$diseaseId")
 }

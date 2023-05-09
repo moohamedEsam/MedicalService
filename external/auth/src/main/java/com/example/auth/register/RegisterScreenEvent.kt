@@ -12,5 +12,9 @@ sealed interface RegisterScreenEvent {
     data class PhoneChanged(val value: String) : RegisterScreenEvent
     data class LocationChanged(val value: Location) : RegisterScreenEvent
     data class UserTypeChanged(val value: UserType) : RegisterScreenEvent
-    data class RegisterClicked(val onSuccess: () -> Unit) : RegisterScreenEvent
+    object RegisterClicked : RegisterScreenEvent
+
+    object LoginClicked : RegisterScreenEvent
+
+    object LocationClicked : RegisterScreenEvent
 }

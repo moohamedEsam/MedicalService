@@ -1,5 +1,6 @@
 package com.example.medicalservice.presentation.layout
 
+import android.app.Activity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -33,42 +34,37 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.auth.login.LoginScreenRoute
-import com.example.auth.register.RegisterScreenRoute
+import com.example.common.navigation.Destination
+import com.example.common.navigation.NavigationIntent
 import com.example.functions.handleSnackBarEvent
-import com.example.functions.snackbar.FakeSnackBarManager
 import com.example.functions.snackbar.SnackBarManager
 import com.example.medicalservice.MedicalServiceNavGraph
-import com.example.medicalservice.presentation.donationList.DonationListScreenRoute
-import com.example.medicalservice.presentation.donationList.navigateToDonationListScreen
-import com.example.medicalservice.presentation.home.navigation.HomeScreenRoute
-import com.example.medicalservice.presentation.home.navigation.navigateToHomeScreen
 import com.example.model.app.UserType
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import org.koin.androidx.compose.get
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MedicalServiceLayout(
     userType: UserType = UserType.Donner,
-    startDestination: String = HomeScreenRoute,
+    startDestination: String = Destination.Home.fullRoute,
     navHostController: NavHostController = rememberNavController(),
-    snackBarManager: SnackBarManager = get(),
     viewModel: MainLayoutViewModel = koinViewModel(),
 ) {
-    val owner = LocalLifecycleOwner.current
     MedicalServiceLayout(
         userType = userType,
         startDestination = startDestination,
         navHostController = navHostController,
-        snackBarManager = snackBarManager,
-        onSyncClick = { viewModel.sync(owner) },
+        onEvent = viewModel::handleEvent,
     )
 }
 
@@ -76,24 +72,27 @@ fun MedicalServiceLayout(
 @Composable
 fun MedicalServiceLayout(
     userType: UserType = UserType.Donner,
-    startDestination: String = HomeScreenRoute,
+    startDestination: String = Destination.Home.route,
     navHostController: NavHostController = rememberNavController(),
     snackBarManager: SnackBarManager = get(),
-    onSyncClick: () -> Unit,
+    navigationChannel: Channel<NavigationIntent> = get(),
+    onEvent: (MainLayoutScreenEvent) -> Unit
 ) {
     val snackbarHostState by remember {
         mutableStateOf(SnackbarHostState())
     }
-    LaunchedEffect(key1 = Unit) {
-        snackBarManager.getReceiverChannel().collectLatest {
-            snackbarHostState.handleSnackBarEvent(it)
-        }
-    }
+    ObserveSnackBarEvents(snackBarManager, snackbarHostState)
+    ObserveNavigationChannel(navHostController, navigationChannel)
+    val owner = LocalLifecycleOwner.current
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        bottomBar = { BottomBar(navHostController = navHostController) },
+        bottomBar = { BottomBar(navHostController = navHostController, onEvent = onEvent) },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        topBar = { TopBar(navHostController = navHostController, onSyncClick = onSyncClick) },
+        topBar = {
+            TopBar(
+                navHostController = navHostController,
+                onSyncClick = { onEvent(MainLayoutScreenEvent.SyncClicked(owner)) })
+        },
         content = {
             MedicalServiceNavGraph(
                 startDestination = startDestination,
@@ -106,14 +105,57 @@ fun MedicalServiceLayout(
 }
 
 @Composable
-fun BottomBar(navHostController: NavHostController) {
+private fun ObserveNavigationChannel(
+    navHostController: NavHostController,
+    navigationChannel: Channel<NavigationIntent>
+) {
+    val activity = LocalContext.current as? Activity
+    LaunchedEffect(key1 = activity, key2 = navHostController, key3 = navigationChannel) {
+        navigationChannel.receiveAsFlow().collect { intent ->
+            when (intent) {
+                is NavigationIntent.Back -> {
+                    navHostController.previousBackStackEntry?.arguments?.let { bundle ->
+                        intent.arguments.forEach { pair ->
+                            bundle.putString(pair.first, pair.second)
+                        }
+                    }
+                    navHostController.popBackStack()
+                }
+
+                is NavigationIntent.To -> navHostController.navigate(intent.destination) {
+                    launchSingleTop = intent.singleTop
+                    if (intent.popUpTo != null)
+                        popUpTo(intent.popUpTo!!) { inclusive = intent.inclusive }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ObserveSnackBarEvents(
+    snackBarManager: SnackBarManager,
+    snackbarHostState: SnackbarHostState
+) {
+    LaunchedEffect(key1 = Unit) {
+        snackBarManager.getReceiverChannel().collectLatest {
+            snackbarHostState.handleSnackBarEvent(it)
+        }
+    }
+}
+
+@Composable
+fun BottomBar(
+    navHostController: NavHostController,
+    onEvent: (MainLayoutScreenEvent) -> Unit,
+) {
     val navEntry by navHostController.currentBackStackEntryAsState()
     val currentRoute by remember {
         derivedStateOf {
             navEntry?.destination?.route?.takeWhile { it != '/' }
         }
     }
-    if (currentRoute == LoginScreenRoute || currentRoute == RegisterScreenRoute) return
+    if (currentRoute == Destination.Login.route || currentRoute == Destination.Register().route) return
     BottomAppBar(
         modifier = Modifier
             .fillMaxWidth()
@@ -121,15 +163,15 @@ fun BottomBar(navHostController: NavHostController) {
             .shadow(8.dp, RoundedCornerShape(percent = 15)),
     ) {
         NavigationBarItem(
-            selected = currentRoute == HomeScreenRoute,
-            onClick = navHostController::navigateToHomeScreen,
+            selected = currentRoute == Destination.Home.route,
+            onClick = { onEvent(MainLayoutScreenEvent.NavigateToHome) },
             icon = { Icon(imageVector = Icons.Outlined.Home, contentDescription = null) },
             label = { Text(text = "Home") },
         )
 
         NavigationBarItem(
-            selected = currentRoute == DonationListScreenRoute,
-            onClick = navHostController::navigateToDonationListScreen,
+            selected = currentRoute == Destination.DonationsList.route,
+            onClick = { onEvent(MainLayoutScreenEvent.NavigateToDonationsList) },
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.FormatListBulleted,
@@ -140,14 +182,14 @@ fun BottomBar(navHostController: NavHostController) {
         )
         NavigationBarItem(
             selected = false,
-            onClick = { },
+            onClick = { onEvent(MainLayoutScreenEvent.NavigateToMyDonations) },
             icon = { Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = null) },
             label = { Text(text = "My Donations") },
         )
 
         NavigationBarItem(
             selected = false,
-            onClick = { },
+            onClick = { onEvent(MainLayoutScreenEvent.NavigateToSearch) },
             icon = { Icon(imageVector = Icons.Outlined.Search, contentDescription = null) },
             label = { Text(text = "Search") },
         )
@@ -175,7 +217,7 @@ private fun TopBar(
             navEntry?.destination?.route?.takeWhile { it != '/' }
         }
     }
-    if (currentRoute == LoginScreenRoute || currentRoute == RegisterScreenRoute) return
+    if (currentRoute == Destination.Login.route || currentRoute == Destination.Register().route) return
     CenterAlignedTopAppBar(
         title = { Text(text = currentRoute ?: "") },
         actions = {
@@ -208,8 +250,7 @@ private fun TopBar(
 private fun MainLayoutPreview() {
     Surface {
         MedicalServiceLayout(
-            snackBarManager = FakeSnackBarManager(),
-            onSyncClick = {}
+            onEvent = {}
         )
     }
 }

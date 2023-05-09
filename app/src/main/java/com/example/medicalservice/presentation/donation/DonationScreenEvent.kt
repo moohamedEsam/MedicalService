@@ -8,4 +8,8 @@ sealed interface DonationScreenEvent {
     object OnChooseAnotherDonationRequest : DonationScreenEvent
     object OnDonateClick : DonationScreenEvent
     data class OnQuantityChange(val quantity: String) : DonationScreenEvent
+
+    data class OnDonationRequestBookmarkClick(val donationRequest: DonationRequestView) : DonationScreenEvent
+
+    object OnMedicineReadMoreClick: DonationScreenEvent
 }

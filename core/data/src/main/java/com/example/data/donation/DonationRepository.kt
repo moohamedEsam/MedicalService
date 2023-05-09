@@ -8,5 +8,7 @@ sealed interface DonationRepository {
     fun getDonationRequests(): PagingSource<Int, DonationRequestView>
 
     fun getDonationRequest(id: String): Flow<DonationRequestView>
+
+    suspend fun setDonationRequestBookmark(id: String, isBookmarked: Boolean)
     suspend fun syncDonationRequests(): Boolean
 }

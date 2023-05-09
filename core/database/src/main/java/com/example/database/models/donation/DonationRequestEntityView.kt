@@ -24,4 +24,5 @@ fun DonationRequestEntityView.toDonationRequestView() = DonationRequestView(
     contributorsCount = donationRequestEntity.contributorsCount,
     id = donationRequestEntity.id,
     endDate = donationRequestEntity.endDate,
+    isBookmarked = donationRequestEntity.isBookmarked,
 )

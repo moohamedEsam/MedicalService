@@ -2,6 +2,8 @@ package com.example.medicalservice.presentation.medicine
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.common.navigation.AppNavigator
+import com.example.common.navigation.Destination
 import com.example.domain.usecase.medicine.GetMedicineDetailsUseCase
 import com.example.model.app.medicine.MedicineView
 import com.example.model.app.medicine.empty
@@ -14,6 +16,7 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class MedicineDetailsViewModel(
     private val getMedicineDetailsUseCase: GetMedicineDetailsUseCase,
+    private val appNavigator: AppNavigator,
     private val medicineId: String,
     coroutineExceptionHandler: CoroutineExceptionHandler
 ) : ViewModel() {
@@ -24,6 +27,10 @@ class MedicineDetailsViewModel(
         viewModelScope.launch(coroutineExceptionHandler) {
             getMedicineDetailsUseCase(medicineId).collect(_medicine::emit)
         }
+    }
+
+    fun onDiseaseClick(diseaseId: String) = viewModelScope.launch {
+        appNavigator.navigateTo(Destination.DiseaseDetails(diseaseId))
     }
 
 }

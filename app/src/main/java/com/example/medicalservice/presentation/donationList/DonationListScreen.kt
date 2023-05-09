@@ -2,7 +2,6 @@ package com.example.medicalservice.presentation.donationList
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -100,7 +99,7 @@ private fun DonationListTopBar(
 }
 
 @Composable
-private fun ColumnScope.DonationListContent(
+private fun DonationListContent(
     donationRequestViews: Flow<PagingData<DonationRequestView>>
 ) {
     UrgentDonationList(donationRequestViews, "Urgent Donations")

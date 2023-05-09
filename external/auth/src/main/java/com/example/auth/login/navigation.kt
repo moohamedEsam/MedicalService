@@ -1,29 +1,14 @@
 package com.example.auth.login
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.example.common.navigation.Destination
 
-const val LoginScreenRoute = "login"
-
-fun NavHostController.navigateToLoginScreen() {
-    navigate(LoginScreenRoute) {
-        popUpTo(LoginScreenRoute) {
-            inclusive = true
-        }
-    }
-}
 
 fun NavGraphBuilder.loginScreen(
-    logo: Any,
-    onLoggedIn: () -> Unit,
-    onRegisterClick: () -> Unit,
+    logo: Any
 ) {
-    composable(LoginScreenRoute) {
-        LoginScreen(
-            logo = logo,
-            onLoggedIn = onLoggedIn,
-            onRegisterClick = onRegisterClick
-        )
+    composable(Destination.Login.fullRoute) {
+        LoginScreen(logo = logo)
     }
 }

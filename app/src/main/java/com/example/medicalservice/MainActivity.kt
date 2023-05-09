@@ -8,9 +8,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.example.auth.login.LoginScreenRoute
 import com.example.common.functions.loadTokenFromSharedPref
-import com.example.medicalservice.presentation.home.navigation.HomeScreenRoute
+import com.example.common.navigation.Destination
 import com.example.medicalservice.presentation.layout.MedicalServiceLayout
 import com.example.medicalservice.ui.theme.MedicalServiceTheme
 
@@ -26,7 +25,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MedicalServiceLayout(startDestination = if (alreadyLoggedIn) HomeScreenRoute else LoginScreenRoute)
+                    MedicalServiceLayout(startDestination = if (alreadyLoggedIn) Destination.Home.fullRoute else Destination.Login.fullRoute)
                 }
             }
         }

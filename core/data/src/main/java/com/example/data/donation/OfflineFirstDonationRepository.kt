@@ -22,6 +22,9 @@ class OfflineFirstDonationRepository(
         local.getDonationRequests().map { it.toDonationRequestView() }
             .asPagingSourceFactory().invoke()
 
+    override suspend fun setDonationRequestBookmark(id: String, isBookmarked: Boolean) =
+        local.setDonationRequestBookmark(id, isBookmarked)
+
     override suspend fun syncDonationRequests(): Boolean {
         val donationRequests = remote.getDonationRequests()
         donationRequests.ifSuccess {

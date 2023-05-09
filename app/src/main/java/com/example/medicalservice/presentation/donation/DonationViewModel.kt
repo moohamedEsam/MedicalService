@@ -6,8 +6,11 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.example.common.models.SnackBarEvent
+import com.example.common.navigation.AppNavigator
+import com.example.common.navigation.Destination
 import com.example.domain.usecase.donationRequest.GetDonationRequestByIdUseCase
 import com.example.domain.usecase.donationRequest.GetDonationRequestsUseCase
+import com.example.domain.usecase.donationRequest.SetDonationRequestBookmarkUseCase
 import com.example.domain.usecase.transaction.CreateTransactionUseCase
 import com.example.functions.snackbar.SnackBarManager
 import com.example.model.app.Transaction
@@ -25,7 +28,9 @@ class DonationViewModel(
     private val getDonationRequestsUseCase: GetDonationRequestsUseCase,
     private val getDonationRequestByIdUseCase: GetDonationRequestByIdUseCase,
     private val createTransactionUseCase: CreateTransactionUseCase,
+    private val setDonationRequestBookmarkUseCase: SetDonationRequestBookmarkUseCase,
     private val snackBarManager: SnackBarManager,
+    private val appNavigator: AppNavigator,
     private val initialDonationRequestId: String? = null,
     coroutineExceptionHandler: CoroutineExceptionHandler
 ) : ViewModel() {
@@ -61,6 +66,11 @@ class DonationViewModel(
             is DonationScreenEvent.OnQuantityChange -> _uiState.value =
                 _uiState.value.copy(quantity = event.quantity)
 
+            is DonationScreenEvent.OnDonationRequestBookmarkClick -> setDonationRequestBookmarkUseCase(event.donationRequest.id, !event.donationRequest.isBookmarked)
+            DonationScreenEvent.OnMedicineReadMoreClick -> {
+                if (_uiState.value.selectedDonationRequest == null) return@launch
+                appNavigator.navigateTo(Destination.MedicineDetails(_uiState.value.selectedDonationRequest!!.medicine.id))
+            }
         }
     }
 
