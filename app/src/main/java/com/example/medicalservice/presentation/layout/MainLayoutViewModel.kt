@@ -23,7 +23,7 @@ class MainLayoutViewModel(
         when (event) {
             MainLayoutScreenEvent.NavigateToDonationsList -> onDonationsListClick()
             MainLayoutScreenEvent.NavigateToHome -> onHomeClick()
-            MainLayoutScreenEvent.NavigateToMyDonations -> Unit
+            MainLayoutScreenEvent.NavigateToMyDonations -> onMyDonationsListClick()
             MainLayoutScreenEvent.NavigateToSearch -> Unit
             is MainLayoutScreenEvent.SyncClicked -> sync(event.owner)
         }
@@ -53,15 +53,15 @@ class MainLayoutViewModel(
 
     private fun onDonationsListClick() = viewModelScope.launch {
         appNavigator.navigateTo(
-            Destination.DonationsList.fullRoute,
+            Destination.DonationsList(),
             singleTop = true,
             popUpTo = Destination.Home.fullRoute
         )
     }
 
-    fun onMyDonationsListClick() = viewModelScope.launch {
+    private fun onMyDonationsListClick() = viewModelScope.launch {
         appNavigator.navigateTo(
-            Destination.MyDonationsList.fullRoute,
+            Destination.MyDonationsList(),
             singleTop = true,
             popUpTo = Destination.Home.fullRoute
         )
@@ -69,7 +69,7 @@ class MainLayoutViewModel(
 
     fun onSearchClick() = viewModelScope.launch {
         appNavigator.navigateTo(
-            Destination.Search.fullRoute,
+            Destination.Search(),
             singleTop = true,
             popUpTo = Destination.Home.fullRoute
         )

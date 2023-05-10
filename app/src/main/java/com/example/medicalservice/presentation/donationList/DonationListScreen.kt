@@ -38,7 +38,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.example.composecomponents.loadStateItem
-import com.example.medicalservice.presentation.components.UrgentDonationList
+import com.example.medicalservice.presentation.components.HorizontalDonationRequestsList
 import com.example.model.app.DonationRequestView
 import com.example.model.app.dummyDonationRequests
 import kotlinx.coroutines.flow.Flow
@@ -53,12 +53,13 @@ fun DonationListScreen(
     viewModel: DonationListViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    DonationListScreen(state)
+    DonationListScreen(state = state, onEvent = viewModel::handleEvent)
 }
 
 @Composable
 private fun DonationListScreen(
-    state: DonationListState
+    state: DonationListState,
+    onEvent: (DonationListScreenEvent) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -75,7 +76,7 @@ private fun DonationListScreen(
                 .fillMaxWidth()
                 .shadow(8.dp),
         )
-        DonationListContent(state.donationRequestViews)
+        DonationListContent(state.donationRequestViews, onEvent)
     }
 }
 
@@ -100,9 +101,16 @@ private fun DonationListTopBar(
 
 @Composable
 private fun DonationListContent(
-    donationRequestViews: Flow<PagingData<DonationRequestView>>
+    donationRequestViews: Flow<PagingData<DonationRequestView>>,
+    onEvent: (DonationListScreenEvent) -> Unit
 ) {
-    UrgentDonationList(donationRequestViews, "Urgent Donations")
+    HorizontalDonationRequestsList(
+        donationRequestViewPagingData = donationRequestViews,
+        title = "Urgent Donations",
+        onDonationRequestCardClick = { onEvent(DonationListScreenEvent.OnDonationRequestClick(it)) },
+        onDonationRequestClick = { onEvent(DonationListScreenEvent.OnDonationRequestClick(it)) },
+        onBookmarkClick = { onEvent(DonationListScreenEvent.OnDonationRequestBookmarkClick(it)) },
+    )
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -156,7 +164,7 @@ private fun VerticalDonationItem(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(donationRequestView.medicine.name, fontWeight = FontWeight.Bold)
-            Text(donationRequestView.medicine.uses.firstOrNull()?:"", maxLines = 1)
+            Text(donationRequestView.medicine.uses.firstOrNull() ?: "", maxLines = 1)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,

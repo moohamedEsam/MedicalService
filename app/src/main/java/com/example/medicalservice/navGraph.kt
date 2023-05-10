@@ -14,6 +14,7 @@ import com.example.medicalservice.presentation.donation.donationScreen
 import com.example.medicalservice.presentation.donationList.donationListScreen
 import com.example.medicalservice.presentation.home.navigation.homeScreen
 import com.example.medicalservice.presentation.medicine.medicineDetailsScreen
+import com.example.medicalservice.presentation.myDonations.myDonationsScreen
 import com.example.model.app.UserType
 
 @Composable
@@ -32,16 +33,12 @@ fun MedicalServiceNavGraph(
         loginScreen(logo = R.drawable.meidcal_service)
         registerScreen(logo = R.drawable.meidcal_service)
         mapScreen()
-
         medicineDetailsScreen()
-
         diseaseScreen()
-
         homeScreen(userType = userType)
-
         donationScreen()
-
         donationListScreen()
+        myDonationsScreen()
     }
 }
 

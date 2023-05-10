@@ -1,11 +1,17 @@
 package com.example.medicalservice.presentation.donation
 
+import androidx.paging.testing.asPagingSourceFactory
 import app.cash.turbine.test
+import com.example.common.models.Result
+import com.example.functions.snackbar.FakeSnackBarManager
+import com.example.medicalservice.presentation.navigation.FakeAppNavigator
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -29,9 +35,18 @@ class DonationViewModelTest {
         dummyDonationRequestId =
             if (Random.nextBoolean()) dummyDonationRequests.first().id else null
         viewModel = DonationViewModel(
-            getDonationRequestsUseCase = { dummyDonationRequests },
+            getDonationRequestsUseCase = {
+                flowOf(dummyDonationRequests)
+                    .asPagingSourceFactory(CoroutineScope(Dispatchers.Main))
+                    .invoke()
+            },
             initialDonationRequestId = dummyDonationRequestId,
-            coroutineExceptionHandler = CoroutineExceptionHandler { _, _ -> }
+            appNavigator = FakeAppNavigator(),
+            coroutineExceptionHandler = CoroutineExceptionHandler { _, _ -> },
+            getDonationRequestByIdUseCase = { flowOf(dummyDonationRequests.first()) },
+            createTransactionUseCase = { Result.Success(Unit) },
+            setDonationRequestBookmarkUseCase = { _, _ -> Result.Success(Unit) },
+            snackBarManager = FakeSnackBarManager()
         )
     }
 
@@ -45,31 +60,10 @@ class DonationViewModelTest {
         viewModel.uiState.test {
             val state = awaitItem()
             if (dummyDonationRequestId != null) {
-                assertThat(state.selectedDonationRequestView).isNotNull()
-                assertThat(state.selectedDonationRequestView!!.id).isEqualTo(dummyDonationRequestId)
+                assertThat(state.selectedDonationRequest).isNotNull()
+                assertThat(state.selectedDonationRequest!!.id).isEqualTo(dummyDonationRequestId)
             } else
-                assertThat(state.selectedDonationRequestView).isNull()
-        }
-    }
-
-    @Test
-    fun `should set selected donation request on event`() = runTest {
-        val newDonationRequestId = dummyDonationRequests.last().id
-        viewModel.handleEvent(DonationScreenEvent.OnDonationRequestSelected(newDonationRequestId))
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertThat(state.selectedDonationRequestView).isNotNull()
-            assertThat(state.selectedDonationRequestView!!.id).isEqualTo(newDonationRequestId)
-        }
-    }
-
-    @Test
-    fun `should set selected donation request to null if id not in donation requests`() = runTest {
-        val newDonationRequestId = "random id"
-        viewModel.handleEvent(DonationScreenEvent.OnDonationRequestSelected(newDonationRequestId))
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertThat(state.selectedDonationRequestView).isNull()
+                assertThat(state.selectedDonationRequest).isNull()
         }
     }
 
@@ -84,8 +78,7 @@ class DonationViewModelTest {
     @Test
     fun `donate button should be enabled if donation request and quantity are selected`() =
         runTest {
-            val newDonationRequestId = dummyDonationRequests.last().id
-            viewModel.handleEvent(DonationScreenEvent.OnDonationRequestSelected(newDonationRequestId))
+            viewModel.handleEvent(DonationScreenEvent.OnDonationRequestSelected(donationRequest = dummyDonationRequests.random()))
             viewModel.handleEvent(DonationScreenEvent.OnQuantityChange("1"))
             viewModel.uiState.test {
                 val state = awaitItem()

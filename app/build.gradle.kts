@@ -71,10 +71,10 @@ dependencies {
     implementation(libs.androidx.compose.material.iconsExtended)
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
+    testImplementation(libs.androidx.paging.testing)
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.koin.annotations)
     ksp(libs.koin.ksp.compiler)
-
     implementation(libs.google.play.services.text.recognition)
 
     implementation(project(":external:auth"))

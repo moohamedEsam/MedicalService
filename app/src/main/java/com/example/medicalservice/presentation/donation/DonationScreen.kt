@@ -32,7 +32,7 @@ import androidx.paging.PagingData
 import com.example.composecomponents.OneTimeEventButton
 import com.example.composecomponents.textField.OutlinedSearchTextField
 import com.example.composecomponents.textField.ValidationOutlinedTextField
-import com.example.medicalservice.presentation.components.UrgentDonationList
+import com.example.medicalservice.presentation.components.HorizontalDonationRequestsList
 import com.example.model.app.DonationRequestView
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -125,7 +125,7 @@ private fun DonationHeader(
         label = "Search for donation requests",
     )
 
-    UrgentDonationList(
+    HorizontalDonationRequestsList(
         donationRequestViewPagingData = donationRequestViews,
         title = "Donations Requests",
         isDonateButtonVisible = false,

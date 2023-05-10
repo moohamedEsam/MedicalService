@@ -28,6 +28,7 @@ androidxWindowManager = "1.0.0"
 androidxWork = "2.7.1"
 androidxPaging = "3.1.1"
 androidxPagingCompose = "1.0.0-alpha17"
+andoridxPagingTesting = "3.2.0-alpha05"
 androidxSecurity = "1.0.0"
 coil = "2.2.2"
 koin = "3.3.3"
@@ -99,6 +100,7 @@ androidx-work-ktx = { group = "androidx.work", name = "work-runtime-ktx", versio
 androidx-work-testing = { group = "androidx.work", name = "work-testing", version.ref = "androidxWork" }
 androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "androidxPagingCompose" }
 androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "androidxPaging" }
+androidx-paging-testing = { group = "androidx.paging", name = "paging-testing", version.ref = "andoridxPagingTesting" }
 androidx-paging-runtime-ktx = { group = "androidx.paging", name = "paging-runtime-ktx", version.ref = "androidxPaging" }
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "androidxSecurity" }
 coil-kt = { group = "io.coil-kt", name = "coil", version.ref = "coil" }

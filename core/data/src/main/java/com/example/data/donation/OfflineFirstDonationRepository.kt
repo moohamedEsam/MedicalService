@@ -19,8 +19,10 @@ class OfflineFirstDonationRepository(
     private val local: DonationRequestDao,
 ) : DonationRepository {
     override fun getDonationRequests(): PagingSource<Int, DonationRequestView> =
-        local.getDonationRequests().map { it.toDonationRequestView() }
-            .asPagingSourceFactory().invoke()
+        local.getDonationRequests()
+            .map { it.toDonationRequestView() }
+            .asPagingSourceFactory()
+            .invoke()
 
     override suspend fun setDonationRequestBookmark(id: String, isBookmarked: Boolean) =
         local.setDonationRequestBookmark(id, isBookmarked)

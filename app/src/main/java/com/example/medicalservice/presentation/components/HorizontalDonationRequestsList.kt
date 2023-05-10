@@ -55,7 +55,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlin.random.Random
 
 @Composable
-fun UrgentDonationList(
+fun HorizontalDonationRequestsList(
     donationRequestViewPagingData: Flow<PagingData<DonationRequestView>>,
     title: String,
     isDonateButtonVisible: Boolean = true,
@@ -186,7 +186,7 @@ private fun DonationListItem(
 @Composable
 private fun UrgentDonationListPreview() {
     Surface {
-        UrgentDonationList(
+        HorizontalDonationRequestsList(
             donationRequestViewPagingData = flowOf(
                 PagingData.from(
                     dummyDonationRequests()

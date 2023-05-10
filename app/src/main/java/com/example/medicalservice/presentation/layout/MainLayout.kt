@@ -6,12 +6,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.FormatListBulleted
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -181,27 +181,16 @@ fun BottomBar(
             label = { Text(text = "Donation List") },
         )
         NavigationBarItem(
-            selected = false,
+            selected = currentRoute == Destination.MyDonationsList.route,
             onClick = { onEvent(MainLayoutScreenEvent.NavigateToMyDonations) },
-            icon = { Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = null) },
+            icon = {
+                if (currentRoute != Destination.MyDonationsList.route)
+                    Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = null)
+                else
+                    Icon(imageVector = Icons.Filled.Favorite, contentDescription = null)
+            },
             label = { Text(text = "My Donations") },
         )
-
-        NavigationBarItem(
-            selected = false,
-            onClick = { onEvent(MainLayoutScreenEvent.NavigateToSearch) },
-            icon = { Icon(imageVector = Icons.Outlined.Search, contentDescription = null) },
-            label = { Text(text = "Search") },
-        )
-
-//        NavigationBarItem(
-//            selected = false,
-//            onClick = { },
-//            icon = { Icon(imageVector = Icons.Outlined.Person, contentDescription = null) },
-//            label = { Text(text = "Account") },
-//        )
-
-
     }
 }
 

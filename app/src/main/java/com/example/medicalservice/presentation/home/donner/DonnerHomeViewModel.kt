@@ -73,6 +73,7 @@ class DonnerHomeViewModel(
             is DonnerHomeScreenEvent.OnDonationRequestClick -> appNavigator.navigateTo(Destination.DonationDetails(event.donationRequestId))
             is DonnerHomeScreenEvent.OnMedicineClick -> appNavigator.navigateTo(Destination.MedicineDetails(event.medicineId))
             is DonnerHomeScreenEvent.OnTransactionClick -> Unit
+            DonnerHomeScreenEvent.OnSeeAllDonationRequestsClick -> appNavigator.navigateTo(Destination.DonationsList())
         }
     }
 }
