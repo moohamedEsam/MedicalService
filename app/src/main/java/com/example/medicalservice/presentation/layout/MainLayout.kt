@@ -1,6 +1,7 @@
 package com.example.medicalservice.presentation.layout
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,11 +39,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.common.navigation.Destination
 import com.example.common.navigation.NavigationIntent
+import com.example.datastore.UserSettings
+import com.example.datastore.dataStore
 import com.example.functions.handleSnackBarEvent
 import com.example.functions.snackbar.SnackBarManager
 import com.example.medicalservice.MedicalServiceNavGraph
@@ -55,14 +59,13 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MedicalServiceLayout(
-    userType: UserType = UserType.Donner,
-    startDestination: String = Destination.Home.fullRoute,
     navHostController: NavHostController = rememberNavController(),
     viewModel: MainLayoutViewModel = koinViewModel(),
 ) {
+    val userSettings by LocalContext.current.dataStore.data.collectAsStateWithLifecycle(initialValue = UserSettings())
+    Log.i("MainLayout", "MedicalServiceLayout: $userSettings")
     MedicalServiceLayout(
-        userType = userType,
-        startDestination = startDestination,
+        startDestination = if (userSettings.token.isNotEmpty()) Destination.Home.fullRoute else Destination.Login.fullRoute,
         navHostController = navHostController,
         onEvent = viewModel::handleEvent,
     )
@@ -71,7 +74,6 @@ fun MedicalServiceLayout(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MedicalServiceLayout(
-    userType: UserType = UserType.Donner,
     startDestination: String = Destination.Home.route,
     navHostController: NavHostController = rememberNavController(),
     snackBarManager: SnackBarManager = get(),
@@ -86,7 +88,7 @@ fun MedicalServiceLayout(
     val owner = LocalLifecycleOwner.current
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        bottomBar = { BottomBar(navHostController = navHostController, onEvent = onEvent, userType = userType) },
+        bottomBar = { BottomBar(navHostController = navHostController, onEvent = onEvent) },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopBar(
@@ -98,7 +100,6 @@ fun MedicalServiceLayout(
                 startDestination = startDestination,
                 navHostController = navHostController,
                 paddingValues = it,
-                userType = userType,
             )
         },
     )
@@ -147,7 +148,6 @@ private fun ObserveSnackBarEvents(
 @Composable
 fun BottomBar(
     navHostController: NavHostController,
-    userType: UserType,
     onEvent: (MainLayoutScreenEvent) -> Unit,
 ) {
     val navEntry by navHostController.currentBackStackEntryAsState()
@@ -156,8 +156,9 @@ fun BottomBar(
             navEntry?.destination?.route?.takeWhile { it != '/' }
         }
     }
+    val userSettings by LocalContext.current.dataStore.data.collectAsStateWithLifecycle(initialValue = UserSettings())
     if (currentRoute == Destination.Login.route || currentRoute == Destination.Register().route) return
-    if (userType != UserType.Donner)return
+    if (userSettings.type != UserType.Donner) return
     BottomAppBar(
         modifier = Modifier
             .fillMaxWidth()

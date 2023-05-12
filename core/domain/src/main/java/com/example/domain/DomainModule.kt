@@ -1,15 +1,12 @@
 package com.example.domain
 
-import com.example.common.functions.SharedPrefsKey
-import com.example.common.functions.loadFromSharedPrefs
-import com.example.common.functions.saveToSharedPrefs
-import com.example.common.functions.saveToken
 import com.example.common.models.Result
 import com.example.data.auth.AuthRepository
 import com.example.data.disease.DiseaseRepository
 import com.example.data.donation.DonationRepository
 import com.example.data.medicine.MedicineRepository
 import com.example.data.transaction.TransactionRepository
+import com.example.datastore.dataStore
 import com.example.domain.usecase.diagnosis.GetUserLatestDiagnosisUseCase
 import com.example.domain.usecase.disease.GetAvailableSymptomsUseCase
 import com.example.domain.usecase.disease.GetDiseaseDetailsUseCase
@@ -37,6 +34,8 @@ import com.example.model.app.user.User
 import com.example.model.app.user.emptyDoctor
 import com.example.model.app.user.emptyDonor
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.lastOrNull
+import kotlinx.coroutines.flow.map
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Factory
@@ -52,10 +51,13 @@ class DomainModule {
     context (Scope)
             @Factory
     fun provideGetCurrentUserUseCase(repository: AuthRepository) = GetCurrentUserUseCase {
-        val email = loadFromSharedPrefs(androidContext(), SharedPrefsKey.EMAIL)
-        val result = repository.getCurrentUser(email ?: "")
-        result.ifSuccess {
-            saveToSharedPrefs(androidContext(), SharedPrefsKey.USER_TYPE, it.type.name)
+        val email = androidContext().dataStore.data.map { it.email }.lastOrNull()
+            ?: return@GetCurrentUserUseCase Result.Error("No user found")
+        val result = repository.getCurrentUser(email)
+        result.ifSuccess { user ->
+            androidContext().dataStore.updateData { userSettings ->
+                userSettings.copy(type = user.type)
+            }
         }
     }
 
@@ -67,10 +69,9 @@ class DomainModule {
     ) = LoginUseCase {
         val result = repository.login(it)
         result.ifSuccess { token ->
-            saveToken(androidContext(), token.token)
-            saveToSharedPrefs(androidContext(), SharedPrefsKey.EMAIL, it.email)
-            saveToSharedPrefs(androidContext(), SharedPrefsKey.PASSWORD, it.password)
-
+            androidContext().dataStore.updateData { userSettings ->
+                userSettings.copy(token = token.token, email = it.email, password = it.password)
+            }
             oneTimeSyncWorkUseCase()
         }
         result

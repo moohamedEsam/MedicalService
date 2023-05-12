@@ -15,14 +15,12 @@ import com.example.medicalservice.presentation.donationList.donationListScreen
 import com.example.medicalservice.presentation.home.navigation.homeScreen
 import com.example.medicalservice.presentation.medicine.medicineDetailsScreen
 import com.example.medicalservice.presentation.myDonations.myDonationsScreen
-import com.example.model.app.user.UserType
 
 @Composable
 fun MedicalServiceNavGraph(
     startDestination: String,
     navHostController: NavHostController,
     modifier: Modifier = Modifier,
-    userType: UserType = UserType.Donner,
     paddingValues: PaddingValues = PaddingValues()
 ) {
     NavHost(
@@ -35,7 +33,7 @@ fun MedicalServiceNavGraph(
         mapScreen()
         medicineDetailsScreen()
         diseaseScreen()
-        homeScreen(userType = userType)
+        homeScreen()
         donationScreen()
         donationListScreen()
         myDonationsScreen()

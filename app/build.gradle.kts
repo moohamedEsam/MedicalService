@@ -76,6 +76,7 @@ dependencies {
     implementation(libs.koin.annotations)
     ksp(libs.koin.ksp.compiler)
     implementation(libs.google.play.services.text.recognition)
+    implementation(libs.androidx.dataStore.core)
 
     implementation(project(":external:auth"))
     implementation(project(":external:mapLocation"))
@@ -85,6 +86,7 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:model"))
     implementation(project(":core:data"))
+    implementation(project(":core:dataStore"))
     implementation(project(":core:database"))
     implementation(project(":core:worker"))
 }
