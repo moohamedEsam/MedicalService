@@ -19,6 +19,7 @@ import com.example.domain.usecase.medicine.GetMedicinesUseCase
 import com.example.domain.usecase.sync.OneTimeSyncWorkUseCase
 import com.example.domain.usecase.transaction.CreateTransactionUseCase
 import com.example.domain.usecase.transaction.GetCurrentUserTransactionsUseCase
+import com.example.domain.usecase.transaction.GetTransactionDetailsUseCase
 import com.example.domain.usecase.user.GetCurrentUserUseCase
 import com.example.domain.usecase.user.LoginUseCase
 import com.example.domain.usecase.user.RegisterUseCase
@@ -123,6 +124,10 @@ class DomainModule {
     @Factory
     fun provideGetCurrentUserTransactionsUseCase(transactionRepository: TransactionRepository) =
         GetCurrentUserTransactionsUseCase(transactionRepository::getTransactions)
+
+    @Factory
+    fun provideGetTransactionDetailsUseCase(transactionRepository: TransactionRepository) =
+        GetTransactionDetailsUseCase(transactionRepository::getTransaction)
 
     @Factory
     fun provideCreateTransactionUseCase(transactionRepository: TransactionRepository) =

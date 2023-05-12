@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 data class DonnerHomeState(
-    val user: Donor = User.emptyDonor(),
     val donationRequestViews: Flow<PagingData<DonationRequestView>> = flowOf(PagingData.empty()),
     val transactionViews: Flow<PagingData<TransactionView>> = flowOf(PagingData.empty()),
     val query: String = "",

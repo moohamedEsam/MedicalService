@@ -15,6 +15,7 @@ import com.example.medicalservice.presentation.donationList.donationListScreen
 import com.example.medicalservice.presentation.home.navigation.homeScreen
 import com.example.medicalservice.presentation.medicine.medicineDetailsScreen
 import com.example.medicalservice.presentation.myDonations.myDonationsScreen
+import com.example.medicalservice.presentation.transaction.transactionScreen
 
 @Composable
 fun MedicalServiceNavGraph(
@@ -34,6 +35,7 @@ fun MedicalServiceNavGraph(
         medicineDetailsScreen()
         diseaseScreen()
         homeScreen()
+        transactionScreen()
         donationScreen()
         donationListScreen()
         myDonationsScreen()

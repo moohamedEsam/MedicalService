@@ -27,6 +27,11 @@ sealed class Destination(val route: String, private vararg val params: String) {
 
     object Home : NoArgumentsDestination("home")
 
+    object TransactionDetails : Destination("transaction", "id") {
+        operator fun invoke(id: String = " ") = "$route/$id"
+        const val transactionIdKey = "id"
+    }
+
     object DonationsList : NoArgumentsDestination("donations")
 
     object MyDonationsList : NoArgumentsDestination("my-donations")

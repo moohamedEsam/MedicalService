@@ -56,19 +56,12 @@ private fun DonnerHomeScreenContent(
 
         VerticalTransactionsList(
             transactionViewsFlow = state.transactionViews,
-            onTransactionClick = { onEvent(DonnerHomeScreenEvent.OnTransactionClick(it.id)) },
+            onTransactionClick = { onEvent(DonnerHomeScreenEvent.OnTransactionClick(it)) },
             modifier = Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp / 2).dp),
             onMedicineClick = { onEvent(DonnerHomeScreenEvent.OnMedicineClick(it)) },
             title = "Recent Transactions"
         )
     }
-}
-
-@Composable
-private fun DonnerScreenHeader(
-    user: User.Donor
-) {
-    Text(text = "Hello ${user.username}", style = MaterialTheme.typography.headlineSmall)
 }
 
 

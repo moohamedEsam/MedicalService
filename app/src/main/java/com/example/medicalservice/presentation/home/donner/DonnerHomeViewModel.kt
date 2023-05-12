@@ -21,12 +21,10 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 class DonnerHomeViewModel(
-    private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getDonationRequestsUseCase: GetDonationRequestsUseCase,
     private val getCurrentUserTransactionsUseCase: GetCurrentUserTransactionsUseCase,
     private val setDonationRequestBookmarkUseCase: SetDonationRequestBookmarkUseCase,
     private val appNavigator: AppNavigator,
-    coroutineExceptionHandler: CoroutineExceptionHandler
 ) : ViewModel() {
     private val donationPager = Pager(
         config = PagingConfig(
@@ -52,15 +50,6 @@ class DonnerHomeViewModel(
     )
     val uiState = _uiState.asStateFlow()
 
-    init {
-        viewModelScope.launch(coroutineExceptionHandler) {
-            val user = getCurrentUserUseCase()
-            _uiState.value = _uiState.value.copy(
-                user = user as? User.Donor
-                    ?: User.emptyDonor(),
-            )
-        }
-    }
 
     fun handleEvent(event: DonnerHomeScreenEvent) = viewModelScope.launch {
         when (event) {
@@ -73,7 +62,7 @@ class DonnerHomeViewModel(
             }
             is DonnerHomeScreenEvent.OnDonationRequestClick -> appNavigator.navigateTo(Destination.DonationDetails(event.donationRequestId))
             is DonnerHomeScreenEvent.OnMedicineClick -> appNavigator.navigateTo(Destination.MedicineDetails(event.medicineId))
-            is DonnerHomeScreenEvent.OnTransactionClick -> Unit
+            is DonnerHomeScreenEvent.OnTransactionClick -> appNavigator.navigateTo(Destination.TransactionDetails(event.transactionView.id))
             DonnerHomeScreenEvent.OnSeeAllDonationRequestsClick -> appNavigator.navigateTo(Destination.DonationsList())
         }
     }
