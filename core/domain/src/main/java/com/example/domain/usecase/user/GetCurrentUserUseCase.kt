@@ -1,3 +1,6 @@
 package com.example.domain.usecase.user
 
-fun interface GetCurrentUserUseCase : suspend () -> com.example.model.app.User
+import com.example.common.models.Result
+import com.example.model.app.user.User
+
+fun interface GetCurrentUserUseCase : suspend () -> Result<User>

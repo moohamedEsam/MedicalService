@@ -1,6 +1,6 @@
 package com.example.medicalservice.presentation.home.donner
 
-import com.example.model.app.DonationRequestView
+import com.example.model.app.donation.DonationRequestView
 
 sealed interface DonnerHomeScreenEvent {
     data class OnQueryChange(val query: String) : DonnerHomeScreenEvent

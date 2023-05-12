@@ -1,17 +1,18 @@
 package com.example.network
 
 import com.example.common.models.Result
-import com.example.model.app.Credentials
-import com.example.model.app.Disease
-import com.example.model.app.DiseaseView
-import com.example.model.app.DonationRequest
+import com.example.model.app.auth.Credentials
+import com.example.model.app.auth.Token
+import com.example.model.app.disease.Disease
+import com.example.model.app.disease.DiseaseView
+import com.example.model.app.disease.Symptom
+import com.example.model.app.donation.DonationRequest
 import com.example.model.app.medicine.Medicine
-import com.example.model.app.Register
-import com.example.model.app.Symptom
-import com.example.model.app.Token
-import com.example.model.app.Transaction
-import com.example.model.app.User.Donor
-import com.example.model.app.User.Receiver
+import com.example.model.app.transaction.Transaction
+import com.example.model.app.user.Register
+import com.example.model.app.user.User
+import com.example.model.app.user.User.Donor
+import com.example.model.app.user.User.Receiver
 
 sealed interface RemoteDataSource {
     suspend fun login(credentials: Credentials): Result<Token>
@@ -31,4 +32,6 @@ sealed interface RemoteDataSource {
     suspend fun getDonnerUser(id: String): Result<Donor>
 
     suspend fun getReceiverUser(id: String): Result<Receiver>
+
+    suspend fun getCurrentUser(email: String): Result<User>
 }

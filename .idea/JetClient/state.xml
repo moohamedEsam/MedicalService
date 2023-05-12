@@ -39,6 +39,14 @@
                         </bodyState>
                       </option>
                       <option name="description" value="{{baseUrl}}/api/users/getuser/:userId" />
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
+                          </headerState>
+                        </list>
+                      </option>
                       <option name="id" value="1742c966-5f87-434c-a856-dc87b011012e" />
                       <option name="method" value="GET" />
                       <option name="name" value="getuserbyid" />

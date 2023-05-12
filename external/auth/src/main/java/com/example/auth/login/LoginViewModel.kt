@@ -7,9 +7,10 @@ import com.example.common.models.dataType.Email
 import com.example.common.models.dataType.Password
 import com.example.common.navigation.AppNavigator
 import com.example.common.navigation.Destination
+import com.example.domain.usecase.user.GetCurrentUserUseCase
 import com.example.domain.usecase.user.LoginUseCase
 import com.example.functions.snackbar.SnackBarManager
-import com.example.model.app.Credentials
+import com.example.model.app.auth.Credentials
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,6 +21,7 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class LoginViewModel(
     private val loginUseCase: LoginUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val snackBarManager: SnackBarManager,
     private val appNavigator: AppNavigator
 ) : ViewModel() {

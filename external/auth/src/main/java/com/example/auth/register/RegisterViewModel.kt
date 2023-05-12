@@ -12,7 +12,7 @@ import com.example.common.navigation.AppNavigator
 import com.example.common.navigation.Destination
 import com.example.domain.usecase.user.RegisterUseCase
 import com.example.functions.snackbar.SnackBarManager
-import com.example.model.app.Register
+import com.example.model.app.user.Register
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

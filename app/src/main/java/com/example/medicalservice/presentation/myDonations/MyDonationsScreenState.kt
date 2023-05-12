@@ -1,8 +1,8 @@
 package com.example.medicalservice.presentation.myDonations
 
 import androidx.paging.PagingData
-import com.example.model.app.DonationRequestView
-import com.example.model.app.TransactionView
+import com.example.model.app.donation.DonationRequestView
+import com.example.model.app.transaction.TransactionView
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

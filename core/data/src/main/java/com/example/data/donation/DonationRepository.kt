@@ -1,7 +1,7 @@
 package com.example.data.donation
 
 import androidx.paging.PagingSource
-import com.example.model.app.DonationRequestView
+import com.example.model.app.donation.DonationRequestView
 import kotlinx.coroutines.flow.Flow
 
 sealed interface DonationRepository {

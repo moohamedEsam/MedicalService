@@ -2,9 +2,9 @@ package com.example.data.disease
 
 import androidx.paging.PagingSource
 import com.example.common.models.Result
-import com.example.model.app.Disease
-import com.example.model.app.DiseaseView
-import com.example.model.app.Symptom
+import com.example.model.app.disease.Disease
+import com.example.model.app.disease.DiseaseView
+import com.example.model.app.disease.Symptom
 import kotlinx.coroutines.flow.Flow
 
 interface DiseaseRepository {

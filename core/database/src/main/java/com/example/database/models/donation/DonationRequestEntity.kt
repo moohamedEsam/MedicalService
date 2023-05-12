@@ -2,7 +2,7 @@ package com.example.database.models.donation
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.model.app.DonationRequest
+import com.example.model.app.donation.DonationRequest
 import java.util.Date
 
 @Entity(tableName = "donationRequests")

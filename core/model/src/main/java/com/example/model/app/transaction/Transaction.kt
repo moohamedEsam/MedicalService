@@ -1,4 +1,4 @@
-package com.example.model.app
+package com.example.model.app.transaction
 
 import java.util.Date
 import java.util.UUID

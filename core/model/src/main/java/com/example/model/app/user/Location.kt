@@ -1,4 +1,4 @@
-package com.example.model.app
+package com.example.model.app.user
 
 import com.example.common.models.ValidationResult
 import kotlinx.serialization.Serializable

@@ -3,8 +3,8 @@ import java.util.Properties
 plugins {
     id("mohamed.android.application")
     id("mohamed.android.application.compose")
-    alias(libs.plugins.ksp) apply true
-    alias(libs.plugins.kotlin.serialization) apply true
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {

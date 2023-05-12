@@ -1,7 +1,7 @@
 package com.example.medicalservice.presentation.myDonations
 
-import com.example.model.app.DonationRequestView
-import com.example.model.app.TransactionView
+import com.example.model.app.donation.DonationRequestView
+import com.example.model.app.transaction.TransactionView
 
 sealed interface MyDonationsScreenEvent {
     data class QueryChanged(val query: String) : MyDonationsScreenEvent

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.example.auth.R
 import com.example.common.models.dataType.Phone
 import com.example.composecomponents.textField.ValidationOutlinedTextField
-import com.example.model.app.UserType
+import com.example.model.app.user.UserType
 
 @Composable
 fun PhoneAndUserTypePage(
@@ -63,6 +63,7 @@ private fun UserTypeDialog(userType: UserType, onDismiss: () -> Unit) {
     val description = when (userType) {
         UserType.Donner -> "Donate medicine to the needy"
         UserType.Receiver -> "Receive medicine from the donors\ncertain conditions must apply to you"
+        else -> ""
     }
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -85,7 +86,7 @@ private fun UserTypeRow(
 ) {
     Text("User Type", style = MaterialTheme.typography.headlineSmall)
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        UserType.values().forEach {
+        UserType.values().toList().minus(UserType.Doctor).forEach {
             FilterChip(
                 onClick = { onUserTypeClick(it) },
                 selected = it == userType,

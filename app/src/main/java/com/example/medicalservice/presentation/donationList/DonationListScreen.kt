@@ -39,8 +39,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.example.composecomponents.loadStateItem
 import com.example.medicalservice.presentation.components.HorizontalDonationRequestsList
-import com.example.model.app.DonationRequestView
-import com.example.model.app.dummyDonationRequests
+import com.example.model.app.donation.DonationRequestView
+import com.example.model.app.donation.dummyDonationRequests
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.koin.androidx.compose.koinViewModel
@@ -153,7 +153,7 @@ private fun FeaturedDonationList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun VerticalDonationItem(
-    donationRequestView: com.example.model.app.DonationRequestView,
+    donationRequestView: DonationRequestView,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = { },
     onDonateClick: () -> Unit = { }

@@ -5,7 +5,7 @@ import androidx.room.Relation
 import com.example.database.models.medicine.MedicineEntity
 import com.example.database.models.medicine.MedicineEntityView
 import com.example.database.models.medicine.toMedicineView
-import com.example.model.app.DonationRequestView
+import com.example.model.app.donation.DonationRequestView
 
 data class DonationRequestEntityView(
     @Embedded val donationRequestEntity: DonationRequestEntity,

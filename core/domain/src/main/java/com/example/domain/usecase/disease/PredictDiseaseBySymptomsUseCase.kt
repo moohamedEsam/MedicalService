@@ -1,3 +1,5 @@
 package com.example.domain.usecase.disease
 
-fun interface PredictDiseaseBySymptomsUseCase : suspend (String) -> List<com.example.model.app.DiseaseView>
+import com.example.model.app.disease.DiseaseView
+
+fun interface PredictDiseaseBySymptomsUseCase : suspend (String) -> List<DiseaseView>

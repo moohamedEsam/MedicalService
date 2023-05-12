@@ -1,6 +1,6 @@
 package com.example.medicalservice.presentation.donation
 
-import com.example.model.app.DonationRequestView
+import com.example.model.app.donation.DonationRequestView
 
 sealed interface DonationScreenEvent {
     data class OnDonationRequestSelected(val donationRequest: DonationRequestView) : DonationScreenEvent

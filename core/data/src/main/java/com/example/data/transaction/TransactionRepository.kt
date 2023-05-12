@@ -2,8 +2,8 @@ package com.example.data.transaction
 
 import androidx.paging.PagingSource
 import com.example.common.models.Result
-import com.example.model.app.Transaction
-import com.example.model.app.TransactionView
+import com.example.model.app.transaction.Transaction
+import com.example.model.app.transaction.TransactionView
 import kotlinx.coroutines.flow.Flow
 
 interface TransactionRepository {

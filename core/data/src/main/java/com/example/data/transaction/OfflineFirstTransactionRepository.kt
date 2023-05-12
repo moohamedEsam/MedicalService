@@ -7,8 +7,8 @@ import com.example.database.models.transaction.TransactionEntityView
 import com.example.database.models.transaction.toEntity
 import com.example.database.models.transaction.toTransactionView
 import com.example.database.room.dao.TransactionDao
-import com.example.model.app.Transaction
-import com.example.model.app.TransactionView
+import com.example.model.app.transaction.Transaction
+import com.example.model.app.transaction.TransactionView
 import com.example.network.RemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull

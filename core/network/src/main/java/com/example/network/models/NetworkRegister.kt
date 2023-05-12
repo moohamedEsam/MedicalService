@@ -1,7 +1,7 @@
 package com.example.network.models
 
-import com.example.model.app.Location
-import com.example.model.app.Register
+import com.example.model.app.user.Location
+import com.example.model.app.user.Register
 import kotlinx.serialization.Serializable
 
 @Serializable

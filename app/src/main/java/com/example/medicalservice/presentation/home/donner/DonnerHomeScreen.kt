@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.medicalservice.presentation.components.HorizontalDonationRequestsList
 import com.example.medicalservice.presentation.components.VerticalTransactionsList
+import com.example.model.app.user.User
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -65,7 +66,7 @@ private fun DonnerHomeScreenContent(
 
 @Composable
 private fun DonnerScreenHeader(
-    user: com.example.model.app.User.Donor
+    user: User.Donor
 ) {
     Text(text = "Hello ${user.username}", style = MaterialTheme.typography.headlineSmall)
 }

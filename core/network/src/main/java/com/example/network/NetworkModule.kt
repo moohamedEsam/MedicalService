@@ -1,7 +1,7 @@
 package com.example.network
 
 import android.util.Log
-import com.example.common.functions.loadTokenFromSharedPref
+import com.example.common.functions.loadToken
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.auth.Auth
@@ -42,7 +42,7 @@ class NetworkModule {
         install(Auth) {
             bearer {
                 loadTokens {
-                    val token = loadTokenFromSharedPref(androidContext()) ?: ""
+                    val token = loadToken(androidContext()) ?: ""
                     BearerTokens(token, token)
                 }
                 sendWithoutRequest {

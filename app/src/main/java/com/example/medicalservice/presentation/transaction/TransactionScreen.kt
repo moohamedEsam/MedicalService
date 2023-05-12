@@ -1,139 +1,144 @@
-package com.example.medicalservice.presentation.transaction
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.example.model.app.empty
+import com.example.medicalservice.presentation.transaction.TransactionScreenState
+import com.example.model.app.donation.DonationRequestView
+import com.example.model.app.donation.empty
 import com.example.model.app.medicine.MedicineView
 import com.example.model.app.medicine.paracetamol
+import com.example.model.app.transaction.TransactionView
 import java.text.SimpleDateFormat
-import java.util.*
-
-@Composable
-fun TransactionScreen(
-    transactionView: com.example.model.app.TransactionView,
-    modifier: Modifier = Modifier,
-    verticalSpacing: Dp = 8.dp,
-    onMedicineClick: (String) -> Unit
-) {
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(verticalSpacing)) {
-        TransactionHeader(transactionView = transactionView)
-        TransactionBody(transactionView = transactionView, onMedicineClick = onMedicineClick)
-    }
-}
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun TransactionHeader(transactionView: com.example.model.app.TransactionView) {
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        TransactionItem(
-            label = "Sender:",
-            value = transactionView.senderName,
-            onClick = {}
-        )
-
-        TransactionItem(
-            label = "Receiver:",
-            value = transactionView.receiverName,
-            onClick = {}
-        )
-    }
-
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun TransactionBody(
-    transactionView: com.example.model.app.TransactionView,
-    onMedicineClick: (String) -> Unit
+fun TransactionView(
+    state: TransactionScreenState,
+    dateFormat: SimpleDateFormat = SimpleDateFormat("MMM dd", Locale.getDefault())
 ) {
-    val simpleDateFormat by remember {
-        mutableStateOf(SimpleDateFormat("dd/MMM/yyyy", Locale.getDefault()))
-    }
-
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    Column(
+        modifier = Modifier
+//            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        TransactionItem(
-            label = "Medicine",
-            value = transactionView.medicine.name,
-            onClick = { onMedicineClick(transactionView.medicine.id) }
-        )
 
-        TransactionItem(
-            label = "Status:",
-            value = transactionView.status.name,
-            onClick = {
-                //todo: show reason
+        if (state.transactionView.donationRequestView != null)
+            TextButton(onClick = { }) {
+                Text(text = "View Request")
             }
+
+        Text(
+            text = "Transaction ID: ${state.transactionView.id}",
+            style = MaterialTheme.typography.bodyMedium
         )
-    }
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Text(text = "Quantity: ${transactionView.quantity}")
-        Text(text = "Created At: ${simpleDateFormat.format(transactionView.createdAt)}")
-    }
 
-}
+        Text(
+            text = state.transactionView.medicine.name,
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.primary
+        )
 
-@Composable
-private fun TransactionItem(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-    ) {
-        Text(text = label)
-        TextButton(onClick = onClick) {
-            Text(text = value)
+
+        Text(
+            text = "Quantity: ${state.transactionView.quantity}",
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Receiver: ${state.transactionView.receiverName}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.secondary
+            )
+
+            Text(
+                text = "Sender: ${state.transactionView.senderName}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.secondary
+            )
+
         }
+
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Status: ${state.transactionView.status.name}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.secondary
+            )
+
+            Text(
+                text = "Created at: ${dateFormat.format(state.transactionView.createdAt)}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.secondary
+            )
+
+        }
+
+        if (state.user.id == state.transactionView.senderId)
+            Button(onClick = { }, modifier = Modifier.align(Alignment.End)) {
+                Text(text = "Cancel transaction")
+            }
+        else
+            Button(onClick = { }, modifier = Modifier.align(Alignment.End)) {
+                Text(text = "I received the medicine")
+            }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
 private fun TransactionScreenPreview() {
-    Box(
-     modifier= Modifier.fillMaxSize(),
-     contentAlignment= Alignment.Center
-    ){
+    Surface {
+        Box {
 
-    }
-    Dialog(onDismissRequest = {}) {
-        Card {
-            TransactionScreen(
-                com.example.model.app.TransactionView.empty().copy(
-                    medicine = MedicineView.paracetamol(),
-                    quantity = 2,
-                    status = com.example.model.app.TransactionView.Status.values().random(),
-                    senderName = "ahmed",
-                    receiverName = "mohamed",
-                ),
-                onMedicineClick = {},
-                verticalSpacing = 4.dp,
-                modifier = Modifier.padding(16.dp)
-            )
+        }
+        Dialog(onDismissRequest = {}) {
+            Card {
+                TransactionView(
+                    state = TransactionScreenState(
+                        transactionView = TransactionView(
+                            id = "1",
+                            createdAt = Date(),
+                            updatedAt = Date(),
+                            medicine = MedicineView.paracetamol(),
+                            quantity = 1,
+                            receiverId = "1",
+                            receiverName = "mohamed",
+                            senderId = "2",
+                            senderName = "ahmed",
+                            status = TransactionView.Status.Pending,
+                            donationRequestView = DonationRequestView.empty()
+                        )
+                    )
+                )
+            }
         }
     }
+
 }

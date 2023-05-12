@@ -1,4 +1,4 @@
-package com.example.model.app
+package com.example.model.app.donation
 
 import com.example.model.app.medicine.Medicine
 import com.example.model.app.medicine.empty

@@ -32,6 +32,7 @@ import com.example.auth.register.pages.LocationPage
 import com.example.auth.register.pages.PasswordPage
 import com.example.auth.register.pages.PhoneAndUserTypePage
 import com.example.auth.register.pages.RegisterPages
+import com.example.model.app.user.Location
 import org.koin.androidx.compose.get
 import org.koin.androidx.compose.koinViewModel
 
@@ -46,7 +47,7 @@ fun RegisterScreen(
     if (lat != 0.0 && lng != 0.0) {
         viewModel.handleEvent(
             RegisterScreenEvent.LocationChanged(
-                com.example.model.app.Location(
+                Location(
                     lat,
                     lng
                 )

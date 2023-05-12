@@ -5,7 +5,7 @@ import androidx.room.Relation
 import com.example.database.models.medicine.MedicineEntity
 import com.example.database.models.medicine.MedicineEntityView
 import com.example.database.models.medicine.toMedicineView
-import com.example.model.app.TransactionView
+import com.example.model.app.transaction.TransactionView
 
 data class TransactionEntityView(
     @Embedded val transactionEntity: TransactionEntity,

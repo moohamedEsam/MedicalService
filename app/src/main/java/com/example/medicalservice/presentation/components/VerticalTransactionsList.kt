@@ -21,13 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.example.composecomponents.loadStateItem
-import com.example.model.app.TransactionView
+import com.example.model.app.transaction.TransactionView
 import kotlinx.coroutines.flow.Flow
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -44,12 +45,22 @@ fun VerticalTransactionsList(
     val dateFormatter by remember {
         mutableStateOf(SimpleDateFormat("MMMM dd", Locale.getDefault()))
     }
-    if(transactionViews.itemCount == 0) return
     Text(text = title, style = MaterialTheme.typography.headlineSmall)
     LazyColumn(
         modifier = modifier.animateContentSize(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        if (transactionViews.itemCount == 0) {
+            item {
+                Text(
+                    text = "No transactions yet",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+            return@LazyColumn
+        }
         items(transactionViews) { transaction ->
             if (transaction == null) return@items
             TransactionItem(

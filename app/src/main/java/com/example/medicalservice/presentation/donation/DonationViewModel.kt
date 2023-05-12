@@ -13,7 +13,7 @@ import com.example.domain.usecase.donationRequest.GetDonationRequestsUseCase
 import com.example.domain.usecase.donationRequest.SetDonationRequestBookmarkUseCase
 import com.example.domain.usecase.transaction.CreateTransactionUseCase
 import com.example.functions.snackbar.SnackBarManager
-import com.example.model.app.Transaction
+import com.example.model.app.transaction.Transaction
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

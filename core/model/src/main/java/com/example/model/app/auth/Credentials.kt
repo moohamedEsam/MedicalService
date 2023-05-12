@@ -1,4 +1,4 @@
-package com.example.model.app
+package com.example.model.app.auth
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -1,8 +1,10 @@
-package com.example.model.app
+package com.example.model.app.transaction
 
+import com.example.model.app.donation.DonationRequestView
 import com.example.model.app.medicine.MedicineView
 import com.example.model.app.medicine.empty
 import java.util.Date
+import java.util.UUID
 
 data class TransactionView(
     val id: String,
@@ -25,7 +27,7 @@ data class TransactionView(
 }
 
 fun TransactionView.Companion.empty() = TransactionView(
-    id = "",
+    id = UUID.randomUUID().toString(),
     createdAt = Date(),
     updatedAt = Date(),
     medicine = MedicineView.empty(),

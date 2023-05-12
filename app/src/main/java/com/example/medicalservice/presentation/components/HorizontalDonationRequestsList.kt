@@ -47,8 +47,8 @@ import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.example.medicalservice.R
-import com.example.model.app.DonationRequestView
-import com.example.model.app.dummyDonationRequests
+import com.example.model.app.donation.DonationRequestView
+import com.example.model.app.donation.dummyDonationRequests
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf

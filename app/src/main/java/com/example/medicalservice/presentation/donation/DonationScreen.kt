@@ -33,7 +33,8 @@ import com.example.composecomponents.OneTimeEventButton
 import com.example.composecomponents.textField.OutlinedSearchTextField
 import com.example.composecomponents.textField.ValidationOutlinedTextField
 import com.example.medicalservice.presentation.components.HorizontalDonationRequestsList
-import com.example.model.app.DonationRequestView
+import com.example.model.app.donation.DonationRequestView
+import com.example.model.app.donation.dummyDonationRequests
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.koin.androidx.compose.koinViewModel
@@ -235,4 +236,4 @@ private fun DonationScreenPreview() {
 }
 
 @Composable
-private fun donationRequests() = com.example.model.app.dummyDonationRequests()
+private fun donationRequests() = dummyDonationRequests()

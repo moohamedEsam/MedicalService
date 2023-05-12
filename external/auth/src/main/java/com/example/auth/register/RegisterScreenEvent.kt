@@ -1,7 +1,7 @@
 package com.example.auth.register
 
-import com.example.model.app.Location
-import com.example.model.app.UserType
+import com.example.model.app.user.Location
+import com.example.model.app.user.UserType
 
 
 sealed interface RegisterScreenEvent {

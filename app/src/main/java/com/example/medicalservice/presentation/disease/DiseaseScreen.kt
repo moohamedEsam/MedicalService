@@ -14,7 +14,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.model.app.headache
+import com.example.model.app.disease.DiseaseView
+import com.example.model.app.disease.headache
 import com.example.model.app.medicine.Medicine
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -36,7 +37,7 @@ fun DiseaseScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun DiseaseScreenContent(
-    disease: com.example.model.app.DiseaseView,
+    disease: DiseaseView,
     onMedicineClick: (String) -> Unit
 ) {
     val pages = listOf(
@@ -86,7 +87,7 @@ private fun DiseaseScreenContent(
 private fun DiseaseContentPager(
     pages: List<String>,
     pagerState: PagerState,
-    disease: com.example.model.app.DiseaseView,
+    disease: DiseaseView,
     modifier: Modifier = Modifier,
     onMedicineClick: (String) -> Unit
 ) {
@@ -187,7 +188,7 @@ private fun MedicineItem(
 @Composable
 private fun DiseaseScreenPreview() {
     DiseaseScreenContent(
-        disease = com.example.model.app.DiseaseView.headache(),
+        disease = DiseaseView.headache(),
         onMedicineClick = {}
     )
 }

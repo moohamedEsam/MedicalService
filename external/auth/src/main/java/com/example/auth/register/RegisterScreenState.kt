@@ -6,7 +6,8 @@ import com.example.common.models.dataType.Password
 import com.example.common.models.dataType.PasswordConfirmation
 import com.example.common.models.dataType.Phone
 import com.example.common.models.dataType.Username
-import com.example.model.app.UserType
+import com.example.model.app.user.Location
+import com.example.model.app.user.UserType
 
 data class RegisterScreenState(
     val email: Email = Email(""),
@@ -14,7 +15,7 @@ data class RegisterScreenState(
     val passwordConfirmation: PasswordConfirmation = PasswordConfirmation(""),
     val username: Username = Username(""),
     val phone: Phone = Phone(""),
-    val location: com.example.model.app.Location = com.example.model.app.Location(0.0, 0.0),
+    val location: Location = Location(0.0, 0.0),
     val userType: UserType = UserType.Donner,
     val isLoading: Boolean = false
 ) {

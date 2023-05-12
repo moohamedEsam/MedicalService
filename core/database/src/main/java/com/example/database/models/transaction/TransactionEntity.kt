@@ -2,8 +2,8 @@ package com.example.database.models.transaction
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.model.app.Transaction
-import com.example.model.app.TransactionView
+import com.example.model.app.transaction.Transaction
+import com.example.model.app.transaction.TransactionView
 import java.util.Date
 
 @Entity(tableName="transactions")

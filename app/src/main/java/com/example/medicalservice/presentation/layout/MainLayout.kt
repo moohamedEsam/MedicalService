@@ -46,7 +46,7 @@ import com.example.common.navigation.NavigationIntent
 import com.example.functions.handleSnackBarEvent
 import com.example.functions.snackbar.SnackBarManager
 import com.example.medicalservice.MedicalServiceNavGraph
-import com.example.model.app.UserType
+import com.example.model.app.user.UserType
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -86,7 +86,7 @@ fun MedicalServiceLayout(
     val owner = LocalLifecycleOwner.current
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        bottomBar = { BottomBar(navHostController = navHostController, onEvent = onEvent) },
+        bottomBar = { BottomBar(navHostController = navHostController, onEvent = onEvent, userType = userType) },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopBar(
@@ -147,6 +147,7 @@ private fun ObserveSnackBarEvents(
 @Composable
 fun BottomBar(
     navHostController: NavHostController,
+    userType: UserType,
     onEvent: (MainLayoutScreenEvent) -> Unit,
 ) {
     val navEntry by navHostController.currentBackStackEntryAsState()
@@ -156,6 +157,7 @@ fun BottomBar(
         }
     }
     if (currentRoute == Destination.Login.route || currentRoute == Destination.Register().route) return
+    if (userType != UserType.Donner)return
     BottomAppBar(
         modifier = Modifier
             .fillMaxWidth()

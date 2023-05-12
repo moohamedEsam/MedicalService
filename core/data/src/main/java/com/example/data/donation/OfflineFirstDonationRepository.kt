@@ -6,7 +6,7 @@ import com.example.database.models.donation.DonationRequestEntityView
 import com.example.database.models.donation.toDonationRequestView
 import com.example.database.models.donation.toEntity
 import com.example.database.room.dao.DonationRequestDao
-import com.example.model.app.DonationRequestView
+import com.example.model.app.donation.DonationRequestView
 import com.example.network.RemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull

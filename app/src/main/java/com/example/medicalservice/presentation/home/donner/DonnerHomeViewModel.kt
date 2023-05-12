@@ -11,7 +11,8 @@ import com.example.domain.usecase.donationRequest.GetDonationRequestsUseCase
 import com.example.domain.usecase.donationRequest.SetDonationRequestBookmarkUseCase
 import com.example.domain.usecase.transaction.GetCurrentUserTransactionsUseCase
 import com.example.domain.usecase.user.GetCurrentUserUseCase
-import com.example.model.app.emptyDonor
+import com.example.model.app.user.User
+import com.example.model.app.user.emptyDonor
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -55,8 +56,8 @@ class DonnerHomeViewModel(
         viewModelScope.launch(coroutineExceptionHandler) {
             val user = getCurrentUserUseCase()
             _uiState.value = _uiState.value.copy(
-                user = user as? com.example.model.app.User.Donor
-                    ?: com.example.model.app.User.emptyDonor(),
+                user = user as? User.Donor
+                    ?: User.emptyDonor(),
             )
         }
     }

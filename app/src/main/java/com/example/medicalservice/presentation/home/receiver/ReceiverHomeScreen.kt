@@ -1,178 +1,267 @@
 package com.example.medicalservice.presentation.home.receiver
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Upload
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.domain.*
-import com.example.model.app.User
-import com.example.model.app.empty
-import com.example.model.app.emptyReceiver
-import com.example.model.app.medicine.Medicine
-import com.example.model.app.medicine.empty
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.PagingData
+import com.example.medicalservice.R
+import com.example.medicalservice.presentation.components.VerticalTransactionsList
+import com.example.model.app.diagnosis.DiagnosisResultView
+import com.example.model.app.diagnosis.empty
+import com.example.model.app.transaction.TransactionView
+import com.example.model.app.transaction.empty
+import com.example.model.app.user.User
+import com.example.model.app.user.emptyDoctor
+import com.example.model.app.user.emptyReceiver
+import kotlinx.coroutines.flow.flowOf
 import org.koin.androidx.compose.koinViewModel
-import java.util.*
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun ReceiverHomeScreen(
     viewModel: ReceiverHomeViewModel = koinViewModel(),
-    onDiseaseClick: (String) -> Unit,
-    onMedicineClick: (String) -> Unit
 ) {
-    val user by viewModel.user.collectAsState()
-    if (user is com.example.model.app.User.Receiver)
-        ReceiverHomeScreenContent(
-            user = user as com.example.model.app.User.Receiver,
-            onDiseaseClick = onDiseaseClick,
-            onMedicineClick = onMedicineClick
-        )
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    ReceiverHomeScreen(
+        state = state,
+        onEvent = viewModel::handleEvent
+    )
 }
-
 
 @Composable
-private fun ReceiverHomeScreenContent(
-    user: com.example.model.app.User.Receiver,
-    onDiseaseClick: (String) -> Unit,
-    onMedicineClick: (String) -> Unit
+private fun ReceiverHomeScreen(
+    state: ReceiverHomeScreenState,
+    onEvent: (ReceiverHomeScreenEvent) -> Unit,
 ) {
-    var expandButton by remember {
-        mutableStateOf(false)
-    }
-
-    val nestedScrollConnection = object : NestedScrollConnection {
-        override fun onPostScroll(
-            consumed: Offset,
-            available: Offset,
-            source: NestedScrollSource
-        ): Offset {
-            expandButton = available.y > 0 || consumed.y > 0
-            return super.onPostScroll(consumed, available, source)
-        }
-    }
     Box {
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .nestedScroll(nestedScrollConnection)
+                .animateContentSize()
                 .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            receiverHomeScreenHeader(user = user)
-            receiverHomeScreenBody(
-                user = user,
-                onDiseaseClick = onDiseaseClick,
-                onMedicineClick = onMedicineClick
+            ReceiverHomeScreenHeader(
+                state = state,
+                onEvent = onEvent,
+                modifier = Modifier.align(Alignment.End)
+            )
+            ReceiverHomeScreenTransactions(
+                state = state,
+                onEvent = onEvent
             )
         }
-        ExtendedFloatingActionButton(
+        FloatingActionButton(
             onClick = { },
-            text = { Text(text = "Apply for a new medicine") },
-            icon = { Icon(imageVector = Icons.Default.Upload, contentDescription = null) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(16.dp),
-            expanded = expandButton
-        )
+                .padding(8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Add,
+                contentDescription = null,
+            )
+        }
     }
 }
 
-private fun LazyListScope.receiverHomeScreenHeader(user: com.example.model.app.User.Receiver) {
-    item {
-        Text(
-            text = "Hello, ${user.username}",
-            style = MaterialTheme.typography.headlineMedium
-        )
-    }
-}
-
-private fun LazyListScope.receiverHomeScreenBody(
-    user: User.Receiver,
-    onDiseaseClick: (String) -> Unit,
-    onMedicineClick: (String) -> Unit
+@Composable
+private fun ReceiverHomeScreenHeader(
+    state: ReceiverHomeScreenState,
+    onEvent: (ReceiverHomeScreenEvent) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    item {
-        Text(text = "Your diseases", style = MaterialTheme.typography.headlineSmall)
-    }
-    items(user.diseases) {
-        DiseaseItem(
-            disease = it,
-            onClick = { onDiseaseClick(it.id) }
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Hello, ${state.user.username}",
+            style = MaterialTheme.typography.bodyLarge
         )
+        Spacer(modifier = Modifier.weight(1f))
+
+        IconButton(onClick = { }) {
+            Icon(
+                painter = painterResource(id = R.drawable.faq),
+                contentDescription = null,
+                modifier = Modifier.scale(0.75f)
+            )
+        }
+
+        IconButton(onClick = { }) {
+            Icon(
+                painter = painterResource(id = R.drawable.feed_back),
+                contentDescription = null,
+                modifier = Modifier.scale(0.75f)
+            )
+        }
+
     }
-
-//    transactionsList(user.recentTransactions) { } //todo add transaction sheet
+    if (state.latestDiagnosisResult == null)
+        UploadDiagnosisRequest(onEvent = onEvent)
+    else
+        LatestDiagnosisResult(
+            diagnosisResultView = state.latestDiagnosisResult,
+            onEvent = onEvent
+        )
 }
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DiseaseItem(
-    disease: com.example.model.app.Disease,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+private fun UploadDiagnosisRequest(
+    onEvent: (ReceiverHomeScreenEvent) -> Unit
 ) {
     OutlinedCard(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.4f),
+        onClick = { onEvent(ReceiverHomeScreenEvent.OnCreateDiagnosisRequestClicked) }
+    ) {
+        Spacer(modifier = Modifier.weight(0.4f))
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .weight(0.6f)
+                .align(Alignment.CenterHorizontally),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "You have no diagnosis requests yet",
+                style = MaterialTheme.typography.bodyLarge,
+            )
+
+            TextButton(onClick = { onEvent(ReceiverHomeScreenEvent.OnCreateDiagnosisRequestClicked) }) {
+                Text(text = "Upload diagnosis")
+            }
+        }
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+private fun LatestDiagnosisResult(
+    diagnosisResultView: DiagnosisResultView,
+    onEvent: (ReceiverHomeScreenEvent) -> Unit,
+    dateFormatter: SimpleDateFormat = SimpleDateFormat("MMM dd", Locale.getDefault())
+) {
+    OutlinedCard(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = { onEvent(ReceiverHomeScreenEvent.OnDiagnosisClicked) }
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(text = disease.name, style = MaterialTheme.typography.headlineSmall)
             Text(
-                text = disease.description,
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 2
+                text = "Latest diagnosis result",
+                style = MaterialTheme.typography.bodyLarge
             )
+            Text(
+                text = diagnosisResultView.diagnosis,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "diagnosed: ${dateFormatter.format(diagnosisResultView.createdAt)}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Text(
+                    text = "last updated: ${dateFormatter.format(diagnosisResultView.updatedAt)}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "Doctor: ")
+                    TextButton(onClick = { }) {
+                        Text(text = diagnosisResultView.doctor.username)
+                    }
+                }
+
+                Text(
+                    text = "Status: ${diagnosisResultView.status}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
     }
 }
+
+@Composable
+private fun ReceiverHomeScreenTransactions(
+    state: ReceiverHomeScreenState,
+    onEvent: (ReceiverHomeScreenEvent) -> Unit,
+) {
+    VerticalTransactionsList(
+        transactionViewsFlow = state.transactions,
+        onTransactionClick = { onEvent(ReceiverHomeScreenEvent.OnTransactionClicked(it.id)) },
+        onMedicineClick = { onEvent(ReceiverHomeScreenEvent.OnMedicineClicked(it)) },
+        title = "Recent Transactions"
+    )
+}
+
 
 @Preview(showBackground = true)
 @Composable
 private fun ReceiverHomeScreenPreview() {
-    ReceiverHomeScreenContent(
-        user = com.example.model.app.User.emptyReceiver().copy(
-            diseases = listOf(
-                com.example.model.app.Disease.empty().copy(
-                    name = "Cancer",
-                    description = "Cancer is a group of diseases involving abnormal cell growth with the potential to invade or spread to other parts of the body. These contrast with benign tumors, which do not spread. Possible signs and symptoms include a lump, abnormal bleeding, prolonged cough, unexplained weight loss, and a change in bowel movements. While these symptoms may indicate cancer, they may have other causes. Over 100 types of cancers affect humans. More than half of cancers occur in people over the age of 65 years. Smoking, diet, obesity, lack of exercise, and use of alcohol are known to increase the risk of cancer. Infections such as Helicobacter pylori and human papillomavirus may play a role. About 10–15% of cancers are due to inherited genetic defects, with the remainder due to unknown causes. Most cancers are diagnosed by a combination of imaging tests, biopsies, and blood tests. Treatment may involve surgery, radiation therapy, chemotherapy, immunotherapy, targeted therapy, or bone marrow transplantation. Less common treatments include stem cell transplantation, cryotherapy, and hormone therapy. Supportive care may be used to treat side effects. Palliative care may be appropriate in people with advanced cancer. Life expectancy depends on the type of cancer and the stage of the disease. Early detection through screening tests and regular checkups can increase the chance of successful treatment. The word cancer comes from the Latin word for crab, as cancers are able to spread throughout the body in this manner. The disease is not limited to humans, as the crab also has a similar ability to spread throughout the water."
+    Surface {
+        ReceiverHomeScreen(
+            state = ReceiverHomeScreenState(
+                transactions = flowOf(PagingData.from(listOf(TransactionView.empty()))),
+                latestDiagnosisResult = DiagnosisResultView.empty().copy(
+                    diagnosis = "Based on your symptoms, it sounds like you have a viral infection. This is a common cause of fever. The good news is that most viral infections go away on their own within a week or two.",
+                    doctor = User.emptyDoctor().copy(username = "Dr. John Doe")
                 ),
-                com.example.model.app.Disease.empty().copy(
-                    name = "Diabetes",
-                    description = "Diabetes mellitus, commonly referred to as diabetes, is a group of metabolic disorders in which there are high blood sugar levels over a prolonged period. Symptoms of high blood sugar include frequent urination, increased thirst, and increased hunger. If left untreated, diabetes can cause many complications. Acute complications can include diabetic ketoacidosis, hyperosmolar hyperglycemic state, or death. Serious long-term complications include cardiovascular disease, stroke, chronic kidney disease, foot ulcers, and damage to the eyes. Diabetes is due to either the pancreas not producing enough insulin or the cells of the body not responding properly to the insulin produced. There is also a form of diabetes mellitus that results from a combination of insulin resistance and inadequate insulin production. Diabetes is a major cause of blindness, kidney failure, heart attacks, strokes, and lower limb amputations. It was the seventh leading cause of death in the United States in 2018. The global economic cost of diabetes in 2014 was estimated to be US$673 billion. In the United States, diabetes cost $327 billion in 2017. The prevalence of diabetes is increasing rapidly and has reached epidemic proportions globally. In 2019, an estimated 463 million people had diabetes worldwide, with type 2 diabetes making up about 90% of the cases. This represents 8.8% of the adult population, up from just 4.7% in 1980. Type 1 diabetes is less common, but is usually more severe. The global prevalence of diabetes is expected to increase by 2050. In the United States, diabetes increased from 5.58 million in 1980 to 34.2 million in 2015. In 2015, Type 2 diabetes accounted for 90–95% of all cases of diabetes in adults. In the United States, 41% of adults with diabetes are diagnosed, while 18% are undiagnosed. Diabetes is more common in low- and middle-income countries but less common in East Asia and the Pacific. The global prevalence of diabetes might be overestimated due to the wide availability of diagnostic testing. Diabetes is a major cause of death in the United States. In 2015, diabetes was the seventh leading cause of death in the United States with 250,000 deaths. Diabetes was the sixth leading cause of death in 2005. The risk of death from diabetes is increased by 50"
-                ),
-                com.example.model.app.Disease.empty().copy(
-                    name = "Hypertension",
-                    description = "Hypertension, also known as high blood pressure, is a long-term medical condition in which the blood pressure in the arteries is persistently elevated. High blood pressure typically does not cause symptoms. Long-term high blood pressure, however, is a major risk factor for coronary artery disease, stroke, heart failure, atrial fibrillation, peripheral vascular disease, vision loss, chronic kidney disease, and dementia. Hypertension is classified using the following ranges, with the most common range being 130–139 mmHg systolic and 80–89 mmHg diastolic: Mild hypertension: 130–139/80–89 mmHg Moderate hypertension: 140–159/90–99 mmHg Severe hypertension: 160–179/100–109 mmHg Very severe hypertension: 180/110 mmHg or higher Hypertension is usually classified as primary or secondary. Primary hypertension is more common and is linked to lifestyle factors and genetics. Secondary hypertension is due to an identifiable cause, such as kidney disease, and is more common in the elderly. Hypertension is diagnosed by taking an average of two or more blood pressure readings at three or more separate health care visits. The diagnosis may be confirmed with ambulatory blood pressure monitoring over 24 hours. If the blood pressure is not controlled with medications, procedures to reduce blood pressure may be recommended. These include lifestyle changes, medication, and possibly surgery. The goal of treatment is to reduce blood pressure to less than 130/80 mmHg. In those with diabetes or chronic kidney disease, the goal is to reduce blood pressure to less than 130/80 mmHg. For those with chronic kidney disease, the goal is to reduce blood pressure to less than 130/80 mmHg. For those with diabetes or chronic kidney disease, the goal is to reduce blood pressure to less than 130/80 mmHg. For those with chronic kidney disease, the goal is to reduce blood pressure to less than 130/80 mmHg. For those with diabetes or chronic kidney disease, the goal is to reduce blood pressure to less than 130/80 mmHg. For those with chronic kidney disease, the goal is to reduce blood pressure to less than 130/80 mmHg. For those with diabetes or chronic kidney disease, the goal is to reduce blood pressure to less than 130/80 mmHg. For)"
-                ),
-                com.example.model.app.Disease.empty().copy(name = "Asthma")
+                user = User.emptyReceiver().copy(username = "mohamed"),
+                isSearchVisible = true,
             ),
-            suggestedMedicines = listOf(
-                Medicine.empty().copy(name = "Paracetamol"),
-                Medicine.empty().copy(name = "Aspirin"),
-                Medicine.empty().copy(name = "Ibuprofen"),
-                Medicine.empty().copy(name = "Diphenhydramine"),
-            ),
-            username = "John Doe",
-        ),
-        onMedicineClick = { },
-        onDiseaseClick = { },
-    )
+            onEvent = {}
+        )
+    }
 }

@@ -19,12 +19,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.model.app.transaction.TransactionView
 import java.text.SimpleDateFormat
 import java.util.*
 
 fun LazyListScope.transactionsList(
-    transactionViews: List<com.example.model.app.TransactionView>,
-    onTransactionClick: (com.example.model.app.TransactionView) -> Unit
+    transactionViews: List<TransactionView>,
+    onTransactionClick: (TransactionView) -> Unit
 ) {
     item {
         Text(text = "Recent Transactions", style = MaterialTheme.typography.headlineSmall)
@@ -41,7 +42,7 @@ fun LazyListScope.transactionsList(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun TransactionItem(
-    transactionView: com.example.model.app.TransactionView,
+    transactionView: TransactionView,
     onClick: () -> Unit
 ) {
     val simpleDateFormat by remember {

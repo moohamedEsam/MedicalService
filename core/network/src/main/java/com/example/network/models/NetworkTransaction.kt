@@ -1,7 +1,7 @@
 package com.example.network.models
 
-import com.example.model.app.Transaction
-import com.example.model.app.TransactionView.Status
+import com.example.model.app.transaction.Transaction
+import com.example.model.app.transaction.TransactionView.Status
 import com.example.model.serializers.DateSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

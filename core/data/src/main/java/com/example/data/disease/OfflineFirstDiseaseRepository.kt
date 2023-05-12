@@ -8,9 +8,9 @@ import com.example.database.models.disease.toDisease
 import com.example.database.models.disease.toDiseaseView
 import com.example.database.models.disease.toEntity
 import com.example.database.room.dao.DiseaseDao
-import com.example.model.app.Disease
-import com.example.model.app.DiseaseView
-import com.example.model.app.Symptom
+import com.example.model.app.disease.Disease
+import com.example.model.app.disease.DiseaseView
+import com.example.model.app.disease.Symptom
 import com.example.network.RemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull

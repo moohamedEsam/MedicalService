@@ -2,7 +2,7 @@ package com.example.medicalservice.presentation.donation
 
 import androidx.paging.PagingData
 import com.example.common.models.ValidationResult
-import com.example.model.app.DonationRequestView
+import com.example.model.app.donation.DonationRequestView
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

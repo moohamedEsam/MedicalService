@@ -5,7 +5,7 @@ import androidx.room.Junction
 import androidx.room.Relation
 import com.example.database.models.medicine.MedicineEntity
 import com.example.database.models.medicine.toMedicine
-import com.example.model.app.DiseaseView
+import com.example.model.app.disease.DiseaseView
 
 data class DiseaseEntityView(
     @Embedded val disease: DiseaseEntity,

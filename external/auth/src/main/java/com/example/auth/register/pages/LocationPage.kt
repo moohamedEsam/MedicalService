@@ -14,11 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.model.app.Location
+import com.example.model.app.user.Location
 
 @Composable
 fun LocationPage(
-    location: com.example.model.app.Location,
+    location: Location,
     onLocationRequested: () -> Unit,
 ) {
     Column {
@@ -55,7 +55,7 @@ fun LocationPage(
 @Composable
 private fun LocationPagePreview() {
     LocationPage(
-        location = com.example.model.app.Location(0.0, 0.0),
+        location = Location(0.0, 0.0),
         onLocationRequested = { }
     )
 }

@@ -1,7 +1,7 @@
 package com.example.model.app.medicine
 
-import com.example.model.app.Disease
-import com.example.model.app.empty
+import com.example.model.app.disease.Disease
+import com.example.model.app.disease.empty
 
 data class MedicineView(
     val name: String,

@@ -2,7 +2,7 @@ package com.example.database.models.disease
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.model.app.Symptom
+import com.example.model.app.disease.Symptom
 
 @JvmInline
 @Entity(tableName = "symptoms")

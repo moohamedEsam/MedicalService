@@ -2,7 +2,8 @@ package com.example.medicalservice.presentation.home.navigation
 
 import androidx.navigation.NavGraphBuilder
 import com.example.medicalservice.presentation.home.donner.donnerHome
-import com.example.model.app.UserType
+import com.example.medicalservice.presentation.home.receiver.receiverHome
+import com.example.model.app.user.UserType
 
 
 
@@ -11,6 +12,6 @@ fun NavGraphBuilder.homeScreen(
 ) {
     if (userType == UserType.Donner)
         donnerHome()
-//    else
-//        receiverHome()
+    else
+        receiverHome()
 }
