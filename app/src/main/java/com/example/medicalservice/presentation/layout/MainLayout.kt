@@ -63,7 +63,6 @@ fun MedicalServiceLayout(
     viewModel: MainLayoutViewModel = koinViewModel(),
 ) {
     val userSettings by LocalContext.current.dataStore.data.collectAsStateWithLifecycle(initialValue = UserSettings())
-    Log.i("MainLayout", "MedicalServiceLayout: $userSettings")
     MedicalServiceLayout(
         startDestination = if (userSettings.token.isNotEmpty()) Destination.Home.fullRoute else Destination.Login.fullRoute,
         navHostController = navHostController,

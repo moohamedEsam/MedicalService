@@ -6,6 +6,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.example.common.navigation.AppNavigator
+import com.example.common.navigation.Destination
 import com.example.domain.usecase.diagnosis.GetUserLatestDiagnosisUseCase
 import com.example.domain.usecase.transaction.GetCurrentUserTransactionsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,6 +41,15 @@ class ReceiverHomeViewModel(
     }
 
     fun handleEvent(event: ReceiverHomeScreenEvent) = viewModelScope.launch {
-
+        when(event){
+            ReceiverHomeScreenEvent.OnCreateDiagnosisRequestClicked -> appNavigator.navigateTo(Destination.DiagnosisForm())
+            ReceiverHomeScreenEvent.OnDiagnosisClicked -> Unit
+            ReceiverHomeScreenEvent.OnFAQClicked -> Unit
+            ReceiverHomeScreenEvent.OnFeedbackClicked -> Unit
+            is ReceiverHomeScreenEvent.OnMedicineClicked -> appNavigator.navigateTo(Destination.MedicineDetails(event.medicineId))
+            is ReceiverHomeScreenEvent.OnQueryChanged -> _uiState.value = _uiState.value.copy(query = event.query)
+            ReceiverHomeScreenEvent.OnSearchIconClicked -> _uiState.value = _uiState.value.copy(isSearchVisible = !_uiState.value.isSearchVisible)
+            is ReceiverHomeScreenEvent.OnTransactionClicked -> appNavigator.navigateTo(Destination.TransactionDetails(event.transactionId))
+        }
     }
 }

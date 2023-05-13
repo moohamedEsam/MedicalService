@@ -83,7 +83,7 @@ private fun ReceiverHomeScreen(
             )
         }
         FloatingActionButton(
-            onClick = { },
+            onClick = { onEvent(ReceiverHomeScreenEvent.OnCreateDiagnosisRequestClicked) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(8.dp)

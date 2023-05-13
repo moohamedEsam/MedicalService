@@ -7,6 +7,7 @@ import com.example.data.donation.DonationRepository
 import com.example.data.medicine.MedicineRepository
 import com.example.data.transaction.TransactionRepository
 import com.example.datastore.dataStore
+import com.example.domain.usecase.diagnosis.CreateDiagnosisRequestUseCase
 import com.example.domain.usecase.diagnosis.GetUserLatestDiagnosisUseCase
 import com.example.domain.usecase.disease.GetAvailableSymptomsUseCase
 import com.example.domain.usecase.disease.GetDiseaseDetailsUseCase
@@ -142,5 +143,10 @@ class DomainModule {
                 doctor = User.emptyDoctor().copy(username = "Dr. John Doe")
             )
         )
+    }
+
+    @Factory
+    fun provideCreateDiagnosisRequestUseCase() = CreateDiagnosisRequestUseCase {
+        Result.Success(it)
     }
 }

@@ -32,6 +32,8 @@ sealed class Destination(val route: String, private vararg val params: String) {
         const val transactionIdKey = "id"
     }
 
+    object DiagnosisForm : NoArgumentsDestination("diagnosis form")
+
     object DonationsList : NoArgumentsDestination("donations")
 
     object MyDonationsList : NoArgumentsDestination("my-donations")
