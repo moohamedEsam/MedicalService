@@ -19,6 +19,9 @@ data class TransactionEntity(
     val senderName: String,
     val status: TransactionView.Status,
     val donationRequestId: String? = null,
+    val isCreated: Boolean = false,
+    val isUpdated: Boolean = false,
+    val isDeleted: Boolean = false,
 )
 
 fun TransactionEntity.toTransaction() = Transaction(

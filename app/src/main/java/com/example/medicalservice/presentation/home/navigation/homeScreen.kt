@@ -16,9 +16,9 @@ import com.example.model.app.user.UserType
 fun NavGraphBuilder.homeScreen() {
     composable(Destination.Home.fullRoute){
         val userSettings by LocalContext.current.dataStore.data.collectAsStateWithLifecycle(initialValue = UserSettings())
-//        if (userSettings.type == UserType.Donner)
-//            DonnerHomeScreen()
-//        else if (userSettings.type == UserType.Receiver)
+        if (userSettings.type == UserType.Donner)
+            DonnerHomeScreen(userSettings.id)
+        else if (userSettings.type == UserType.Receiver)
             ReceiverHomeScreen()
     }
 }

@@ -21,10 +21,12 @@ import com.example.medicalservice.presentation.components.HorizontalDonationRequ
 import com.example.medicalservice.presentation.components.VerticalTransactionsList
 import com.example.model.app.user.User
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun DonnerHomeScreen(
-    viewModel: DonnerHomeViewModel = koinViewModel()
+    userId: String,
+    viewModel: DonnerHomeViewModel = koinViewModel { parametersOf(userId) }
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     DonnerHomeScreenContent(

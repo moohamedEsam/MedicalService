@@ -7,10 +7,13 @@ import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.NetworkType
 import androidx.work.WorkerParameters
+import com.example.data.diagnosis.request.DiagnosisRequestRepository
+import com.example.data.diagnosis.result.DiagnosisResultRepository
 import com.example.data.disease.DiseaseRepository
 import com.example.data.donation.DonationRepository
 import com.example.data.medicine.MedicineRepository
 import com.example.data.transaction.TransactionRepository
+import com.example.data.user.UserRepository
 
 class SyncWorker(
     private val context: Context,
@@ -18,20 +21,26 @@ class SyncWorker(
     private val medicineRepository: MedicineRepository,
     private val donationRepository: DonationRepository,
     private val diseaseRepository: DiseaseRepository,
-    private val transactionRepository: TransactionRepository
+    private val transactionRepository: TransactionRepository,
+    private val diagnosisRequestRepository: DiagnosisRequestRepository,
+    private val diagnosisResultRepository: DiagnosisResultRepository,
+    private val userRepository: UserRepository
 ) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result = try {
         val isSyncSuccessful = listOf(
             medicineRepository.syncMedicines(),
             diseaseRepository.syncDiseases(),
             donationRepository.syncDonationRequests(),
-            transactionRepository.syncTransactions()
+            transactionRepository.syncTransactions(),
+//            diagnosisRequestRepository.syncDiagnosisRequest(),
+//            diagnosisResultRepository.syncDiagnosis(),
+            userRepository.syncUser()
         ).all { it }
 
         if (isSyncSuccessful)
             Result.success()
         else
-            Result.retry()
+            Result.failure()
     } catch (e: Exception) {
         Log.i("SyncWorker", "doWork: ${e.message}")
         Result.failure()

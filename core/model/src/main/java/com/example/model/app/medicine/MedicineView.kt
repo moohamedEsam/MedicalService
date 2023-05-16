@@ -25,6 +25,16 @@ fun MedicineView.Companion.empty() = MedicineView(
     uses = emptyList(),
 )
 
+fun MedicineView.toMedicine() = Medicine(
+    name = name,
+    uses = uses,
+    sideEffects = sideEffects,
+    precautions = precautions,
+    overdoes = overDoes,
+    id = id,
+    diseasesId = diseases.map { it.id },
+)
+
 fun MedicineView.Companion.paracetamol() = MedicineView(
     name = "Paracetamol",
     diseases = listOf(

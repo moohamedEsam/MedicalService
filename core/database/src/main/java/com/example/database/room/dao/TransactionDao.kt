@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.example.database.models.transaction.TransactionEntity
 import com.example.database.models.transaction.TransactionEntityView
 import kotlinx.coroutines.flow.Flow
@@ -15,6 +16,13 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions")
     @Transaction
     fun getTransactions(): DataSource.Factory<Int, TransactionEntityView>
+
+    @Query("SELECT * FROM transactions WHERE receiverId = :userId or senderId = :userId")
+    @Transaction
+    fun getTransactionsByUserId(userId: String): DataSource.Factory<Int, TransactionEntityView>
+
+    @Query("SELECT * FROM transactions where isCreated = 0")
+    suspend fun getCreatedTransactions():List<TransactionEntity>
 
     @Query("SELECT * FROM transactions WHERE id = :id")
     @Transaction
@@ -32,9 +40,15 @@ interface TransactionDao {
     @Query("UPDATE transactions Set quantity = :quantity WHERE id = :id AND status = 'Pending'")
     suspend fun updateQuantity(id: String, quantity: Int)
 
+    @Update
+    suspend fun update(transaction: TransactionEntity)
+
     @Insert
     suspend fun insert(transaction: TransactionEntity)
 
     @Insert
     suspend fun insertAll(transactions: List<TransactionEntity>)
+
+    @Query("update transactions set isDeleted = :isDeleted where id = :id")
+    suspend fun setTransactionDeleted(id: String, isDeleted: Boolean)
 }

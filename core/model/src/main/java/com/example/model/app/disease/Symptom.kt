@@ -2,9 +2,8 @@ package com.example.model.app.disease
 
 import kotlinx.serialization.Serializable
 
-@JvmInline
 @Serializable
-value class Symptom(val name: String) {
+data class Symptom(val name: String) {
     companion object
 }
 

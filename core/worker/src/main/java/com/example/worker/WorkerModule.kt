@@ -12,7 +12,10 @@ val workerModule = module {
             diseaseRepository = get(),
             medicineRepository = get(),
             donationRepository = get(),
-            transactionRepository = get()
+            transactionRepository = get(),
+            diagnosisRequestRepository = get(),
+            diagnosisResultRepository = get(),
+            userRepository = get()
         )
     }
 }

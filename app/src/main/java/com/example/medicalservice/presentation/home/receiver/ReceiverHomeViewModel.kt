@@ -24,7 +24,7 @@ class ReceiverHomeViewModel(
     private val transactionPager = Pager(
         PagingConfig(pageSize = 10)
     ) {
-        getCurrentUserTransactionsUseCase()
+        getCurrentUserTransactionsUseCase("") // todo find a fix
     }.flow.cachedIn(viewModelScope)
 
     private val _uiState =
@@ -43,7 +43,7 @@ class ReceiverHomeViewModel(
     fun handleEvent(event: ReceiverHomeScreenEvent) = viewModelScope.launch {
         when(event){
             ReceiverHomeScreenEvent.OnCreateDiagnosisRequestClicked -> appNavigator.navigateTo(Destination.DiagnosisForm())
-            ReceiverHomeScreenEvent.OnDiagnosisClicked -> Unit
+            ReceiverHomeScreenEvent.OnDiagnosisClicked -> appNavigator.navigateTo(Destination.DiagnosisDetails(_uiState.value.latestDiagnosisResult?.id?:""))
             ReceiverHomeScreenEvent.OnFAQClicked -> Unit
             ReceiverHomeScreenEvent.OnFeedbackClicked -> Unit
             is ReceiverHomeScreenEvent.OnMedicineClicked -> appNavigator.navigateTo(Destination.MedicineDetails(event.medicineId))

@@ -29,4 +29,13 @@ class DatabaseModule {
 
     @Single
     fun provideTransactionDao(database: MedicalServiceDatabase) = database.getTransactionDao()
+
+    @Single
+    fun provideUserDao(database: MedicalServiceDatabase) = database.getUserDao()
+
+    @Single
+    fun provideDiagnosisRequestDao(database: MedicalServiceDatabase) = database.getDiagnosisRequestDao()
+
+    @Single
+    fun provideDiagnosisResultDao(database: MedicalServiceDatabase) = database.getDiagnosisResultDao()
 }

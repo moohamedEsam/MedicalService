@@ -3,4 +3,4 @@ package com.example.domain.usecase.transaction
 import androidx.paging.PagingSource
 import com.example.model.app.transaction.TransactionView
 
-fun interface GetCurrentUserTransactionsUseCase : (String) -> PagingSource<Int, TransactionView>
+fun interface GetTransactionsUseCase : () -> PagingSource<Int, TransactionView>

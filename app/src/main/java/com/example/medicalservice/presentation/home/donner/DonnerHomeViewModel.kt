@@ -25,6 +25,7 @@ class DonnerHomeViewModel(
     private val getCurrentUserTransactionsUseCase: GetCurrentUserTransactionsUseCase,
     private val setDonationRequestBookmarkUseCase: SetDonationRequestBookmarkUseCase,
     private val appNavigator: AppNavigator,
+    private val userId:String
 ) : ViewModel() {
     private val donationPager = Pager(
         config = PagingConfig(
@@ -39,7 +40,7 @@ class DonnerHomeViewModel(
             pageSize = 10,
         ),
     ) {
-        getCurrentUserTransactionsUseCase()
+        getCurrentUserTransactionsUseCase(userId)
     }.flow.cachedIn(viewModelScope)
 
     private val _uiState = MutableStateFlow(

@@ -33,6 +33,12 @@ sealed class Destination(val route: String, private vararg val params: String) {
     }
 
     object DiagnosisForm : NoArgumentsDestination("diagnosis form")
+    object DiagnosisDetails : Destination("diagnosis", "id") {
+        operator fun invoke(id: String) = "$route/$id"
+        const val diagnosisIdKey = "id"
+    }
+
+    object DiagnosisList : NoArgumentsDestination("diagnosis list")
 
     object DonationsList : NoArgumentsDestination("donations")
 

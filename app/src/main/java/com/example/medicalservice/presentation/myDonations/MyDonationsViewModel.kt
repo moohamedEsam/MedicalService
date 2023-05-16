@@ -40,7 +40,7 @@ class MyDonationsViewModel(
 
     private val transactionPager = Pager(
         config = PagingConfig(pageSize = 10),
-        pagingSourceFactory = { getCurrentUserTransactionsUseCase() })
+        pagingSourceFactory = { getCurrentUserTransactionsUseCase("") }) // todo find fix
         .flow
         .distinctUntilChanged()
         .cachedIn(viewModelScope)

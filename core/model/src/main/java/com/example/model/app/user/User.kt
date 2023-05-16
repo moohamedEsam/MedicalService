@@ -1,5 +1,6 @@
 package com.example.model.app.user
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 sealed interface User {
@@ -52,6 +53,7 @@ sealed interface User {
         val phone: String,
         val location: Location,
         val id: String,
+        @SerialName("enumType")
         val type: String,
     )
 
@@ -83,7 +85,7 @@ fun User.Companion.emptyDoctor() = User.Doctor(
 )
 
 fun User.Unknown.toUser(): User = when (type) {
-    "receiver" -> User.Receiver(
+    "USER" -> User.Receiver(
         username = username,
         email = email,
         phone = phone,
@@ -91,7 +93,7 @@ fun User.Unknown.toUser(): User = when (type) {
         id = id,
     )
 
-    "donor" -> User.Donor(
+    "DONATOR" -> User.Donor(
         username = username,
         email = email,
         phone = phone,
@@ -99,7 +101,7 @@ fun User.Unknown.toUser(): User = when (type) {
         id = id,
     )
 
-    "doctor" -> User.Doctor(
+    "Doctor" -> User.Doctor(
         username = username,
         email = email,
         phone = phone,

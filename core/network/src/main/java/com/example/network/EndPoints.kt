@@ -14,6 +14,25 @@ object EndPoints {
 
     fun getUser(id: String): String = "$USER/$id"
 
+    fun getUsers(): String = "$USER/getalluser"
+
     fun getCurrentUser(): String = "$USER/getalluser"
     fun getUserTransactions(): String = "$BASE_URL/transaction/gettransactionbyuserid"
+    fun getTransactions(): String = "$BASE_URL/transaction/getalltransaction"
+
+    fun createTransaction(): String = "$BASE_URL/transaction/addtransaction"
+
+    fun updateTransaction(id:String): String = "$BASE_URL/transaction/updatetransaction/$id"
+
+    fun getDiagnosisRequests(): String = "$BASE_URL/diagnosis/getalldiagnosis"
+
+    fun createDiagnosisRequest(): String = "$BASE_URL/diagnosis/adddiagnosis"
+
+    fun updateDiagnosisRequest(id: String): String = "$BASE_URL/diagnosis/updatediagnosis/$id"
+
+    fun getDiagnosisResults(): String = "$BASE_URL/diagnosisresult/getalldiagnosisresult"
+
+    fun createDiagnosisResult(): String = "$BASE_URL/diagnosisresult/adddiagnosisresult"
+
+    fun updateDiagnosisResult(id: String): String = "$BASE_URL/diagnosisresult/updatediagnosisresult/$id"
 }

@@ -1,6 +1,7 @@
 package com.example.network
 
 import android.util.Log
+import com.example.common.functions.loadToken
 import com.example.datastore.dataStore
 import com.example.model.app.auth.Credentials
 import com.example.model.app.auth.Token
@@ -51,20 +52,12 @@ class NetworkModule {
         install(Auth) {
             bearer {
                 loadTokens {
-                    val token = androidContext().dataStore.data.map { it.token }.lastOrNull() ?: ""
+                    val token = androidContext().loadToken() ?: ""
                     BearerTokens(token, token)
                 }
                 refreshTokens {
-                    val userSettings = androidContext().dataStore.data.lastOrNull()?: return@refreshTokens BearerTokens("", "")
-
-                    val refreshToken = client.post(EndPoints.LOGIN){
-                        setBody(Credentials(userSettings.email, userSettings.password))
-                        contentType(ContentType.Application.Json)
-                        markAsRefreshTokenRequest()
-                    }.body<Token>()
-                    if(userSettings.token != refreshToken.token)
-                        androidContext().dataStore.updateData { it.copy(token = refreshToken.token) }
-                    BearerTokens(refreshToken.token, refreshToken.token)
+                    val token = androidContext().loadToken() ?: ""
+                    BearerTokens(token, token)
                 }
                 sendWithoutRequest {
                     !it.url.pathSegments.contains("login") && !it.url.pathSegments.contains("adduser")

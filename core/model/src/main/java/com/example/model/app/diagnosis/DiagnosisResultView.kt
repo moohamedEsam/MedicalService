@@ -1,5 +1,6 @@
 package com.example.model.app.diagnosis
 
+import com.example.model.app.medicine.MedicineView
 import com.example.model.app.user.User
 import com.example.model.app.user.emptyDoctor
 import java.util.Date
@@ -13,6 +14,7 @@ data class DiagnosisResultView(
     val createdAt: Date,
     val updatedAt: Date,
     val diagnosisRequest: DiagnosisRequest,
+    val medications: List<MedicineView> = emptyList(),
 ) {
     companion object
 }

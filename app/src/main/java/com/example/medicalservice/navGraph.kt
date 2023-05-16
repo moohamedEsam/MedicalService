@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import com.example.auth.login.loginScreen
 import com.example.auth.register.registerScreen
 import com.example.maplocation.mapScreen
+import com.example.medicalservice.presentation.diagnosis.details.diagnosisDetailsScreen
 import com.example.medicalservice.presentation.diagnosis.form.diagnosisFormScreen
 import com.example.medicalservice.presentation.disease.diseaseScreen
 import com.example.medicalservice.presentation.donation.donationScreen
@@ -38,6 +39,7 @@ fun MedicalServiceNavGraph(
         homeScreen()
         transactionScreen()
         diagnosisFormScreen()
+        diagnosisDetailsScreen()
         donationScreen()
         donationListScreen()
         myDonationsScreen()

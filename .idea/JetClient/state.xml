@@ -113,7 +113,7 @@
                     <requestState>
                       <option name="body">
                         <bodyState>
-                          <option name="raw" value="{&#13;&#10;&#13;&#10;&quot;email&quot;:&quot;ali new update user&quot;,&#13;&#10;&quot;phone&quot;:&quot;0115416727373737373&quot;&#13;&#10;&#13;&#10;}" />
+                          <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mohamedEsam@gmail.com&quot;,&#10;  &quot;password&quot;: &quot;somethingRandom&quot;,&#10;  &quot;phone&quot;: &quot;012&quot;,&#10;  &quot;username&quot;: &quot;mohamed esam&quot;,&#10;  &quot;location&quot;: {&#10;    &quot;lat&quot;: 15,&#10;    &quot;lng&quot;: 15&#10;  },&#10;  &quot;enumType&quot;: 1&#10;}" />
                           <option name="type" value="JSON" />
                         </bodyState>
                       </option>
@@ -174,9 +174,9 @@
                 <option name="auth">
                   <authState>
                     <option name="bearer">
-                      <iU>
+                      <iV>
                         <option name="token" value="{{token}}" />
-                      </iU>
+                      </iV>
                     </option>
                     <option name="type" value="BEARER" />
                   </authState>
@@ -284,9 +284,9 @@
                 <option name="auth">
                   <authState>
                     <option name="bearer">
-                      <iU>
+                      <iV>
                         <option name="token" value="{{token}}" />
-                      </iU>
+                      </iV>
                     </option>
                     <option name="type" value="BEARER" />
                   </authState>
@@ -385,9 +385,9 @@
                 <option name="auth">
                   <authState>
                     <option name="bearer">
-                      <iU>
+                      <iV>
                         <option name="token" value="{{token}}" />
-                      </iU>
+                      </iV>
                     </option>
                     <option name="type" value="BEARER" />
                   </authState>
@@ -710,9 +710,9 @@
                 <option name="auth">
                   <authState>
                     <option name="bearer">
-                      <iU>
+                      <iV>
                         <option name="token" value="{{token}}" />
-                      </iU>
+                      </iV>
                     </option>
                     <option name="type" value="BEARER" />
                   </authState>
@@ -761,9 +761,9 @@
                 <option name="auth">
                   <authState>
                     <option name="bearer">
-                      <iU>
+                      <iV>
                         <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYSIsImNyZWF0ZWQiOjE2Nzk3NTY3ODkzNTgsImV4cCI6MTY4MDM2MTU4OX0.-U248bTiS4YjrGcYqsHUOp78qSk7J-sfQdmCs9c9_WR8lv75ayzRDnlOren35zSWJMCrKFwUxKNY8yUvfTWl1w" />
-                      </iU>
+                      </iV>
                     </option>
                     <option name="type" value="BEARER" />
                   </authState>
