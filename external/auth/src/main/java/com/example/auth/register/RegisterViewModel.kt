@@ -12,7 +12,7 @@ import com.example.common.navigation.AppNavigator
 import com.example.common.navigation.Destination
 import com.example.domain.usecase.user.RegisterUseCase
 import com.example.functions.snackbar.SnackBarManager
-import com.example.model.app.user.Register
+import com.example.model.app.user.CreateUserDto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -81,15 +81,12 @@ class RegisterViewModel(
         }
     }
 
-    private fun getCurrentRegister() = Register(
+    private fun getCurrentRegister() = CreateUserDto(
         username = uiState.value.username.value,
         email = uiState.value.email.value,
         password = uiState.value.password.value,
         phone = uiState.value.phone.value,
         location = uiState.value.location,
-        idProofPath = "",
         type = uiState.value.userType,
-        medicalPrescriptionPath = "",
-        salaryProofPath = ""
     )
 }

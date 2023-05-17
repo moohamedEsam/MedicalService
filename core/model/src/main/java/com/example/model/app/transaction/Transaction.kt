@@ -15,4 +15,19 @@ data class Transaction(
     val createdAt: Date = Date(),
     val id: String = UUID.randomUUID().toString(),
 //    @Contextual val donationRequestId: String? = null,
+){
+    companion object
+}
+
+fun Transaction.Companion.empty() = Transaction(
+    medicineId = "",
+    quantity = 0,
+    receiverId = "",
+    receiverName = "",
+    senderId = "",
+    senderName = "",
+    status = TransactionView.Status.Pending,
+    updatedAt = Date(),
+    createdAt = Date(),
+    id = UUID.randomUUID().toString()
 )

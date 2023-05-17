@@ -12,21 +12,28 @@ import com.example.model.app.disease.Symptom
 import com.example.model.app.donation.DonationRequest
 import com.example.model.app.medicine.Medicine
 import com.example.model.app.transaction.Transaction
-import com.example.model.app.user.Register
+import com.example.model.app.user.CreateUserDto
 import com.example.model.app.user.User
-import com.example.model.app.user.toUser
 import com.example.network.models.NetworkTransaction
+import com.example.network.models.NetworkUser
+import com.example.network.models.NetworkDiagnosisResult
 import com.example.network.models.RemoteResponse
 import com.example.network.models.asDomainModel
-import com.example.network.models.toNetworkRegister
+import com.example.network.models.asNetworkModel
+import com.example.network.models.toDiagnosisResult
+import com.example.network.models.toNetwork
+import com.example.network.models.toNetworkCreateUserDto
+import com.example.network.models.toUser
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import io.ktor.http.isSuccess
 import org.koin.core.annotation.Single
 
 @Single(binds = [RemoteDataSource::class])
@@ -45,10 +52,10 @@ class KtorRemoteDataSource(
                 Result.Error("wrong username or password")
         }
 
-    override suspend fun register(register: Register): Result<Unit> =
+    override suspend fun register(createUserDto: CreateUserDto): Result<Unit> =
         tryWrapper {
             val response = client.post(EndPoints.REGISTER) {
-                setBody(register.toNetworkRegister())
+                setBody(createUserDto.toNetworkCreateUserDto())
                 contentType(ContentType.Application.Json)
             }
             mapResponse(response.body())
@@ -72,7 +79,10 @@ class KtorRemoteDataSource(
 
     override suspend fun getSymptoms(): Result<List<Symptom>> = tryWrapper {
         val response = client.get(EndPoints.SYMPTOM)
-        mapResponse(response.body())
+        if(response.status.isSuccess())
+            Result.Success(response.body<List<String>>().map { Symptom(it) })
+        else
+            Result.Error("error")
     }
 
     override suspend fun predictDiseaseBySymptoms(symptoms: List<Symptom>): Result<DiseaseView> =
@@ -99,39 +109,23 @@ class KtorRemoteDataSource(
 
     override suspend fun createTransaction(transaction: Transaction): Result<Unit> = tryWrapper {
         val response = client.post(EndPoints.createTransaction()) {
-            setBody(transaction)
+            setBody(transaction.asNetworkModel())
             contentType(ContentType.Application.Json)
         }
         mapResponse(response.body())
     }
 
     override suspend fun updateTransaction(transaction: Transaction): Result<Unit> = tryWrapper {
-        val response = client.post(EndPoints.updateTransaction(transaction.id)) {
-            setBody(transaction)
+        val response = client.put(EndPoints.updateTransaction(transaction.id)) {
+            setBody(transaction.asNetworkModel())
             contentType(ContentType.Application.Json)
         }
         mapResponse(response.body())
     }
 
-    override suspend fun getDonnerUser(id: String): Result<User.Donor> = tryWrapper {
-        val response = client.get(EndPoints.getUser(id))
-        mapResponse(response.body())
-    }
-
-    override suspend fun getCurrentUser(email: String): Result<User> = tryWrapper {
-        val response = client.get(EndPoints.getCurrentUser())
-        val result = mapResponse(response.body<RemoteResponse<List<User.Unknown>>>())
-        if (result is Result.Error)
-            return@tryWrapper Result.Error(result.exception)
-        val unknownUser = (result as Result.Success).data.find { it.email == email }
-            ?: return@tryWrapper Result.Error("user not found")
-
-        Result.Success(unknownUser.toUser())
-    }
-
     override suspend fun getAllUsers(): Result<List<User>> = tryWrapper {
         val response = client.get(EndPoints.getUsers())
-        when (val result = mapResponse(response.body<RemoteResponse<List<User.Unknown>>>())) {
+        when (val result = mapResponse(response.body<RemoteResponse<List<NetworkUser>>>())) {
             is Result.Error -> return@tryWrapper Result.Error(result.exception)
             is Result.Success -> Result.Success(result.data.map { it.toUser() })
             else -> Result.Error("unknown error")
@@ -146,8 +140,9 @@ class KtorRemoteDataSource(
 
     override suspend fun getCurrentUserDiagnosisResults(): Result<List<DiagnosisResult>> =
         tryWrapper {
-            val response = client.get(EndPoints.getDiagnosisResults())
-            mapResponse(response.body())
+            val response = client.get(EndPoints.getCurrentUserDiagnosisResult())
+            val result = mapResponse<List<NetworkDiagnosisResult>>(response.body())
+            result.map { it.map { networkDiagnosisResult -> networkDiagnosisResult.toDiagnosisResult() } }
         }
 
     override suspend fun createDiagnosisRequest(donationRequest: DiagnosisRequest): Result<Unit> =
@@ -161,34 +156,28 @@ class KtorRemoteDataSource(
 
     override suspend fun updateDiagnosisRequest(donationRequest: DiagnosisRequest): Result<Unit> =
         tryWrapper {
-            val response = client.post(EndPoints.updateDiagnosisRequest(donationRequest.id)) {
+            val response = client.put(EndPoints.updateDiagnosisRequest(donationRequest.id)) {
                 setBody(donationRequest)
                 contentType(ContentType.Application.Json)
             }
             mapResponse(response.body())
         }
 
-    override suspend fun createDiagnosisResult(donationRequest: DiagnosisResult): Result<Unit> =
+    override suspend fun createDiagnosisResult(donationResult: DiagnosisResult): Result<Unit> =
         tryWrapper {
             val response = client.post(EndPoints.createDiagnosisResult()) {
-                setBody(donationRequest)
+                setBody(donationResult.toNetwork())
                 contentType(ContentType.Application.Json)
             }
             mapResponse(response.body())
         }
 
-    override suspend fun updateDiagnosisResult(donationRequest: DiagnosisResult): Result<Unit> =
+    override suspend fun updateDiagnosisResult(donationResult: DiagnosisResult): Result<Unit> =
         tryWrapper {
-            val response = client.post(EndPoints.updateDiagnosisResult(donationRequest.id)) {
-                setBody(donationRequest)
+            val response = client.put(EndPoints.updateDiagnosisResult(donationResult.id)) {
+                setBody(donationResult.toNetwork())
                 contentType(ContentType.Application.Json)
             }
-            mapResponse(response.body())
-        }
-
-    override suspend fun getReceiverUser(id: String): Result<User.Receiver> =
-        tryWrapper {
-            val response = client.get(EndPoints.getUser(id))
             mapResponse(response.body())
         }
 

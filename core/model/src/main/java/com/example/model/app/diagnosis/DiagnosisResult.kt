@@ -1,6 +1,10 @@
 package com.example.model.app.diagnosis
 
+import com.example.model.serializers.DateSerializer
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import java.util.Date
+import java.util.UUID
 
 data class DiagnosisResult(
     val diagnosis: String,
@@ -16,4 +20,16 @@ data class DiagnosisResult(
         Complete,
         InProgress,
     }
+
+    companion object
 }
+
+fun DiagnosisResult.Companion.empty() = DiagnosisResult(
+    diagnosis = "",
+    doctorId = "",
+    status = DiagnosisResult.Status.Pending,
+    id = UUID.randomUUID().toString(),
+    createdAt = Date(),
+    updatedAt = Date(),
+    diagnosisRequestId = "",
+)

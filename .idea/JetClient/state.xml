@@ -63,7 +63,7 @@
                     <requestState>
                       <option name="body">
                         <bodyState>
-                          <option name="raw" value="{&#13;&#10;    &quot;email&quot;: &quot;mohamedEsam@gmail.com&quot;,&#13;&#10;    &quot;password&quot;: &quot;somethingRandom&quot;,&#13;&#10;    &quot;phone&quot;: &quot;012&quot;,&#13;&#10;    &quot;username&quot;: &quot;mohamed esam&quot;,&#13;&#10;    &quot;location&quot;: {&#10;      &quot;lat&quot;: 15,&#10;      &quot;lng&quot;: 15&#10;    },&#13;&#10;    &quot;enumType&quot;: 1&#13;&#10;}" />
+                          <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mohamedEsam@gmail.com&quot;,&#10;  &quot;password&quot;: &quot;somethingRandom&quot;,&#10;  &quot;phone&quot;: &quot;012&quot;,&#10;  &quot;username&quot;: &quot;mohamed esam&quot;,&#10;  &quot;location&quot;: {&#10;    &quot;lat&quot;: 15,&#10;    &quot;lng&quot;: 15&#10;  },&#10;  &quot;enumType&quot;: &quot;USER&quot;&#10;}" />
                           <option name="type" value="JSON" />
                         </bodyState>
                       </option>
@@ -750,6 +750,45 @@
                   </list>
                 </option>
                 <option name="sortWeight" value="8000000" />
+              </folderState>
+              <folderState>
+                <option name="auth">
+                  <authState>
+                    <option name="bearer">
+                      <iV>
+                        <option name="token" value="{{token}}" />
+                      </iV>
+                    </option>
+                    <option name="type" value="BEARER" />
+                  </authState>
+                </option>
+                <option name="id" value="3eec5a43-489b-423d-b6f3-16046549f323" />
+                <option name="name" value="diagnosisResult" />
+                <option name="requests">
+                  <list>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#10;  &quot;diagnosis&quot;: &quot;&quot;,&#10;  &quot;doctorId&quot;: &quot;&quot;,&#10;  &quot;state&quot;: &quot;PENDING&quot;,&#10;  &quot;id&quot;: &quot;4e4cd348-ff56-4fd9-a087-a8108e1795d1&quot;,&#10;  &quot;createdAt&quot;: 1684332716523,&#10;  &quot;updatedAt&quot;: 1684332716523,&#10;  &quot;diagnosisRequestId&quot;: &quot;&quot;&#10;}&#10;" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
+                          </headerState>
+                        </list>
+                      </option>
+                      <option name="id" value="5b9fe493-e92b-4203-9a1c-9b080f9a4e6a" />
+                      <option name="method" value="POST" />
+                      <option name="name" value="create" />
+                      <option name="url" value="{{baseUrl}}/api/diagnosesresult/adddiagnosesresult" />
+                    </requestState>
+                  </list>
+                </option>
+                <option name="sortWeight" value="9000000" />
               </folderState>
             </list>
           </option>

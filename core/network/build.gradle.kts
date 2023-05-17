@@ -1,5 +1,6 @@
 plugins {
     id("mohamed.android.library")
+    id("mohamed.android.test")
     alias(libs.plugins.kotlin.serialization) apply true
 }
 

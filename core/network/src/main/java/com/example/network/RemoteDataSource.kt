@@ -11,14 +11,14 @@ import com.example.model.app.disease.Symptom
 import com.example.model.app.donation.DonationRequest
 import com.example.model.app.medicine.Medicine
 import com.example.model.app.transaction.Transaction
-import com.example.model.app.user.Register
+import com.example.model.app.user.CreateUserDto
 import com.example.model.app.user.User
 import com.example.model.app.user.User.Donor
 import com.example.model.app.user.User.Receiver
 
 sealed interface RemoteDataSource {
     suspend fun login(credentials: Credentials): Result<Token>
-    suspend fun register(register: Register): Result<Unit>
+    suspend fun register(createUserDto: CreateUserDto): Result<Unit>
 
     suspend fun getDonationRequests(): Result<List<DonationRequest>>
     suspend fun getMedicines(): Result<List<Medicine>>
@@ -36,13 +36,6 @@ sealed interface RemoteDataSource {
     suspend fun createTransaction(transaction: Transaction): Result<Unit>
 
     suspend fun updateTransaction(transaction: Transaction): Result<Unit>
-
-    suspend fun getDonnerUser(id: String): Result<Donor>
-
-    suspend fun getReceiverUser(id: String): Result<Receiver>
-
-    suspend fun getCurrentUser(email: String): Result<User>
-
     suspend fun getAllUsers(): Result<List<User>>
 
     suspend fun getCurrentUserDiagnosisRequests(): Result<List<DiagnosisRequest>>
@@ -53,7 +46,7 @@ sealed interface RemoteDataSource {
 
     suspend fun updateDiagnosisRequest(donationRequest: DiagnosisRequest): Result<Unit>
 
-    suspend fun createDiagnosisResult(donationRequest: DiagnosisResult): Result<Unit>
+    suspend fun createDiagnosisResult(donationResult: DiagnosisResult): Result<Unit>
 
-    suspend fun updateDiagnosisResult(donationRequest: DiagnosisResult): Result<Unit>
+    suspend fun updateDiagnosisResult(donationResult: DiagnosisResult): Result<Unit>
 }

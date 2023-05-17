@@ -46,17 +46,6 @@ sealed interface User {
             get() = UserType.Doctor
     }
 
-    @Serializable
-    data class Unknown(
-        val username: String,
-        val email: String,
-        val phone: String,
-        val location: Location,
-        val id: String,
-        @SerialName("enumType")
-        val type: String,
-    )
-
     companion object
 }
 
@@ -83,31 +72,3 @@ fun User.Companion.emptyDoctor() = User.Doctor(
     location = Location(0.0, 0.0),
     id = "",
 )
-
-fun User.Unknown.toUser(): User = when (type) {
-    "USER" -> User.Receiver(
-        username = username,
-        email = email,
-        phone = phone,
-        location = location,
-        id = id,
-    )
-
-    "DONATOR" -> User.Donor(
-        username = username,
-        email = email,
-        phone = phone,
-        location = location,
-        id = id,
-    )
-
-    "Doctor" -> User.Doctor(
-        username = username,
-        email = email,
-        phone = phone,
-        location = location,
-        id = id,
-    )
-
-    else -> throw IllegalArgumentException("Unknown user type: $type")
-}
