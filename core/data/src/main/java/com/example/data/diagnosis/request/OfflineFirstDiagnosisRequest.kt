@@ -25,7 +25,7 @@ class OfflineFirstDiagnosisRequestRepository(
 
     override suspend fun updateDiagnosisRequest(diagnosisRequest: DiagnosisRequest): Result<DiagnosisRequest> =
         tryWrapper {
-            local.insert(diagnosisRequest.toEntity().copy(isUpdated = true))
+            local.update(diagnosisRequest.toEntity().copy(isUpdated = true))
             Result.Success(diagnosisRequest)
         }
 
@@ -43,6 +43,10 @@ class OfflineFirstDiagnosisRequestRepository(
     override suspend fun syncDiagnosisRequest(): Boolean {
         val createdDiagnosisRequests = local.getCreatedDiagnosisRequests()
         createdDiagnosisRequests.forEach { remote.createDiagnosisRequest(it.toDiagnosisRequest()) }
+
+        val updatedDiagnosisRequests = local.getUpdatedDiagnosisRequests()
+        updatedDiagnosisRequests.forEach { remote.updateDiagnosisRequest(it.toDiagnosisRequest()) }
+
         val remoteDiagnosisRequests = remote.getCurrentUserDiagnosisRequests()
         remoteDiagnosisRequests.ifSuccess {
             local.deleteAllDiagnosisRequests()
@@ -50,4 +54,7 @@ class OfflineFirstDiagnosisRequestRepository(
         }
         return remoteDiagnosisRequests is Result.Success
     }
+
+    override fun getDiagnosisRequestsFlow(): Flow<List<DiagnosisRequest>> = local
+        .getDiagnosisRequestsFlow().map { it.map { diagnosisRequest -> diagnosisRequest.toDiagnosisRequest() } }
 }

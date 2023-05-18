@@ -9,6 +9,7 @@ interface DiagnosisResultRepository {
 
     suspend fun insertDiagnosis(diagnosis: DiagnosisResult): Result<DiagnosisResult>
 
+    fun getDiagnosisResults(): Flow<List<DiagnosisResult>>
     suspend fun updateDiagnosis(diagnosis: DiagnosisResult): Result<DiagnosisResult>
 
     fun getDiagnosis(id: String): Flow<DiagnosisResultView>

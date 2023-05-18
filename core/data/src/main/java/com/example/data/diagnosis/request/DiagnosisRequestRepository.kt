@@ -8,6 +8,8 @@ interface DiagnosisRequestRepository {
 
     fun getLatestDiagnosisRequest(): Flow<DiagnosisRequest>
 
+    fun getDiagnosisRequestsFlow(): Flow<List<DiagnosisRequest>>
+
     suspend fun insertDiagnosisRequest(diagnosisRequest: DiagnosisRequest): Result<DiagnosisRequest>
 
     suspend fun updateDiagnosisRequest(diagnosisRequest: DiagnosisRequest): Result<DiagnosisRequest>

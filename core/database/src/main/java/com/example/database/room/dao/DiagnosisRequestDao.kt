@@ -17,6 +17,9 @@ interface DiagnosisRequestDao {
     @Query("SELECT * FROM diagnosisRequests ORDER BY date DESC LIMIT 1")
     fun getLatestDiagnosisRequest(): Flow<DiagnosisRequestEntity?>
 
+    @Query("SELECT * FROM diagnosisRequests ORDER BY date DESC")
+    fun getDiagnosisRequestsFlow(): Flow<List<DiagnosisRequestEntity>>
+
     @Query("SELECT * FROM diagnosisRequests")
     fun getDiagnosisRequests(): DataSource.Factory<Int, DiagnosisRequestEntity>
 
@@ -25,6 +28,9 @@ interface DiagnosisRequestDao {
 
     @Query("SELECT * FROM diagnosisRequests WHERE isCreated = 1")
     suspend fun getCreatedDiagnosisRequests(): List<DiagnosisRequestEntity>
+
+    @Query("SELECT * FROM diagnosisRequests WHERE isUpdated = 1 and isCreated = 0")
+    suspend fun getUpdatedDiagnosisRequests(): List<DiagnosisRequestEntity>
 
 
     @Query("DELETE FROM diagnosisRequests")

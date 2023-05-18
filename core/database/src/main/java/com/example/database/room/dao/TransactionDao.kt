@@ -28,7 +28,7 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions where isCreated = 1")
     suspend fun getCreatedTransactions():List<TransactionEntity>
 
-    @Query("SELECT * FROM transactions where isUpdated = 1")
+    @Query("SELECT * FROM transactions where isUpdated = 1 and isCreated = 0")
     suspend fun getUpdatedTransactions():List<TransactionEntity>
 
     @Query("SELECT * FROM transactions WHERE id = :id")
