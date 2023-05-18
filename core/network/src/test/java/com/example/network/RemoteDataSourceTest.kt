@@ -35,40 +35,11 @@ class RemoteDataSourceTest {
 
     @Before
     fun setUp() {
-        val client = HttpClient(CIO) {
-            install(ContentNegotiation) {
-                json(Json {
-                    ignoreUnknownKeys = true
-                    isLenient = true
-                })
-            }
-
-            install(Logging) {
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        println("log: $message")
-                    }
-                }
-            }
-
-            install(Auth) {
-                val token =
-                    "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtb2hhbWVkRXNhbUBnbWFpbC5jb20iLCJjcmVhdGVkIjoxNjg0MzA5MzY3MDY0LCJleHAiOjE2ODQ5MTQxNjd9.qJsxYyBv-0uWyamLfZzA7ndwjFDrigguGd9TqYIRpbUMl2YD_2PC4VkSCoMKDeeDrNlZbOBQG3FvgzsS5J6WZA"
-                bearer {
-                    loadTokens {
-                        BearerTokens(token, token)
-                    }
-                    refreshTokens {
-                        BearerTokens(token, token)
-                    }
-                    sendWithoutRequest {
-                        !it.url.pathSegments.contains("login") && !it.url.pathSegments.contains("adduser")
-                    }
-                }
-            }
-        }
+        val client = NetworkModule.getTestClient()
         remoteDataSource = KtorRemoteDataSource(client)
     }
+
+
 
     @Test
     fun `test login success`() = runTest {

@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.Flow
 interface TransactionRepository {
     fun getTransactions(): PagingSource<Int, TransactionView>
 
+    fun getTransactionsFlow(): Flow<List<Transaction>>
+
     fun getTransactionsByUserId(userId: String): PagingSource<Int, TransactionView>
     fun getTransaction(id: String): Flow<TransactionView>
 

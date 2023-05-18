@@ -17,12 +17,19 @@ interface TransactionDao {
     @Transaction
     fun getTransactions(): DataSource.Factory<Int, TransactionEntityView>
 
+    @Query("SELECT * FROM transactions")
+    @Transaction
+    fun getTransactionsFlow(): Flow<List<TransactionEntity>>
+
     @Query("SELECT * FROM transactions WHERE receiverId = :userId or senderId = :userId")
     @Transaction
     fun getTransactionsByUserId(userId: String): DataSource.Factory<Int, TransactionEntityView>
 
-    @Query("SELECT * FROM transactions where isCreated = 0")
+    @Query("SELECT * FROM transactions where isCreated = 1")
     suspend fun getCreatedTransactions():List<TransactionEntity>
+
+    @Query("SELECT * FROM transactions where isUpdated = 1")
+    suspend fun getUpdatedTransactions():List<TransactionEntity>
 
     @Query("SELECT * FROM transactions WHERE id = :id")
     @Transaction

@@ -10,7 +10,6 @@ sealed interface AuthRepository{
     suspend fun login(credentials: Credentials): Result<Token>
     suspend fun register(createUserDto: CreateUserDto): Result<Unit>
 
-    suspend fun getCurrentUser(email:String): Result<User>
     suspend fun logout()
     suspend fun isLoggedIn(): Boolean
 }

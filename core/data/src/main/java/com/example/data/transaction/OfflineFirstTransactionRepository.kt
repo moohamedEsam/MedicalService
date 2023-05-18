@@ -3,6 +3,7 @@ package com.example.data.transaction
 import androidx.paging.PagingSource
 import com.example.common.functions.tryWrapper
 import com.example.common.models.Result
+import com.example.database.models.transaction.TransactionEntity
 import com.example.database.models.transaction.TransactionEntityView
 import com.example.database.models.transaction.toEntity
 import com.example.database.models.transaction.toTransaction
@@ -23,6 +24,9 @@ class OfflineFirstTransactionRepository(
 ) : TransactionRepository {
     override fun getTransactions(): PagingSource<Int, TransactionView> =
         local.getTransactions().map { it.toTransactionView() }.asPagingSourceFactory().invoke()
+
+    override fun getTransactionsFlow(): Flow<List<Transaction>> =
+        local.getTransactionsFlow().map { it.map(TransactionEntity::toTransaction) }
 
     override fun getTransactionsByUserId(userId: String): PagingSource<Int, TransactionView> =
         local.getTransactionsByUserId(userId).map { it.toTransactionView() }.asPagingSourceFactory().invoke()
@@ -49,6 +53,9 @@ class OfflineFirstTransactionRepository(
     override suspend fun syncTransactions(): Boolean {
         val createdTransactions = local.getCreatedTransactions().map { it.toTransaction() }
         createdTransactions.forEach { transaction -> remote.createTransaction(transaction) }
+
+        val updatedTransactions = local.getUpdatedTransactions().map { it.toTransaction() }
+        updatedTransactions.forEach { transaction -> remote.updateTransaction(transaction) }
 
         val transactions = remote.getTransactions()
         transactions.ifSuccess {

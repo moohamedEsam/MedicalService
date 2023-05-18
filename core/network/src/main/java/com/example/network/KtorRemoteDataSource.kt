@@ -79,7 +79,7 @@ class KtorRemoteDataSource(
 
     override suspend fun getSymptoms(): Result<List<Symptom>> = tryWrapper {
         val response = client.get(EndPoints.SYMPTOM)
-        if(response.status.isSuccess())
+        if (response.status.isSuccess())
             Result.Success(response.body<List<String>>().map { Symptom(it) })
         else
             Result.Error("error")

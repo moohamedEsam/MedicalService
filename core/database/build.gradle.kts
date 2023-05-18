@@ -7,10 +7,6 @@ plugins {
 
 android {
     namespace = "com.example.database"
-    kotlinOptions{
-        freeCompilerArgs = listOf("-Xcontext-receivers")
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
 }
 
 dependencies{

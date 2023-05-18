@@ -26,10 +26,6 @@ data class NetworkTransaction(
 )
 
 fun NetworkTransaction.asDomainModel(): Transaction {
-    val statusName = buildString {
-        append(status.first())
-        append(status.substring(1).lowercase())
-    }
     return Transaction(
         id = id,
         createdAt = createdAt,
@@ -40,7 +36,7 @@ fun NetworkTransaction.asDomainModel(): Transaction {
         receiverName = receiverName,
         senderId = senderId,
         senderName = senderName,
-        status = Status.valueOf(statusName),
+        status = Status.valueOf(status),
 //        donationRequestId = donationRequestId,
     )
 }
@@ -56,7 +52,7 @@ fun Transaction.asNetworkModel(): NetworkTransaction {
         receiverName = receiverName,
         senderId = senderId,
         senderName = senderName,
-        status = status.name.uppercase(),
+        status = status.name,
 //        donationRequestId = donationRequestId,
     )
 }
