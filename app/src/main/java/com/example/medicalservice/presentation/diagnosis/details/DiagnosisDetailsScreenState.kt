@@ -6,6 +6,4 @@ import com.example.model.app.diagnosis.empty
 
 data class DiagnosisDetailsScreenState(
     val diagnosisResultView: DiagnosisResultView = DiagnosisResultView.empty(),
-){
-    val isEditable = diagnosisResultView.status == DiagnosisResult.Status.Pending
-}
+)

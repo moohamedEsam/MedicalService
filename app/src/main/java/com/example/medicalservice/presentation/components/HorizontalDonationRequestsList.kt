@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -19,12 +19,12 @@ import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -35,11 +35,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,8 +53,6 @@ import com.example.model.app.donation.DonationRequestView
 import com.example.model.app.donation.dummyDonationRequests
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import kotlin.random.Random
 
 @Composable
 fun HorizontalDonationRequestsList(
@@ -93,6 +93,7 @@ fun HorizontalDonationRequestsList(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         state = listState,
     ) {
+
         items(donationRequestViews, key = { it.id }) {
             if (it == null) return@items
             DonationListItem(
@@ -104,7 +105,6 @@ fun HorizontalDonationRequestsList(
                 onBookmarkClick = { onBookmarkClick(it) }
             )
         }
-        item { Spacer(modifier = Modifier.width(16.dp)) }
     }
 }
 
@@ -121,6 +121,10 @@ private fun DonationListItem(
     Card(
         modifier = modifier,
         onClick = onClick,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        )
     ) {
         Box {
             Image(
@@ -145,7 +149,7 @@ private fun DonationListItem(
                     Icon(imageVector = Icons.Outlined.BookmarkBorder, contentDescription = null)
             }
         }
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Text(donationRequestView.medicine.name, fontWeight = FontWeight.Bold)
             Text(donationRequestView.medicine.uses.firstOrNull() ?: "", maxLines = 2)
             val progress =
@@ -154,45 +158,40 @@ private fun DonationListItem(
                 progress = progress,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .scale(scaleX = 1f, scaleY = 2f)
                     .padding(8.dp),
                 color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+                trackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
             )
-            Row(
+
+            Text(
+                text = "${donationRequestView.collected} / ${donationRequestView.needed} units collected",
+                fontSize = 12.sp,
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        "${donationRequestView.collected} / ${donationRequestView.needed} units collected",
-                        fontSize = 12.sp
-                    )
-                    Text(
-                        "ends in ${Random.nextInt(1, 100)} days",
-                        fontSize = 12.sp
-                    )
-                }
-                if (isDonateButtonVisible)
-                    Button(onClick = onDonateClick) {
-                        Text("Donate")
-                    }
-            }
+                textAlign = TextAlign.Center
+            )
         }
+
+        if (isDonateButtonVisible)
+            Button(
+                onClick = onDonateClick,
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(end = 8.dp, bottom = 8.dp)
+            ) {
+                Text("Donate")
+            }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
 private fun UrgentDonationListPreview() {
-    Surface {
-        HorizontalDonationRequestsList(
-            donationRequestViewPagingData = flowOf(
-                PagingData.from(
-                    dummyDonationRequests()
-                )
-            ),
-            title = "Urgent Donations"
+    Column(modifier = Modifier.fillMaxSize()) {
+        DonationListItem(
+            donationRequestView = dummyDonationRequests().first(),
+            modifier = Modifier.padding(8.dp)
         )
     }
 

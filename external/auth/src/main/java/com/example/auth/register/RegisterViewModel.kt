@@ -50,11 +50,7 @@ class RegisterViewModel(
                 if (!uiState.value.registerEnabled) return
                 _uiState.update { it.copy(isLoading = true) }
                 register {
-                    val snackBarEvent = SnackBarEvent(
-                        message = "Registered successfully",
-                        actionLabel = "Ok",
-                        action = {}
-                    )
+                    val snackBarEvent = SnackBarEvent(message = "Registered successfully")
                     snackBarManager.showSnackBarEvent(snackBarEvent)
                     appNavigator.navigateBack()
                 }

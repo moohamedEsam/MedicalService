@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.LocationSearching
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
@@ -57,9 +58,7 @@ fun MapScreen(
 
     }
     val markerState = rememberMarkerState()
-    var showDialog by remember {
-        mutableStateOf(true)
-    }
+
     LaunchedEffect(key1 = address) {
         if (address != null)
             markerState.position = LatLng(address!!.latitude, address!!.longitude)
@@ -89,36 +88,32 @@ fun MapScreen(
                 .align(Alignment.TopStart),
             viewModel = viewModel
         )
-        LocationConfirmButton(
-            address,
-            modifier = Modifier.align(Alignment.BottomEnd),
-            onLocationPicked = viewModel::onLocationPicked
-        )
-    }
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            confirmButton = {
-                Button(onClick = {
+        Column(
+            modifier = Modifier
+                .padding(8.dp)
+                .align(Alignment.BottomEnd),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            FloatingActionButton(
+                onClick = {
                     locationPermission.launch(
                         arrayOf(
                             Manifest.permission.ACCESS_COARSE_LOCATION,
                             Manifest.permission.ACCESS_FINE_LOCATION
                         )
                     )
-                    showDialog = false
-                }) {
-                    Text("Use Current Location")
-                }
-            },
-            dismissButton = {
-                Button(onClick = { showDialog = false }) {
-                    Text("Select Manually")
-                }
-            },
-            title = { Text("Select Your Location") },
-            text = { Text("select your location manually on the map or use your current as an address") }
-        )
+                },
+                modifier = Modifier.safeGesturesPadding()
+            ) {
+                Icon(Icons.Default.LocationSearching, contentDescription = null)
+            }
+
+            LocationConfirmButton(
+                address = address,
+                onLocationPicked = viewModel::onLocationPicked,
+                modifier = Modifier.safeGesturesPadding()
+            )
+        }
     }
 }
 
@@ -131,13 +126,13 @@ private fun getCurrentLocation(
     viewModel: MapViewModel,
     context: Context
 ) {
-    client.checkLocationSettings(request).addOnSuccessListener {
+    client.checkLocationSettings(request)?.addOnSuccessListener {
         fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-            .addOnSuccessListener { location ->
+            ?.addOnSuccessListener { location ->
                 if (location != null)
                     viewModel.setAddress(LatLng(location.latitude, location.longitude))
             }
-    }.addOnFailureListener { exception ->
+    }?.addOnFailureListener { exception ->
         if (exception is ResolvableApiException) {
             exception.startResolutionForResult(context as ComponentActivity, 0)
             getCurrentLocation(client, request, fusedLocationClient, viewModel, context)

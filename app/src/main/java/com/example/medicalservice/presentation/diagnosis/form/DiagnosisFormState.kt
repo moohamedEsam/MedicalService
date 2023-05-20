@@ -8,6 +8,7 @@ data class DiagnosisFormState(
     val query: String = "",
     val selectedSymptoms: List<Symptom> = emptyList(),
     val isLoading: Boolean = false,
+    val imageUri: String? = null,
 ){
     val isDiagnosisButtonEnabled = selectedSymptoms.isNotEmpty() && description.isNotBlank() && !isLoading
 }

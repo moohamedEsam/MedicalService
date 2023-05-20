@@ -32,8 +32,8 @@ class SyncWorker(
             diseaseRepository.syncDiseases(),
             donationRepository.syncDonationRequests(),
             transactionRepository.syncTransactions(),
-//            diagnosisRequestRepository.syncDiagnosisRequest(),
-//            diagnosisResultRepository.syncDiagnosis(),
+            diagnosisRequestRepository.syncDiagnosisRequest(),
+            diagnosisResultRepository.syncDiagnosis(),
             userRepository.syncUser()
         ).all { it }
 

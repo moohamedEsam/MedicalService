@@ -1,6 +1,6 @@
 package com.example.domain.usecase.user
 
-import com.example.common.models.Result
 import com.example.model.app.user.User
+import kotlinx.coroutines.flow.Flow
 
-fun interface GetCurrentUserUseCase : suspend () -> Result<User>
+fun interface GetCurrentUserUseCase : () -> Flow<User>

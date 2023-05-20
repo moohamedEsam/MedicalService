@@ -1,5 +1,7 @@
 package com.example.medicalservice.presentation.diagnosis.form
 
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.usecase.diagnosis.CreateDiagnosisRequestUseCase
@@ -38,6 +40,7 @@ class DiagnosisFormViewModel(
 
             DiagnosisFormEvent.OnSubmitClick -> createDiagnosisRequest()
             is DiagnosisFormEvent.OnSymptomClick -> toggleSymptomSelection(event.symptom)
+            is DiagnosisFormEvent.OnImagePicked -> _uiState.value = _uiState.value.copy(imageUri = event.imageUri)
         }
     }
 
@@ -45,7 +48,7 @@ class DiagnosisFormViewModel(
         if (!_uiState.value.isDiagnosisButtonEnabled) return@launch
         _uiState.value = _uiState.value.copy(isLoading = true)
         val result = createDiagnosisRequestUseCase(
-            DiagnosisRequest(
+            DiagnosisRequest( // todo: add imageUri
                 symptoms = uiState.value.selectedSymptoms,
                 description = uiState.value.description,
             )

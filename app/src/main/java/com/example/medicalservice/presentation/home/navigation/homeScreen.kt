@@ -1,24 +1,37 @@
 package com.example.medicalservice.presentation.home.navigation
 
+import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.common.navigation.Destination
-import com.example.datastore.UserSettings
-import com.example.datastore.dataStore
+import com.example.domain.usecase.user.GetCurrentUserUseCase
 import com.example.medicalservice.presentation.home.donner.DonnerHomeScreen
 import com.example.medicalservice.presentation.home.receiver.ReceiverHomeScreen
 import com.example.model.app.user.UserType
+import kotlinx.coroutines.flow.collectLatest
+import org.koin.androidx.compose.get
 
 
 fun NavGraphBuilder.homeScreen() {
-    composable(Destination.Home.fullRoute){
-        val userSettings by LocalContext.current.dataStore.data.collectAsStateWithLifecycle(initialValue = UserSettings())
-        if (userSettings.type == UserType.Donner)
-            DonnerHomeScreen(userSettings.id)
-        else if (userSettings.type == UserType.Receiver)
+    composable(Destination.Home.fullRoute) {
+        val currentUser: GetCurrentUserUseCase = get()
+        var type by remember {
+            mutableStateOf(UserType.Donner)
+        }
+        LaunchedEffect(key1 = Unit) {
+            currentUser().collectLatest {
+                Log.i("homeScreen", "homeScreen: $it")
+                type = it.type
+            }
+        }
+        if (type == UserType.Donner)
+            DonnerHomeScreen()
+        else if (type == UserType.Receiver)
             ReceiverHomeScreen()
     }
 }

@@ -31,7 +31,6 @@ class DiagnosisDetailsViewModel(
     fun handleEvent(event: DiagnosisDetailsScreenEvent) = viewModelScope.launch {
         when(event){
             DiagnosisDetailsScreenEvent.OnDoctorClick -> Unit
-            DiagnosisDetailsScreenEvent.OnEditClick -> appNavigator.navigateTo(Destination.DiagnosisForm())
             is DiagnosisDetailsScreenEvent.OnMedicineClick -> appNavigator.navigateTo(Destination.MedicineDetails(event.medicineId))
         }
     }

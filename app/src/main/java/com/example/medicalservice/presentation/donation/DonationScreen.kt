@@ -91,7 +91,13 @@ private fun DonationHeader(
                 donationRequestViews = state.donationRequestViews,
                 onDonationRequestClick = { onEvent(DonationScreenEvent.OnDonationRequestSelected(it)) },
                 onQueryChange = { onEvent(DonationScreenEvent.OnQueryChange(it)) },
-                onDonationRequestBookmarkClick = { onEvent(DonationScreenEvent.OnDonationRequestBookmarkClick(it)) },
+                onDonationRequestBookmarkClick = {
+                    onEvent(
+                        DonationScreenEvent.OnDonationRequestBookmarkClick(
+                            it
+                        )
+                    )
+                },
             )
         }
     }
@@ -183,12 +189,7 @@ private fun DonationHeader(
         "Quantity needed: ${donationRequestView.needed - donationRequestView.collected}",
         style = MaterialTheme.typography.bodyLarge
     )
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(imageVector = Icons.Outlined.Timer, contentDescription = null)
-        Text(text = "ends in 4 days", style = MaterialTheme.typography.bodyLarge)
-    }
+
 }
 
 @Composable

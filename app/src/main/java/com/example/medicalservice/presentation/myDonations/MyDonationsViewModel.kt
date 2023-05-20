@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
 import com.example.common.navigation.AppNavigator
@@ -11,7 +12,10 @@ import com.example.common.navigation.Destination
 import com.example.domain.usecase.donationRequest.GetDonationRequestsUseCase
 import com.example.domain.usecase.donationRequest.SetDonationRequestBookmarkUseCase
 import com.example.domain.usecase.transaction.GetCurrentUserTransactionsUseCase
+import com.example.domain.usecase.user.GetCurrentUserIdUseCase
+import com.example.model.app.transaction.TransactionView
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -28,7 +32,8 @@ class MyDonationsViewModel(
     private val getDonationRequestsUseCase: GetDonationRequestsUseCase,
     private val getCurrentUserTransactionsUseCase: GetCurrentUserTransactionsUseCase,
     private val setDonationRequestBookmarkUseCase: SetDonationRequestBookmarkUseCase,
-    private val appNavigator: AppNavigator
+    private val appNavigator: AppNavigator,
+    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase
 ) : ViewModel() {
     private val donationPager = Pager(
         config = PagingConfig(pageSize = 10),
@@ -38,12 +43,7 @@ class MyDonationsViewModel(
         .distinctUntilChanged()
         .cachedIn(viewModelScope)
 
-    private val transactionPager = Pager(
-        config = PagingConfig(pageSize = 10),
-        pagingSourceFactory = { getCurrentUserTransactionsUseCase("") }) // todo find fix
-        .flow
-        .distinctUntilChanged()
-        .cachedIn(viewModelScope)
+    private lateinit var transactionPager : Flow<PagingData<TransactionView>>
 
     private val _uiState = MutableStateFlow(MyDonationsScreenState())
     val uiState = _uiState.asStateFlow()
@@ -72,6 +72,11 @@ class MyDonationsViewModel(
     }
 
     init {
+        initializeTransactionPager()
+        observeQueryChange()
+    }
+
+    private fun observeQueryChange() {
         viewModelScope.launch {
             _uiState.map { it.query }
                 .debounce(0.5.seconds)
@@ -81,7 +86,12 @@ class MyDonationsViewModel(
                         .map { data ->
                             data.filter {
                                 query.isBlank() || it.medicine.name.contains(query, true)
-                                        || it.medicine.diseases.any { disease -> disease.name.contains(query, true) }
+                                        || it.medicine.diseases.any { disease ->
+                                    disease.name.contains(
+                                        query,
+                                        true
+                                    )
+                                }
                             }
                         }
 
@@ -89,12 +99,31 @@ class MyDonationsViewModel(
                         .map { data ->
                             data.filter {
                                 query.isBlank() || it.medicine.name.contains(query, true)
-                                        || it.medicine.diseases.any { disease -> disease.name.contains(query, true) }
+                                        || it.medicine.diseases.any { disease ->
+                                    disease.name.contains(
+                                        query,
+                                        true
+                                    )
+                                }
                             }
                         }
 
-                    _uiState.value = _uiState.value.copy(transactions = transactions, donationRequests = donationRequests)
+                    _uiState.value = _uiState.value.copy(
+                        transactions = transactions,
+                        donationRequests = donationRequests
+                    )
                 }
+        }
+    }
+
+    private fun initializeTransactionPager() {
+        viewModelScope.launch {
+            val userId = getCurrentUserIdUseCase()
+            transactionPager = Pager(
+                config = PagingConfig(pageSize = 10),
+                pagingSourceFactory = { getCurrentUserTransactionsUseCase(userId) })
+                .flow
+                .cachedIn(viewModelScope)
         }
     }
 }

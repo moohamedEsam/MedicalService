@@ -7,17 +7,9 @@ import coil.ImageLoader
 import com.example.common.models.Result
 import com.example.functions.snackbar.FakeSnackBarManager
 import com.example.network.auth.Token
-import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.CoroutineExceptionHandler
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import org.koin.dsl.module
-import org.koin.test.KoinTest
 
 class LoginScreenTest{
 

@@ -1,5 +1,6 @@
 package com.example.medicalservice.presentation.layout
 
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,16 +9,40 @@ import com.example.common.models.SnackBarEvent
 import com.example.common.navigation.AppNavigator
 import com.example.common.navigation.Destination
 import com.example.domain.usecase.sync.OneTimeSyncWorkUseCase
+import com.example.domain.usecase.user.GetCurrentUserUseCase
+import com.example.domain.usecase.user.IsUserLoggedInUseCase
 import com.example.functions.snackbar.SnackBarManager
+import com.example.model.app.user.User
+import com.example.model.app.user.emptyReceiver
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 class MainLayoutViewModel(
     private val oneTimeSyncWorkUseCase: OneTimeSyncWorkUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val isUserLoggedInUseCase: IsUserLoggedInUseCase,
     private val snackBarManager: SnackBarManager,
     private val appNavigator: AppNavigator
 ) : ViewModel() {
+    private val _user: MutableStateFlow<User> = MutableStateFlow(User.emptyReceiver())
+    val user = _user.asStateFlow()
+    private val _isLoggedIn = MutableStateFlow(false)
+    val isLoggedIn = _isLoggedIn.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            _isLoggedIn.value = isUserLoggedInUseCase()
+            getCurrentUserUseCase().collectLatest {
+                _user.value = it
+            }
+        }
+
+
+    }
 
     fun handleEvent(event: MainLayoutScreenEvent) = viewModelScope.launch {
         when (event) {

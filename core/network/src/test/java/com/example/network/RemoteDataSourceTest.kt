@@ -10,21 +10,9 @@ import com.example.model.app.transaction.empty
 import com.example.model.app.user.CreateUserDto
 import com.example.model.app.user.Location
 import com.example.model.app.user.UserType
-import com.example.network.models.toNetwork
 import com.google.common.truth.Truth.assertThat
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.providers.BearerTokens
-import io.ktor.client.plugins.auth.providers.bearer
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.Logger
-import io.ktor.client.plugins.logging.Logging
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.junit.Before
 import org.junit.Test
 import java.util.UUID
@@ -38,7 +26,6 @@ class RemoteDataSourceTest {
         val client = NetworkModule.getTestClient()
         remoteDataSource = KtorRemoteDataSource(client)
     }
-
 
 
     @Test
@@ -94,6 +81,32 @@ class RemoteDataSourceTest {
             assertThat(error).isNotNull()
         }
 
+    }
+
+    @Test
+    fun `test register user type should be the same as the one in the request`() = runTest {
+        // arrange
+        val createUserDto = CreateUserDto(
+            username = "mohamed esam",
+            email = "mohamedEsam_receiver${UUID.randomUUID()}@gmail.com",
+            password = "123456a",
+            phone = "01111111111",
+            type = UserType.Donner,
+            location = Location(0.0, 0.0),
+        )
+
+        // act
+        val response = remoteDataSource.register(createUserDto)
+
+        // assert
+        assertThat(response).isInstanceOf(Result.Success::class.java)
+
+        val users = remoteDataSource.getAllUsers()
+        assertThat(users).isInstanceOf(Result.Success::class.java)
+        users.ifSuccess { users ->
+            val user = users.find { it.email == createUserDto.email }
+            assertThat(user?.type).isEqualTo(createUserDto.type)
+        }
     }
 
     @Test

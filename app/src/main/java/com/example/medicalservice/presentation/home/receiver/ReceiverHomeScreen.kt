@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -38,6 +40,8 @@ import com.example.medicalservice.R
 import com.example.medicalservice.presentation.components.VerticalTransactionsList
 import com.example.model.app.diagnosis.DiagnosisResultView
 import com.example.model.app.diagnosis.empty
+import com.example.model.app.medicine.MedicineView
+import com.example.model.app.medicine.paracetamol
 import com.example.model.app.transaction.TransactionView
 import com.example.model.app.transaction.empty
 import com.example.model.app.user.User
@@ -178,9 +182,13 @@ private fun LatestDiagnosisResult(
     onEvent: (ReceiverHomeScreenEvent) -> Unit,
     dateFormatter: SimpleDateFormat = SimpleDateFormat("MMM dd", Locale.getDefault())
 ) {
-    OutlinedCard(
+    Card(
         modifier = Modifier.fillMaxWidth(),
-        onClick = { onEvent(ReceiverHomeScreenEvent.OnDiagnosisClicked) }
+        onClick = { onEvent(ReceiverHomeScreenEvent.OnDiagnosisClicked) },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        )
     ) {
         Column(
             modifier = Modifier
@@ -253,7 +261,7 @@ private fun ReceiverHomeScreenPreview() {
     Surface {
         ReceiverHomeScreen(
             state = ReceiverHomeScreenState(
-                transactions = flowOf(PagingData.from(listOf(TransactionView.empty()))),
+                transactions = flowOf(PagingData.from(listOf(TransactionView.empty().copy(medicine = MedicineView.paracetamol())))),
                 latestDiagnosisResult = DiagnosisResultView.empty().copy(
                     diagnosis = "Based on your symptoms, it sounds like you have a viral infection. This is a common cause of fever. The good news is that most viral infections go away on their own within a week or two.",
                     doctor = User.emptyDoctor().copy(username = "Dr. John Doe")

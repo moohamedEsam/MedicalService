@@ -12,7 +12,7 @@ data class DiagnosisRequest(
     val description: String,
     val id: String = UUID.randomUUID().toString(),
     @Serializable(with = DateSerializer::class)
-    val date: Date = Date()
+    val date: Date = Date(),
 ) {
     companion object
 }

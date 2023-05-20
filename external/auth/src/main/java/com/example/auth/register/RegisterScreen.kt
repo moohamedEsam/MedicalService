@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
@@ -21,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -78,6 +81,7 @@ private fun RegisterScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(top = 8.dp)
     ) {
         ProgressIndicator(state.progress)
@@ -212,7 +216,7 @@ private fun LogoImage(logo: Any, imageLoader: ImageLoader) {
     AsyncImage(
         model = logo,
         modifier = Modifier
-            .fillMaxHeight(0.4f)
+            .heightIn(max = (LocalConfiguration.current.screenHeightDp / 4).dp)
             .fillMaxWidth(),
         imageLoader = imageLoader,
         contentDescription = null,

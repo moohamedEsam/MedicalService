@@ -17,16 +17,22 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.PagingData
 import com.example.medicalservice.presentation.components.HorizontalDonationRequestsList
 import com.example.medicalservice.presentation.components.VerticalTransactionsList
+import com.example.model.app.donation.dummyDonationRequests
+import com.example.model.app.medicine.MedicineView
+import com.example.model.app.medicine.paracetamol
+import com.example.model.app.transaction.TransactionView
+import com.example.model.app.transaction.empty
 import com.example.model.app.user.User
+import kotlinx.coroutines.flow.flowOf
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
 fun DonnerHomeScreen(
-    userId: String,
-    viewModel: DonnerHomeViewModel = koinViewModel { parametersOf(userId) }
+    viewModel: DonnerHomeViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     DonnerHomeScreenContent(
@@ -72,7 +78,16 @@ private fun DonnerHomeScreenContent(
 private fun DonnerHomeScreenPreview() {
     Box {
         DonnerHomeScreenContent(
-            state = DonnerHomeState(),
+            state = DonnerHomeState(
+                donationRequestViews = flowOf(PagingData.from(dummyDonationRequests())),
+                transactionViews = flowOf(
+                    PagingData.from(
+                        listOf(
+                            TransactionView.empty().copy(medicine = MedicineView.paracetamol())
+                        )
+                    )
+                ),
+            ),
             onEvent = {}
         )
     }

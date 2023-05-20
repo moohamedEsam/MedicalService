@@ -4,7 +4,6 @@ import com.example.model.app.diagnosis.DiagnosisResultView
 import com.example.model.app.diagnosis.empty
 
 sealed interface DiagnosisDetailsScreenEvent {
-    object OnEditClick : DiagnosisDetailsScreenEvent
     object OnDoctorClick : DiagnosisDetailsScreenEvent
     data class OnMedicineClick(val medicineId: String) : DiagnosisDetailsScreenEvent
 }

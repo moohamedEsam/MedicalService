@@ -1,5 +1,7 @@
 package com.example.domain
 
+import android.content.Context
+import com.example.common.functions.loadToken
 import com.example.common.functions.saveToken
 import com.example.common.models.Result
 import com.example.data.auth.AuthRepository
@@ -7,6 +9,7 @@ import com.example.data.disease.DiseaseRepository
 import com.example.data.donation.DonationRepository
 import com.example.data.medicine.MedicineRepository
 import com.example.data.transaction.TransactionRepository
+import com.example.data.user.UserRepository
 import com.example.datastore.dataStore
 import com.example.domain.usecase.diagnosis.CreateDiagnosisRequestUseCase
 import com.example.domain.usecase.diagnosis.GetDiagnosisResultByIdUseCase
@@ -25,7 +28,9 @@ import com.example.domain.usecase.transaction.DeleteTransactionUseCase
 import com.example.domain.usecase.transaction.GetCurrentUserTransactionsUseCase
 import com.example.domain.usecase.transaction.GetTransactionDetailsUseCase
 import com.example.domain.usecase.transaction.GetTransactionsUseCase
+import com.example.domain.usecase.user.GetCurrentUserIdUseCase
 import com.example.domain.usecase.user.GetCurrentUserUseCase
+import com.example.domain.usecase.user.IsUserLoggedInUseCase
 import com.example.domain.usecase.user.LoginUseCase
 import com.example.domain.usecase.user.RegisterUseCase
 import com.example.model.app.diagnosis.DiagnosisRequest
@@ -42,6 +47,10 @@ import com.example.model.app.medicine.paracetamol
 import com.example.model.app.user.User
 import com.example.model.app.user.emptyDoctor
 import com.example.model.app.user.emptyDonor
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.lastOrNull
@@ -56,45 +65,46 @@ import java.util.Date
 @Module
 @ComponentScan
 class DomainModule {
+
     @Factory
-    fun provideRegisterUseCase(repository: AuthRepository) = RegisterUseCase(repository::register)
-
-    context (Scope)
-            @Factory
-    fun provideGetCurrentUserUseCase(repository: AuthRepository) = GetCurrentUserUseCase {
-        val email = androidContext().dataStore.data.map { it.email }.lastOrNull()
-            ?: return@GetCurrentUserUseCase Result.Error("No user found")
-        val result = repository.getCurrentUser(email)
-        result.ifSuccess { user ->
-            androidContext().dataStore.updateData { userSettings ->
-                userSettings.copy(type = user.type)
-            }
+    fun provideCurrentUserIdUseCase(userRepository: UserRepository, context: Context) =
+        GetCurrentUserIdUseCase {
+            val email = context.dataStore.data.firstOrNull()?.email ?: ""
+            userRepository.getCurrentUserId(email)
         }
-    }
-
-    context(Scope)
-            @Factory
+    @Factory
     fun provideLoginUseCase(
         repository: AuthRepository,
-        oneTimeSyncWorkUseCase: OneTimeSyncWorkUseCase
+        oneTimeSyncWorkUseCase: OneTimeSyncWorkUseCase,
+        context: Context
     ) = LoginUseCase {
         val result = repository.login(it)
         result.ifSuccess { token ->
-            androidContext().saveToken(token.token)
-            androidContext().dataStore.updateData { userSettings ->
-                userSettings.copy(token = token.token, email = it.email, password = it.password)
+            context.saveToken(token.token)
+            context.dataStore.updateData { userSettings ->
+                userSettings.copy(token = token.token, email = it.email)
             }
             oneTimeSyncWorkUseCase()
         }
         result
 
     }
-
     @Factory
-    fun provideCurrentUserUseCase() = GetCurrentUserUseCase {
-        Result.Success(User.emptyDonor().copy(username = "mohamed"))
-    }
+    fun provideRegisterUseCase(repository: AuthRepository) = RegisterUseCase(repository::register)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Factory
+    fun provideCurrentUserUseCase(userRepository: UserRepository, context: Context) =
+        GetCurrentUserUseCase {
+            context.dataStore.data.filterNotNull().flatMapLatest {
+                userRepository.getCurrentUser(it.email)
+            }
+        }
 
+    context (Scope)
+    @Factory
+    fun provideIsUseLoggedInUseCase() = IsUserLoggedInUseCase {
+        androidContext().loadToken()?.isNotEmpty() == true
+    }
     @Factory
     fun provideDiseaseDetailsUseCase(diseaseRepository: DiseaseRepository) =
         GetDiseaseDetailsUseCase(diseaseRepository::getDiseaseDetails)

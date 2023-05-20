@@ -2,9 +2,14 @@ package com.example.medicalservice.presentation.layout
 
 import android.app.Activity
 import android.util.Log
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -62,17 +67,20 @@ fun MedicalServiceLayout(
     navHostController: NavHostController = rememberNavController(),
     viewModel: MainLayoutViewModel = koinViewModel(),
 ) {
-    val userSettings by LocalContext.current.dataStore.data.collectAsStateWithLifecycle(initialValue = UserSettings())
+    val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
+    val currentUser by viewModel.user.collectAsStateWithLifecycle()
     MedicalServiceLayout(
-        startDestination = if (userSettings.token.isNotEmpty()) Destination.Home.fullRoute else Destination.Login.fullRoute,
+        startDestination = if (isLoggedIn) Destination.Home.route else Destination.Login.route,
         navHostController = navHostController,
         onEvent = viewModel::handleEvent,
+        userType = currentUser.type
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MedicalServiceLayout(
+    userType: UserType = UserType.Receiver,
     startDestination: String = Destination.Home.route,
     navHostController: NavHostController = rememberNavController(),
     snackBarManager: SnackBarManager = get(),
@@ -87,7 +95,13 @@ fun MedicalServiceLayout(
     val owner = LocalLifecycleOwner.current
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        bottomBar = { BottomBar(navHostController = navHostController, onEvent = onEvent) },
+        bottomBar = {
+            BottomBar(
+                navHostController = navHostController,
+                onEvent = onEvent,
+                userType = userType
+            )
+        },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopBar(
@@ -144,8 +158,10 @@ private fun ObserveSnackBarEvents(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BottomBar(
+    userType: UserType,
     navHostController: NavHostController,
     onEvent: (MainLayoutScreenEvent) -> Unit,
 ) {
@@ -155,12 +171,13 @@ fun BottomBar(
             navEntry?.destination?.route?.takeWhile { it != '/' }
         }
     }
-    val userSettings by LocalContext.current.dataStore.data.collectAsStateWithLifecycle(initialValue = UserSettings())
-    if (currentRoute == Destination.Login.route || currentRoute == Destination.Register().route) return
-    if (userSettings.type != UserType.Donner) return
+    if (WindowInsets.isImeVisible) return
+    if (!shouldShowLayoutBars(currentRoute)) return
+    if (userType != UserType.Donner) return
     BottomAppBar(
         modifier = Modifier
             .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
             .padding(bottom = 32.dp, start = 16.dp, end = 16.dp)
             .shadow(8.dp, RoundedCornerShape(percent = 15)),
     ) {
@@ -180,7 +197,7 @@ fun BottomBar(
                     contentDescription = null
                 )
             },
-            label = { Text(text = "Donation List") },
+            label = { Text(text = "Donations") },
         )
         NavigationBarItem(
             selected = currentRoute == Destination.MyDonationsList.route,
@@ -191,7 +208,7 @@ fun BottomBar(
                 else
                     Icon(imageVector = Icons.Filled.Favorite, contentDescription = null)
             },
-            label = { Text(text = "My Donations") },
+            label = { Text(text = "Saved") },
         )
     }
 }
@@ -208,7 +225,7 @@ private fun TopBar(
             navEntry?.destination?.route?.takeWhile { it != '/' }
         }
     }
-    if (currentRoute == Destination.Login.route || currentRoute == Destination.Register().route) return
+    if (!shouldShowLayoutBars(currentRoute)) return
     CenterAlignedTopAppBar(
         title = { Text(text = currentRoute ?: "") },
         actions = {
@@ -235,6 +252,14 @@ private fun TopBar(
         }
     )
 }
+
+@Composable
+private fun shouldShowLayoutBars(currentRoute: String?) =
+    currentRoute !in listOf(
+        Destination.Login.route,
+        Destination.Register().route,
+        Destination.Map.route
+    )
 
 @Preview(showBackground = true)
 @Composable

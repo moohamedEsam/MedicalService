@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.medicalservice.presentation.components.ExpandableColumn
 import com.example.model.app.diagnosis.DiagnosisRequest
 import com.example.model.app.diagnosis.DiagnosisResult
 import com.example.model.app.diagnosis.DiagnosisResultView
@@ -76,22 +77,17 @@ private fun DiagnosisDetailsScreen(
             modifier = Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp / 4).dp),
             onEvent = onEvent
         )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Diagnosis Request",
-                style = MaterialTheme.typography.headlineMedium
-            )
-            if (state.isEditable)
-                IconButton(onClick = { onEvent(DiagnosisDetailsScreenEvent.OnEditClick) }) {
-                    Icon(imageVector = Icons.Default.Edit, contentDescription = null)
-                }
-        }
-        DiagnosisRequestDetails(state)
 
+        ExpandableColumn(
+            title = {
+                Text(
+                    text = "Diagnosis Request",
+                    style = MaterialTheme.typography.headlineMedium
+                )
+            }
+        ) {
+            DiagnosisRequestDetails(state)
+        }
     }
 }
 
