@@ -10,6 +10,7 @@ import com.example.database.models.medicine.toEntity
 import com.example.database.room.dao.DiseaseDao
 import com.example.database.room.dao.MedicineDao
 import com.example.model.app.disease.Disease
+import com.example.model.app.disease.empty
 import com.example.model.app.medicine.Medicine
 import com.example.model.app.medicine.empty
 import com.google.common.truth.Truth.assertThat

@@ -25,7 +25,7 @@ class DonationListViewModel(
     private val pager = Pager(
         config = PagingConfig(pageSize = 10),
     ) {
-        getDonationRequestsUseCase()
+        getDonationRequestsUseCase().invoke()
     }.flow.cachedIn(viewModelScope)
 
     private val _uiState = MutableStateFlow(DonationListState(donationRequestViews = pager))

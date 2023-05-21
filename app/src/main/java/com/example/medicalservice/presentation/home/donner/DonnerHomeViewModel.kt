@@ -11,12 +11,7 @@ import com.example.common.navigation.Destination
 import com.example.domain.usecase.donationRequest.GetDonationRequestsUseCase
 import com.example.domain.usecase.donationRequest.SetDonationRequestBookmarkUseCase
 import com.example.domain.usecase.transaction.GetCurrentUserTransactionsUseCase
-import com.example.domain.usecase.user.GetCurrentUserIdUseCase
-import com.example.domain.usecase.user.GetCurrentUserUseCase
 import com.example.model.app.transaction.TransactionView
-import com.example.model.app.user.User
-import com.example.model.app.user.emptyDonor
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,17 +21,16 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class DonnerHomeViewModel(
     private val getDonationRequestsUseCase: GetDonationRequestsUseCase,
-    private val getCurrentUserTransactionsUseCase: GetCurrentUserTransactionsUseCase,
     private val setDonationRequestBookmarkUseCase: SetDonationRequestBookmarkUseCase,
-    private val appNavigator: AppNavigator,
-    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase
+    private val getCurrentUserTransactionsUseCase: GetCurrentUserTransactionsUseCase,
+    private val appNavigator: AppNavigator
 ) : ViewModel() {
     private val donationPager = Pager(
         config = PagingConfig(
             pageSize = 10
         ),
     ) {
-        getDonationRequestsUseCase()
+        getDonationRequestsUseCase().invoke()
     }.flow.cachedIn(viewModelScope)
 
     private lateinit var transactionPager: Flow<PagingData<TransactionView>>
@@ -48,14 +42,10 @@ class DonnerHomeViewModel(
 
     init {
         viewModelScope.launch {
-            val userId = getCurrentUserIdUseCase()
             transactionPager = Pager(
-                config = PagingConfig(
-                    pageSize = 10
-                ),
-            ) {
-                getCurrentUserTransactionsUseCase(userId)
-            }.flow.cachedIn(viewModelScope)
+                config = PagingConfig(pageSize = 10),
+                pagingSourceFactory = getCurrentUserTransactionsUseCase()
+            ).flow.cachedIn(viewModelScope)
 
             _uiState.value = _uiState.value.copy(transactionViews = transactionPager)
         }
@@ -70,10 +60,28 @@ class DonnerHomeViewModel(
                 val donationRequest = event.donationRequest
                 setDonationRequestBookmarkUseCase(donationRequest.id, !donationRequest.isBookmarked)
             }
-            is DonnerHomeScreenEvent.OnDonationRequestClick -> appNavigator.navigateTo(Destination.DonationDetails(event.donationRequestId))
-            is DonnerHomeScreenEvent.OnMedicineClick -> appNavigator.navigateTo(Destination.MedicineDetails(event.medicineId))
-            is DonnerHomeScreenEvent.OnTransactionClick -> appNavigator.navigateTo(Destination.TransactionDetails(event.transactionView.id))
-            DonnerHomeScreenEvent.OnSeeAllDonationRequestsClick -> appNavigator.navigateTo(Destination.DonationsList())
+
+            is DonnerHomeScreenEvent.OnDonationRequestClick -> appNavigator.navigateTo(
+                Destination.DonationDetails(
+                    event.donationRequestId
+                )
+            )
+
+            is DonnerHomeScreenEvent.OnMedicineClick -> appNavigator.navigateTo(
+                Destination.MedicineDetails(
+                    event.medicineId
+                )
+            )
+
+            is DonnerHomeScreenEvent.OnTransactionClick -> appNavigator.navigateTo(
+                Destination.TransactionDetails(
+                    event.transactionView.id
+                )
+            )
+
+            DonnerHomeScreenEvent.OnSeeAllDonationRequestsClick -> appNavigator.navigateTo(
+                Destination.DonationsList()
+            )
         }
     }
 }

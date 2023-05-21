@@ -1,5 +1,6 @@
 package com.example.medicalservice.presentation.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -48,12 +49,14 @@ import androidx.compose.ui.unit.sp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.example.composecomponents.loadStateItem
 import com.example.medicalservice.R
 import com.example.model.app.donation.DonationRequestView
 import com.example.model.app.donation.dummyDonationRequests
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HorizontalDonationRequestsList(
     donationRequestViewPagingData: Flow<PagingData<DonationRequestView>>,
@@ -98,13 +101,16 @@ fun HorizontalDonationRequestsList(
             if (it == null) return@items
             DonationListItem(
                 donationRequestView = it,
-                modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp * 0.9f),
+                modifier = Modifier
+                    .width(LocalConfiguration.current.screenWidthDp.dp * 0.9f)
+                    .animateItemPlacement(),
                 isDonateButtonVisible = isDonateButtonVisible,
                 onDonateClick = { onDonationRequestClick(it) },
                 onClick = { onDonationRequestCardClick(it) },
                 onBookmarkClick = { onBookmarkClick(it) }
             )
         }
+        loadStateItem(donationRequestViews.loadState)
     }
 }
 

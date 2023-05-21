@@ -38,7 +38,7 @@ class DonationViewModel(
     private val donationRequests = Pager(
         config = PagingConfig(pageSize = 10),
     ) {
-        getDonationRequestsUseCase()
+        getDonationRequestsUseCase().invoke()
     }.flow.cachedIn(viewModelScope)
 
     private val _uiState =

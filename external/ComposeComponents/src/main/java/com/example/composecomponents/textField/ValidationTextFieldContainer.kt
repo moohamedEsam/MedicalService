@@ -32,7 +32,7 @@ fun ValidationTextFieldContainer(
             )
         else if (validation is ValidationResult.Valid)
             Text(
-                text = "Valid ✔",
+                text = "Valid",
                 color = Color.Green,
                 modifier = Modifier.align(Alignment.End),
                 maxLines = 1

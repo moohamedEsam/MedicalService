@@ -16,6 +16,10 @@ interface DonationRequestDao {
     @Transaction
     fun getDonationRequests(): DataSource.Factory<Int, DonationRequestEntityView>
 
+    @Query("SELECT * FROM donationRequests WHERE isBookmarked = 1")
+    @Transaction
+    fun getBookmarkedDonationRequests(): DataSource.Factory<Int, DonationRequestEntityView>
+
     @Query("SELECT * FROM donationRequests WHERE id = :id")
     @Transaction
     fun getDonationRequestById(id: String): Flow<DonationRequestEntityView?>

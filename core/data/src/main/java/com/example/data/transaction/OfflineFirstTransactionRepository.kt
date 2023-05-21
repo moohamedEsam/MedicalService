@@ -28,8 +28,8 @@ class OfflineFirstTransactionRepository(
     override fun getTransactionsFlow(): Flow<List<Transaction>> =
         local.getTransactionsFlow().map { it.map(TransactionEntity::toTransaction) }
 
-    override fun getTransactionsByUserId(userId: String): PagingSource<Int, TransactionView> =
-        local.getTransactionsByUserId(userId).map { it.toTransactionView() }.asPagingSourceFactory().invoke()
+    override fun getTransactionsByUserId(userId: String): () -> PagingSource<Int, TransactionView> =
+        local.getTransactionsByUserId(userId).map { it.toTransactionView() }.asPagingSourceFactory()
 
 
     override fun getTransaction(id: String): Flow<TransactionView> =

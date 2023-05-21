@@ -12,6 +12,9 @@ interface UserDao {
     @Query("select * from users where email = :email")
     fun getUserByEmail(email: String): Flow<UserEntity?>
 
+    @Query("select id from users where email = :email")
+    suspend fun getUserIdByEmail(email: String): String?
+
     @Insert
     suspend fun insert(user: UserEntity)
 

@@ -11,7 +11,7 @@ interface TransactionRepository {
 
     fun getTransactionsFlow(): Flow<List<Transaction>>
 
-    fun getTransactionsByUserId(userId: String): PagingSource<Int, TransactionView>
+    fun getTransactionsByUserId(userId: String): () -> PagingSource<Int, TransactionView>
     fun getTransaction(id: String): Flow<TransactionView>
 
     suspend fun insertTransaction(transaction: Transaction) : Result<Unit>

@@ -21,7 +21,7 @@ interface TransactionDao {
     @Transaction
     fun getTransactionsFlow(): Flow<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions WHERE receiverId = :userId or senderId = :userId")
+    @Query("SELECT * FROM transactions WHERE senderId = :userId or receiverId = :userId")
     @Transaction
     fun getTransactionsByUserId(userId: String): DataSource.Factory<Int, TransactionEntityView>
 

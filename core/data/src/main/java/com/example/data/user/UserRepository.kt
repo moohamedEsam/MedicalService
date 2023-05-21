@@ -8,6 +8,6 @@ interface UserRepository {
 
     fun getCurrentUser(email: String): Flow<User>
 
-    suspend fun getCurrentUserId(email: String): String
+    suspend fun getCurrentUserId(email: String): String?
     suspend fun syncUser(): Boolean
 }

@@ -9,6 +9,7 @@ import androidx.paging.cachedIn
 import androidx.paging.filter
 import com.example.common.navigation.AppNavigator
 import com.example.common.navigation.Destination
+import com.example.domain.usecase.donationRequest.GetBookmarkedDonationRequestsUseCase
 import com.example.domain.usecase.donationRequest.GetDonationRequestsUseCase
 import com.example.domain.usecase.donationRequest.SetDonationRequestBookmarkUseCase
 import com.example.domain.usecase.transaction.GetCurrentUserTransactionsUseCase
@@ -29,21 +30,19 @@ import kotlin.time.Duration.Companion.seconds
 @OptIn(FlowPreview::class)
 @KoinViewModel
 class MyDonationsViewModel(
-    private val getDonationRequestsUseCase: GetDonationRequestsUseCase,
+    private val getBookmarkedDonationRequestsUseCase: GetBookmarkedDonationRequestsUseCase,
     private val getCurrentUserTransactionsUseCase: GetCurrentUserTransactionsUseCase,
     private val setDonationRequestBookmarkUseCase: SetDonationRequestBookmarkUseCase,
-    private val appNavigator: AppNavigator,
-    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase
+    private val appNavigator: AppNavigator
 ) : ViewModel() {
     private val donationPager = Pager(
         config = PagingConfig(pageSize = 10),
-        pagingSourceFactory = { getDonationRequestsUseCase() })
+        pagingSourceFactory = { getBookmarkedDonationRequestsUseCase().invoke()  })
         .flow
-        .map { data -> data.filter { it.isBookmarked } }
         .distinctUntilChanged()
         .cachedIn(viewModelScope)
 
-    private lateinit var transactionPager : Flow<PagingData<TransactionView>>
+    private lateinit var transactionPager: Flow<PagingData<TransactionView>>
 
     private val _uiState = MutableStateFlow(MyDonationsScreenState())
     val uiState = _uiState.asStateFlow()
@@ -72,58 +71,53 @@ class MyDonationsViewModel(
     }
 
     init {
-        initializeTransactionPager()
-        observeQueryChange()
-    }
-
-    private fun observeQueryChange() {
         viewModelScope.launch {
-            _uiState.map { it.query }
-                .debounce(0.5.seconds)
-                .distinctUntilChanged()
-                .collectLatest { query ->
-                    val transactions = transactionPager
-                        .map { data ->
-                            data.filter {
-                                query.isBlank() || it.medicine.name.contains(query, true)
-                                        || it.medicine.diseases.any { disease ->
-                                    disease.name.contains(
-                                        query,
-                                        true
-                                    )
-                                }
-                            }
-                        }
-
-                    val donationRequests = donationPager
-                        .map { data ->
-                            data.filter {
-                                query.isBlank() || it.medicine.name.contains(query, true)
-                                        || it.medicine.diseases.any { disease ->
-                                    disease.name.contains(
-                                        query,
-                                        true
-                                    )
-                                }
-                            }
-                        }
-
-                    _uiState.value = _uiState.value.copy(
-                        transactions = transactions,
-                        donationRequests = donationRequests
-                    )
-                }
-        }
-    }
-
-    private fun initializeTransactionPager() {
-        viewModelScope.launch {
-            val userId = getCurrentUserIdUseCase()
             transactionPager = Pager(
                 config = PagingConfig(pageSize = 10),
-                pagingSourceFactory = { getCurrentUserTransactionsUseCase(userId) })
-                .flow
-                .cachedIn(viewModelScope)
+                pagingSourceFactory = getCurrentUserTransactionsUseCase()
+            ).flow
+            _uiState.value = _uiState.value.copy(transactions = transactionPager)
+            observeQueryChange()
         }
+
+    }
+
+    private suspend fun observeQueryChange() {
+        _uiState.map { it.query }
+            .debounce(0.5.seconds)
+            .distinctUntilChanged()
+            .collectLatest { query ->
+                val transactions = transactionPager
+                    .map { data ->
+                        data.filter {
+                            query.isBlank() || it.medicine.name.contains(query, true)
+                                    || it.medicine.diseases.any { disease ->
+                                disease.name.contains(
+                                    query,
+                                    true
+                                )
+                            }
+                        }
+                    }
+
+                val donationRequests = donationPager
+                    .map { data ->
+                        data.filter {
+                            query.isBlank() || it.medicine.name.contains(query, true)
+                                    || it.medicine.diseases.any { disease ->
+                                disease.name.contains(
+                                    query,
+                                    true
+                                )
+                            }
+                        }
+                    }
+
+                _uiState.value = _uiState.value.copy(
+//                    transactions = transactions,
+                    donationRequests = donationRequests
+                )
+            }
+
     }
 }

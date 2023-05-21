@@ -12,4 +12,5 @@ android {
 dependencies{
     implementation(libs.androidx.paging.runtime)
     implementation(libs.kotlinx.serialization.json)
+    androidTestImplementation(libs.androidx.paging.testing)
 }

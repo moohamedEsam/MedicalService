@@ -1,6 +1,8 @@
 package com.example.domain
 
 import android.content.Context
+import android.util.Log
+import androidx.paging.PagingData
 import com.example.common.functions.loadToken
 import com.example.common.functions.saveToken
 import com.example.common.models.Result
@@ -17,6 +19,7 @@ import com.example.domain.usecase.diagnosis.GetUserLatestDiagnosisUseCase
 import com.example.domain.usecase.disease.GetAvailableSymptomsUseCase
 import com.example.domain.usecase.disease.GetDiseaseDetailsUseCase
 import com.example.domain.usecase.disease.PredictDiseaseBySymptomsUseCase
+import com.example.domain.usecase.donationRequest.GetBookmarkedDonationRequestsUseCase
 import com.example.domain.usecase.donationRequest.GetDonationRequestByIdUseCase
 import com.example.domain.usecase.donationRequest.GetDonationRequestsUseCase
 import com.example.domain.usecase.donationRequest.SetDonationRequestBookmarkUseCase
@@ -48,6 +51,8 @@ import com.example.model.app.user.User
 import com.example.model.app.user.emptyDoctor
 import com.example.model.app.user.emptyDonor
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -55,6 +60,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.transformLatest
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Factory
@@ -70,8 +76,9 @@ class DomainModule {
     fun provideCurrentUserIdUseCase(userRepository: UserRepository, context: Context) =
         GetCurrentUserIdUseCase {
             val email = context.dataStore.data.firstOrNull()?.email ?: ""
-            userRepository.getCurrentUserId(email)
+            userRepository.getCurrentUserId(email) ?: ""
         }
+
     @Factory
     fun provideLoginUseCase(
         repository: AuthRepository,
@@ -89,8 +96,10 @@ class DomainModule {
         result
 
     }
+
     @Factory
     fun provideRegisterUseCase(repository: AuthRepository) = RegisterUseCase(repository::register)
+
     @OptIn(ExperimentalCoroutinesApi::class)
     @Factory
     fun provideCurrentUserUseCase(userRepository: UserRepository, context: Context) =
@@ -101,10 +110,11 @@ class DomainModule {
         }
 
     context (Scope)
-    @Factory
+            @Factory
     fun provideIsUseLoggedInUseCase() = IsUserLoggedInUseCase {
         androidContext().loadToken()?.isNotEmpty() == true
     }
+
     @Factory
     fun provideDiseaseDetailsUseCase(diseaseRepository: DiseaseRepository) =
         GetDiseaseDetailsUseCase(diseaseRepository::getDiseaseDetails)
@@ -130,6 +140,10 @@ class DomainModule {
     fun provideSetDonationRequestBookmarkUseCase(donationRepository: DonationRepository) =
         SetDonationRequestBookmarkUseCase(donationRepository::setDonationRequestBookmark)
 
+    @Factory
+    fun provideGetBookmarkedDonationRequestsUseCase(donationRepository: DonationRepository) =
+        GetBookmarkedDonationRequestsUseCase(donationRepository::getBookmarkedDonationRequests)
+
 
     @Factory
     fun provideGetAvailableSymptomsUseCase() = GetAvailableSymptomsUseCase {
@@ -143,11 +157,18 @@ class DomainModule {
 
 
     @Factory
-    fun provideGetCurrentUserTransactionsUseCase(transactionRepository: TransactionRepository) =
-        GetCurrentUserTransactionsUseCase(transactionRepository::getTransactionsByUserId)
+    fun provideGetCurrentUserTransactionsUseCase(
+        transactionRepository: TransactionRepository,
+        getCurrentUserIdUseCase: GetCurrentUserIdUseCase
+    ) = GetCurrentUserTransactionsUseCase {
+        Log.i("DomainModule", "provideGetCurrentUserTransactionsUseCase: called")
+        val id = getCurrentUserIdUseCase()
+        transactionRepository.getTransactionsByUserId(id)
+    }
 
     @Factory
-    fun provideGetTransactionsUseCase(transactionRepository: TransactionRepository) = GetTransactionsUseCase(transactionRepository::getTransactions)
+    fun provideGetTransactionsUseCase(transactionRepository: TransactionRepository) =
+        GetTransactionsUseCase(transactionRepository::getTransactions)
 
     @Factory
     fun provideDeleteTransactionUseCase(transactionRepository: TransactionRepository) =

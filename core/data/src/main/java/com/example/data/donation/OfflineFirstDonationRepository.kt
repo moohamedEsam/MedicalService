@@ -18,11 +18,17 @@ class OfflineFirstDonationRepository(
     private val remote: RemoteDataSource,
     private val local: DonationRequestDao,
 ) : DonationRepository {
-    override fun getDonationRequests(): PagingSource<Int, DonationRequestView> =
+    override fun getDonationRequests(): () -> PagingSource<Int, DonationRequestView> =
         local.getDonationRequests()
             .map { it.toDonationRequestView() }
             .asPagingSourceFactory()
-            .invoke()
+
+
+    override fun getBookmarkedDonationRequests(): () -> PagingSource<Int, DonationRequestView> =
+        local.getBookmarkedDonationRequests()
+            .map { it.toDonationRequestView() }
+            .asPagingSourceFactory()
+
 
     override suspend fun setDonationRequestBookmark(id: String, isBookmarked: Boolean) =
         local.setDonationRequestBookmark(id, isBookmarked)
@@ -37,5 +43,6 @@ class OfflineFirstDonationRepository(
     }
 
     override fun getDonationRequest(id: String): Flow<DonationRequestView> =
-        local.getDonationRequestById(id).filterNotNull().map(DonationRequestEntityView::toDonationRequestView)
+        local.getDonationRequestById(id).filterNotNull()
+            .map(DonationRequestEntityView::toDonationRequestView)
 }

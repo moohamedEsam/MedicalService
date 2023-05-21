@@ -2,6 +2,7 @@ package com.example.model.app.user
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.util.UUID
 
 sealed interface User {
     val username: String
@@ -54,7 +55,7 @@ fun User.Companion.emptyReceiver() = User.Receiver(
     email = "",
     phone = "",
     location = Location(0.0, 0.0),
-    id = "",
+    id = UUID.randomUUID().toString(),
 )
 
 fun User.Companion.emptyDonor() = User.Donor(
@@ -62,7 +63,7 @@ fun User.Companion.emptyDonor() = User.Donor(
     email = "",
     phone = "",
     location = Location(0.0, 0.0),
-    id = "",
+    id = UUID.randomUUID().toString(),
 )
 
 fun User.Companion.emptyDoctor() = User.Doctor(
@@ -70,5 +71,5 @@ fun User.Companion.emptyDoctor() = User.Doctor(
     email = "",
     phone = "",
     location = Location(0.0, 0.0),
-    id = "",
+    id = UUID.randomUUID().toString(),
 )

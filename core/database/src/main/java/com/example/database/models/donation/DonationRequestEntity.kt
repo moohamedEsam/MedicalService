@@ -1,11 +1,12 @@
 package com.example.database.models.donation
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.model.app.donation.DonationRequest
 import java.util.Date
 
-@Entity(tableName = "donationRequests")
+@Entity(tableName = "donationRequests", indices = [Index("isBookmarked")])
 data class DonationRequestEntity(
     val medicineId: String,
     val collected: Int,
