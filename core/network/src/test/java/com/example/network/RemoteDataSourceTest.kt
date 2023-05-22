@@ -106,6 +106,7 @@ class RemoteDataSourceTest {
         users.ifSuccess { users ->
             val user = users.find { it.email == createUserDto.email }
             assertThat(user?.type).isEqualTo(createUserDto.type)
+            assertThat(user?.username).isEqualTo(createUserDto.username)
         }
     }
 

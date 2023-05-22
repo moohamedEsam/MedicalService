@@ -1,27 +1,31 @@
 package com.example.medicalservice.presentation.diagnosis.form
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -31,9 +35,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextAlign.Companion
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -95,23 +100,37 @@ private fun SymptomsList(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
     ) {
         Text("Select Symptoms", style = MaterialTheme.typography.headlineSmall)
-        AttachFileButton(onEvent)
     }
     OutlinedSearchTextField(
         query = state.query,
         onQueryChange = { onEvent(DiagnosisFormEvent.OnQueryChange(it)) },
         modifier = Modifier.fillMaxWidth()
     )
-    LazyRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    LazyColumn(
+        modifier = Modifier
+            .heightIn(max = (LocalConfiguration.current.screenHeightDp / 4).dp)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+
         items(state.symptoms.sortedBy { it.name }) { symptom ->
-            FilterChip(
-                selected = state.selectedSymptoms.contains(symptom),
-                onClick = { onEvent(DiagnosisFormEvent.OnSymptomClick(symptom)) },
-                label = { Text(symptom.name) },
+            Text(
+                text = symptom.name,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        1.dp,
+                        MaterialTheme.colorScheme.onSurface,
+                        MaterialTheme.shapes.extraSmall
+                    )
+                    .padding(8.dp)
+                    .clickable { onEvent(DiagnosisFormEvent.OnSymptomClick(symptom)) },
+                textAlign = TextAlign.Center,
+                color = if (state.selectedSymptoms.contains(symptom)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
             )
+
+
         }
     }
     if (state.selectedSymptoms.isNotEmpty())
@@ -129,36 +148,6 @@ private fun SymptomsList(
             )
         }
     }
-}
-
-@Composable
-private fun AttachFileButton(onEvent: (DiagnosisFormEvent) -> Unit) {
-    var isFileAttached by remember {
-        mutableStateOf(false)
-    }
-    val imageContract = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        uri?.let {
-            onEvent(DiagnosisFormEvent.OnImagePicked(it.toString()))
-            isFileAttached = true
-        }
-    }
-    Column(
-        modifier = Modifier.animateContentSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        IconButton(
-            onClick = {
-                imageContract.launch(PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly))
-            }
-        ) {
-            Icon(Icons.Default.AttachFile, contentDescription = null)
-        }
-        if (isFileAttached)
-            Text("File Attached")
-    }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

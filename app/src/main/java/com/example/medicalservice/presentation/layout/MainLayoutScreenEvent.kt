@@ -7,5 +7,9 @@ sealed interface MainLayoutScreenEvent {
     object NavigateToSearch : MainLayoutScreenEvent
     object NavigateToMyDonations : MainLayoutScreenEvent
     object NavigateToDonationsList : MainLayoutScreenEvent
+
+    object NavigateToDiagnosis : MainLayoutScreenEvent
+
+    object NavigateToUploadPrescription : MainLayoutScreenEvent
     data class SyncClicked(val owner: LifecycleOwner) : MainLayoutScreenEvent
 }

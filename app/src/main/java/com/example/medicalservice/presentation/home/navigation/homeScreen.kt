@@ -1,6 +1,5 @@
 package com.example.medicalservice.presentation.home.navigation
 
-import android.util.Log
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,15 +19,14 @@ import org.koin.androidx.compose.get
 fun NavGraphBuilder.homeScreen() {
     composable(Destination.Home.fullRoute) {
         val currentUser: GetCurrentUserUseCase = get()
-        var type by remember {
-            mutableStateOf(UserType.Donner)
-        }
+        var type: UserType? by remember { mutableStateOf(null) }
+
         LaunchedEffect(key1 = Unit) {
             currentUser().collectLatest {
-                Log.i("homeScreen", "homeScreen: $it")
                 type = it.type
             }
         }
+
         if (type == UserType.Donner)
             DonnerHomeScreen()
         else if (type == UserType.Receiver)

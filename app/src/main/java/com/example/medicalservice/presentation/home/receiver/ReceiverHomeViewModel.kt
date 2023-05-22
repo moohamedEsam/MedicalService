@@ -10,7 +10,9 @@ import com.example.common.navigation.AppNavigator
 import com.example.common.navigation.Destination
 import com.example.domain.usecase.diagnosis.GetUserLatestDiagnosisUseCase
 import com.example.domain.usecase.transaction.GetCurrentUserTransactionsUseCase
+import com.example.domain.usecase.user.GetCurrentUserUseCase
 import com.example.model.app.transaction.TransactionView
+import com.example.model.app.user.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,6 +24,7 @@ import org.koin.android.annotation.KoinViewModel
 class ReceiverHomeViewModel(
     private val getCurrentUserTransactionsUseCase: GetCurrentUserTransactionsUseCase,
     private val getUserLatestDiagnosisUseCase: GetUserLatestDiagnosisUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val appNavigator: AppNavigator
 ) : ViewModel() {
     private lateinit var transactionPager: Flow<PagingData<TransactionView>>
@@ -36,12 +39,17 @@ class ReceiverHomeViewModel(
                 config = PagingConfig(pageSize = 10),
                 pagingSourceFactory = getCurrentUserTransactionsUseCase()
             ).flow.cachedIn(viewModelScope)
-
             _uiState.value = _uiState.value.copy(transactions = transactionPager)
         }
         viewModelScope.launch {
             getUserLatestDiagnosisUseCase().distinctUntilChanged().collect {
                 _uiState.value = _uiState.value.copy(latestDiagnosisResult = it)
+            }
+        }
+        viewModelScope.launch {
+            getCurrentUserUseCase().distinctUntilChanged().collect {
+                if (it !is User.Receiver) return@collect
+                _uiState.value = _uiState.value.copy(user = it)
             }
         }
     }

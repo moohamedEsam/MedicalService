@@ -2,6 +2,7 @@ package com.example.domain
 
 import android.content.Context
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.paging.PagingData
 import com.example.common.functions.loadToken
 import com.example.common.functions.saveToken
@@ -14,6 +15,7 @@ import com.example.data.transaction.TransactionRepository
 import com.example.data.user.UserRepository
 import com.example.datastore.dataStore
 import com.example.domain.usecase.diagnosis.CreateDiagnosisRequestUseCase
+import com.example.domain.usecase.diagnosis.ExtractPrescriptionFromImageUseCase
 import com.example.domain.usecase.diagnosis.GetDiagnosisResultByIdUseCase
 import com.example.domain.usecase.diagnosis.GetUserLatestDiagnosisUseCase
 import com.example.domain.usecase.disease.GetAvailableSymptomsUseCase
@@ -50,6 +52,9 @@ import com.example.model.app.medicine.paracetamol
 import com.example.model.app.user.User
 import com.example.model.app.user.emptyDoctor
 import com.example.model.app.user.emptyDonor
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -230,4 +235,12 @@ class DomainModule {
         )
         flowOf(diagnosisResultView)
     }
+
+    @Factory
+    fun provideExtractImageTextUseCase(context: Context) =
+        ExtractPrescriptionFromImageUseCase { uri ->
+            val textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+            val image = InputImage.fromFilePath(context, uri.toUri())
+            textRecognizer.process(image)
+        }
 }

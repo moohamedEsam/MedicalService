@@ -50,6 +50,8 @@ class MainLayoutViewModel(
             MainLayoutScreenEvent.NavigateToHome -> onHomeClick()
             MainLayoutScreenEvent.NavigateToMyDonations -> onMyDonationsListClick()
             MainLayoutScreenEvent.NavigateToSearch -> Unit
+            MainLayoutScreenEvent.NavigateToDiagnosis -> appNavigator.navigateTo(Destination.DiagnosisForm())
+            MainLayoutScreenEvent.NavigateToUploadPrescription -> appNavigator.navigateTo(Destination.UploadPrescription())
             is MainLayoutScreenEvent.SyncClicked -> sync(event.owner)
         }
     }
@@ -92,11 +94,4 @@ class MainLayoutViewModel(
         )
     }
 
-    fun onSearchClick() = viewModelScope.launch {
-        appNavigator.navigateTo(
-            Destination.Search(),
-            singleTop = true,
-            popUpTo = Destination.Home.fullRoute
-        )
-    }
 }

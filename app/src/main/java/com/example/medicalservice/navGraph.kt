@@ -18,6 +18,7 @@ import com.example.medicalservice.presentation.home.navigation.homeScreen
 import com.example.medicalservice.presentation.medicine.medicineDetailsScreen
 import com.example.medicalservice.presentation.myDonations.myDonationsScreen
 import com.example.medicalservice.presentation.transaction.transactionScreen
+import com.example.medicalservice.presentation.uploadPrescription.uploadPrescriptionScreen
 
 @Composable
 fun MedicalServiceNavGraph(
@@ -43,6 +44,7 @@ fun MedicalServiceNavGraph(
         donationScreen()
         donationListScreen()
         myDonationsScreen()
+        uploadPrescriptionScreen()
     }
 }
 

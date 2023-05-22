@@ -1,12 +1,9 @@
 package com.example.network.models
 
-import com.example.model.app.user.CreateUserDto
 import com.example.model.app.user.Location
 import com.example.model.app.user.User
-import com.example.model.app.user.UserType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.UUID
 
 @Serializable
 data class NetworkUser(

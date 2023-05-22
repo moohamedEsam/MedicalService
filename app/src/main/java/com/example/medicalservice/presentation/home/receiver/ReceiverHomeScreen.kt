@@ -68,35 +68,22 @@ private fun ReceiverHomeScreen(
     state: ReceiverHomeScreenState,
     onEvent: (ReceiverHomeScreenEvent) -> Unit,
 ) {
-    Box {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .animateContentSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            ReceiverHomeScreenHeader(
-                state = state,
-                onEvent = onEvent,
-                modifier = Modifier.align(Alignment.End)
-            )
-            ReceiverHomeScreenTransactions(
-                state = state,
-                onEvent = onEvent
-            )
-        }
-        FloatingActionButton(
-            onClick = { onEvent(ReceiverHomeScreenEvent.OnCreateDiagnosisRequestClicked) },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(8.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Add,
-                contentDescription = null,
-            )
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .animateContentSize()
+            .padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        ReceiverHomeScreenHeader(
+            state = state,
+            onEvent = onEvent,
+            modifier = Modifier.align(Alignment.End)
+        )
+        ReceiverHomeScreenTransactions(
+            state = state,
+            onEvent = onEvent
+        )
     }
 }
 
@@ -261,7 +248,13 @@ private fun ReceiverHomeScreenPreview() {
     Surface {
         ReceiverHomeScreen(
             state = ReceiverHomeScreenState(
-                transactions = flowOf(PagingData.from(listOf(TransactionView.empty().copy(medicine = MedicineView.paracetamol())))),
+                transactions = flowOf(
+                    PagingData.from(
+                        listOf(
+                            TransactionView.empty().copy(medicine = MedicineView.paracetamol())
+                        )
+                    )
+                ),
                 latestDiagnosisResult = DiagnosisResultView.empty().copy(
                     diagnosis = "Based on your symptoms, it sounds like you have a viral infection. This is a common cause of fever. The good news is that most viral infections go away on their own within a week or two.",
                     doctor = User.emptyDoctor().copy(username = "Dr. John Doe")

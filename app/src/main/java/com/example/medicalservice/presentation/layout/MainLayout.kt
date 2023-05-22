@@ -3,12 +3,14 @@ package com.example.medicalservice.presentation.layout
 import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -17,6 +19,7 @@ import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.FormatListBulleted
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.OnlinePrediction
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.material3.BottomAppBar
@@ -42,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -55,6 +59,7 @@ import com.example.datastore.dataStore
 import com.example.functions.handleSnackBarEvent
 import com.example.functions.snackbar.SnackBarManager
 import com.example.medicalservice.MedicalServiceNavGraph
+import com.example.medicalservice.R
 import com.example.model.app.user.UserType
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectLatest
@@ -173,7 +178,7 @@ fun BottomBar(
     }
     if (WindowInsets.isImeVisible) return
     if (!shouldShowLayoutBars(currentRoute)) return
-    if (userType != UserType.Donner) return
+    if (userType == UserType.Doctor) return
     BottomAppBar(
         modifier = Modifier
             .fillMaxWidth()
@@ -187,29 +192,55 @@ fun BottomBar(
             icon = { Icon(imageVector = Icons.Outlined.Home, contentDescription = null) },
             label = { Text(text = "Home") },
         )
-
-        NavigationBarItem(
-            selected = currentRoute == Destination.DonationsList.route,
-            onClick = { onEvent(MainLayoutScreenEvent.NavigateToDonationsList) },
-            icon = {
-                Icon(
-                    imageVector = Icons.Outlined.FormatListBulleted,
-                    contentDescription = null
-                )
-            },
-            label = { Text(text = "Donations") },
-        )
-        NavigationBarItem(
-            selected = currentRoute == Destination.MyDonationsList.route,
-            onClick = { onEvent(MainLayoutScreenEvent.NavigateToMyDonations) },
-            icon = {
-                if (currentRoute != Destination.MyDonationsList.route)
-                    Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = null)
-                else
-                    Icon(imageVector = Icons.Filled.Favorite, contentDescription = null)
-            },
-            label = { Text(text = "Saved") },
-        )
+        if (userType == UserType.Donner) {
+            NavigationBarItem(
+                selected = currentRoute == Destination.DonationsList.route,
+                onClick = { onEvent(MainLayoutScreenEvent.NavigateToDonationsList) },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Outlined.FormatListBulleted,
+                        contentDescription = null
+                    )
+                },
+                label = { Text(text = "Donations") },
+            )
+            NavigationBarItem(
+                selected = currentRoute == Destination.MyDonationsList.route,
+                onClick = { onEvent(MainLayoutScreenEvent.NavigateToMyDonations) },
+                icon = {
+                    if (currentRoute != Destination.MyDonationsList.route)
+                        Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = null)
+                    else
+                        Icon(imageVector = Icons.Filled.Favorite, contentDescription = null)
+                },
+                label = { Text(text = "Saved") },
+            )
+        } else {
+            NavigationBarItem(
+                selected = currentRoute == Destination.DiagnosisForm.route,
+                onClick = { onEvent(MainLayoutScreenEvent.NavigateToDiagnosis) },
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.diagnosis),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
+                label = { Text(text = "diagnosis") },
+            )
+            NavigationBarItem(
+                selected = currentRoute == Destination.UploadPrescription.route,
+                onClick = { onEvent(MainLayoutScreenEvent.NavigateToUploadPrescription) },
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.upload),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
+                label = { Text(text = "upload") },
+            )
+        }
     }
 }
 
@@ -264,8 +295,10 @@ private fun shouldShowLayoutBars(currentRoute: String?) =
 @Preview(showBackground = true)
 @Composable
 private fun MainLayoutPreview() {
-    Surface {
-        MedicalServiceLayout(
+    Column(modifier = Modifier.fillMaxSize()) {
+        BottomBar(
+            userType = UserType.Receiver,
+            navHostController = rememberNavController(),
             onEvent = {}
         )
     }
