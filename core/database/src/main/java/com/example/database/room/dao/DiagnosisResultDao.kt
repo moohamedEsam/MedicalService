@@ -1,5 +1,6 @@
 package com.example.database.room.dao
 
+import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -8,10 +9,15 @@ import androidx.room.Update
 import com.example.database.models.diagnosis.DiagnosisRequestEntity
 import com.example.database.models.diagnosis.DiagnosisResultEntity
 import com.example.database.models.diagnosis.DiagnosisResultEntityView
+import com.example.model.app.diagnosis.DiagnosisResult
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DiagnosisResultDao {
+
+    @Query("SELECT * FROM diagnosisResults where status != :completeStatus ORDER BY createdAt DESC")
+    @Transaction
+    fun getDiagnosisResultsView(completeStatus: DiagnosisResult.Status = DiagnosisResult.Status.Complete): DataSource.Factory<Int, DiagnosisResultEntityView>
 
     @Query("SELECT * FROM diagnosisResults ORDER BY createdAt DESC LIMIT 1")
     @Transaction

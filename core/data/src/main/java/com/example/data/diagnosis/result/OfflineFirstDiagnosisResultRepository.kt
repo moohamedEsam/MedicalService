@@ -1,5 +1,6 @@
 package com.example.data.diagnosis.result
 
+import androidx.paging.PagingSource
 import com.example.common.functions.tryWrapper
 import com.example.common.models.Result
 import com.example.database.models.diagnosis.toDiagnosisResult
@@ -55,5 +56,10 @@ class OfflineFirstDiagnosisResultRepository(
     }
 
     override fun getDiagnosisResults(): Flow<List<DiagnosisResult>> = local
-        .getDiagnosisResults().map { it.map { diagnosisResult -> diagnosisResult.toDiagnosisResult() } }
+        .getDiagnosisResults()
+        .map { it.map { diagnosisResult -> diagnosisResult.toDiagnosisResult() } }
+
+    override fun getDiagnosisResultsView(): () -> PagingSource<Int, DiagnosisResultView> =
+        local.getDiagnosisResultsView()
+            .map { it.toDiagnosisResultView() }.asPagingSourceFactory()
 }

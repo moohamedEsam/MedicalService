@@ -3,11 +3,11 @@ package com.example.domain
 import android.content.Context
 import android.util.Log
 import androidx.core.net.toUri
-import androidx.paging.PagingData
 import com.example.common.functions.loadToken
 import com.example.common.functions.saveToken
 import com.example.common.models.Result
 import com.example.data.auth.AuthRepository
+import com.example.data.diagnosis.result.DiagnosisResultRepository
 import com.example.data.disease.DiseaseRepository
 import com.example.data.donation.DonationRepository
 import com.example.data.medicine.MedicineRepository
@@ -17,6 +17,7 @@ import com.example.datastore.dataStore
 import com.example.domain.usecase.diagnosis.CreateDiagnosisRequestUseCase
 import com.example.domain.usecase.diagnosis.ExtractPrescriptionFromImageUseCase
 import com.example.domain.usecase.diagnosis.GetDiagnosisResultByIdUseCase
+import com.example.domain.usecase.diagnosis.GetDiagnosisResultsUseCase
 import com.example.domain.usecase.diagnosis.GetUserLatestDiagnosisUseCase
 import com.example.domain.usecase.disease.GetAvailableSymptomsUseCase
 import com.example.domain.usecase.disease.GetDiseaseDetailsUseCase
@@ -51,21 +52,14 @@ import com.example.model.app.medicine.empty
 import com.example.model.app.medicine.paracetamol
 import com.example.model.app.user.User
 import com.example.model.app.user.emptyDoctor
-import com.example.model.app.user.emptyDonor
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.flow.lastOrNull
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.transformLatest
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Factory
@@ -219,7 +213,7 @@ class DomainModule {
             id = id,
             createdAt = createdAt,
             updatedAt = updatedAt,
-            diagnosisRequest = DiagnosisRequest.empty().copy(
+            request = DiagnosisRequest.empty().copy(
                 symptoms = listOf(
                     Symptom("Headache"),
                     Symptom("Fever"),
@@ -243,4 +237,8 @@ class DomainModule {
             val image = InputImage.fromFilePath(context, uri.toUri())
             textRecognizer.process(image)
         }
+
+    @Factory
+    fun provideGetDiagnosisResultsView(diagnosisResultRepository: DiagnosisResultRepository) =
+        GetDiagnosisResultsUseCase(diagnosisResultRepository::getDiagnosisResultsView)
 }

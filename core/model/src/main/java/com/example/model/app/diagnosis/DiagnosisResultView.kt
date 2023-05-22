@@ -13,7 +13,7 @@ data class DiagnosisResultView(
     val id: String,
     val createdAt: Date,
     val updatedAt: Date,
-    val diagnosisRequest: DiagnosisRequest,
+    val request: DiagnosisRequest,
     val medications: List<MedicineView> = emptyList(),
 ) {
     companion object
@@ -26,5 +26,5 @@ fun DiagnosisResultView.Companion.empty() = DiagnosisResultView(
     id = UUID.randomUUID().toString(),
     createdAt = Date(),
     updatedAt = Date(),
-    diagnosisRequest = DiagnosisRequest.empty(),
+    request = DiagnosisRequest.empty(),
 )

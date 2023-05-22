@@ -9,6 +9,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.common.navigation.Destination
 import com.example.domain.usecase.user.GetCurrentUserUseCase
+import com.example.medicalservice.presentation.home.doctor.DoctorHomeScreen
 import com.example.medicalservice.presentation.home.donner.DonnerHomeScreen
 import com.example.medicalservice.presentation.home.receiver.ReceiverHomeScreen
 import com.example.model.app.user.UserType
@@ -27,9 +28,11 @@ fun NavGraphBuilder.homeScreen() {
             }
         }
 
-        if (type == UserType.Donner)
-            DonnerHomeScreen()
-        else if (type == UserType.Receiver)
-            ReceiverHomeScreen()
+        when (type) {
+            UserType.Donner -> DonnerHomeScreen()
+            UserType.Receiver -> ReceiverHomeScreen()
+            UserType.Doctor -> DoctorHomeScreen()
+            null -> Unit
+        }
     }
 }

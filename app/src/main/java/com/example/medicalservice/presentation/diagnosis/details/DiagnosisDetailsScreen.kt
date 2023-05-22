@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -15,11 +14,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SuggestionChip
@@ -182,7 +177,7 @@ private fun MedicineItem(
 private fun DiagnosisRequestDetails(
     state: DiagnosisDetailsScreenState
 ) {
-    val diagnosisRequest = state.diagnosisResultView.diagnosisRequest
+    val diagnosisRequest = state.diagnosisResultView.request
 
     Text(text = "Symptoms", style = MaterialTheme.typography.headlineSmall)
     LazyRow(
@@ -217,7 +212,7 @@ private fun DiagnosisDetailsScreenPreview() {
         id = id,
         createdAt = createdAt,
         updatedAt = updatedAt,
-        diagnosisRequest = DiagnosisRequest.empty().copy(
+        request = DiagnosisRequest.empty().copy(
             symptoms = listOf(
                 Symptom("Headache"),
                 Symptom("Fever"),
