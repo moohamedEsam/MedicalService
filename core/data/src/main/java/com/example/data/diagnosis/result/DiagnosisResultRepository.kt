@@ -12,6 +12,8 @@ interface DiagnosisResultRepository {
 
     fun getDiagnosisResults(): Flow<List<DiagnosisResult>>
 
+    fun getLatestDiagnosisResult(): Flow<DiagnosisResultView>
+
     fun getDiagnosisResultsView(): () -> PagingSource<Int, DiagnosisResultView>
     suspend fun updateDiagnosis(diagnosis: DiagnosisResult): Result<DiagnosisResult>
 

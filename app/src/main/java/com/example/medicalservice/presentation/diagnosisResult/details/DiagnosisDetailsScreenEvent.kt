@@ -1,7 +1,4 @@
-package com.example.medicalservice.presentation.diagnosis.details
-
-import com.example.model.app.diagnosis.DiagnosisResultView
-import com.example.model.app.diagnosis.empty
+package com.example.medicalservice.presentation.diagnosisResult.details
 
 sealed interface DiagnosisDetailsScreenEvent {
     object OnDoctorClick : DiagnosisDetailsScreenEvent

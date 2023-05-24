@@ -1,4 +1,4 @@
-package com.example.medicalservice.presentation.diagnosis.form
+package com.example.medicalservice.presentation.diagnosisRequest.form
 
 import com.example.model.app.disease.Symptom
 

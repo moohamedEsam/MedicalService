@@ -1,9 +1,8 @@
-package com.example.medicalservice.presentation.diagnosis.form
+package com.example.medicalservice.presentation.diagnosisRequest.form
 
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.common.navigation.AppNavigator
 import com.example.domain.usecase.diagnosis.CreateDiagnosisRequestUseCase
 import com.example.domain.usecase.disease.GetAvailableSymptomsUseCase
 import com.example.functions.snackbar.SnackBarManager
@@ -19,7 +18,8 @@ import org.koin.android.annotation.KoinViewModel
 class DiagnosisFormViewModel(
     private val getAvailableSymptomsUseCase: GetAvailableSymptomsUseCase,
     private val createDiagnosisRequestUseCase: CreateDiagnosisRequestUseCase,
-    private val snackBarManager: SnackBarManager
+    private val snackBarManager: SnackBarManager,
+    private val appNavigator: AppNavigator
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(DiagnosisFormState())
     val uiState = _uiState.asStateFlow()
@@ -48,7 +48,7 @@ class DiagnosisFormViewModel(
         if (!_uiState.value.isDiagnosisButtonEnabled) return@launch
         _uiState.value = _uiState.value.copy(isLoading = true)
         val result = createDiagnosisRequestUseCase(
-            DiagnosisRequest( // todo: add imageUri
+            DiagnosisRequest(
                 symptoms = uiState.value.selectedSymptoms,
                 description = uiState.value.description,
             )
@@ -60,6 +60,7 @@ class DiagnosisFormViewModel(
             errorAction = ::createDiagnosisRequest
         )
         snackBarManager.showSnackBarEvent(event)
+        result.ifSuccess { appNavigator.navigateBack() }
     }
 
     private fun toggleSymptomSelection(symptom: Symptom) = viewModelScope.launch {

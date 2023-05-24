@@ -59,6 +59,11 @@ class OfflineFirstDiagnosisResultRepository(
         .getDiagnosisResults()
         .map { it.map { diagnosisResult -> diagnosisResult.toDiagnosisResult() } }
 
+    override fun getLatestDiagnosisResult(): Flow<DiagnosisResultView> =
+        local.getLatestDiagnosisResult()
+            .filterNotNull()
+            .map { it.toDiagnosisResultView() }
+
     override fun getDiagnosisResultsView(): () -> PagingSource<Int, DiagnosisResultView> =
         local.getDiagnosisResultsView()
             .map { it.toDiagnosisResultView() }.asPagingSourceFactory()

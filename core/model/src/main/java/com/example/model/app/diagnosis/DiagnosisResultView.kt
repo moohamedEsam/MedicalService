@@ -8,7 +8,7 @@ import java.util.UUID
 
 data class DiagnosisResultView(
     val diagnosis: String,
-    val doctor: User.Doctor,
+    val doctor: User.Doctor?,
     val status: DiagnosisResult.Status,
     val id: String,
     val createdAt: Date,

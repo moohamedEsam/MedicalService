@@ -6,12 +6,10 @@ import kotlinx.serialization.Serializable
 import java.util.Date
 import java.util.UUID
 
-@Serializable
 data class DiagnosisRequest(
     val symptoms: List<Symptom>,
     val description: String,
     val id: String = UUID.randomUUID().toString(),
-    @Serializable(with = DateSerializer::class)
     val date: Date = Date(),
 ) {
     companion object

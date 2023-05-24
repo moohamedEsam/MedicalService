@@ -1,4 +1,4 @@
-package com.example.medicalservice.presentation.diagnosis.details
+package com.example.medicalservice.presentation.diagnosisResult.details
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable

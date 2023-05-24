@@ -15,6 +15,10 @@ interface DiseaseDao {
     @Query("SELECT * FROM diseases")
     fun getDiseases(): DataSource.Factory<Int, DiseaseEntity>
 
+    @Query("SELECT * FROM diseases")
+    @Transaction
+    fun getDiseasesFlow(): Flow<List<DiseaseEntityView>>
+
     @Query("SELECT * FROM diseases WHERE id = :id")
     @Transaction
     fun getDisease(id: String): Flow<DiseaseEntityView?>

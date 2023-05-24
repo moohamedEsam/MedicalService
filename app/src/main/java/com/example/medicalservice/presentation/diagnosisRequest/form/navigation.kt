@@ -1,4 +1,4 @@
-package com.example.medicalservice.presentation.diagnosis.form
+package com.example.medicalservice.presentation.diagnosisRequest.form
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable

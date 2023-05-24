@@ -1,4 +1,4 @@
-package com.example.medicalservice.presentation.diagnosis.details
+package com.example.medicalservice.presentation.diagnosisResult.details
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -122,7 +122,7 @@ private fun DiagnosisMainDetails(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = "Doctor: ${state.diagnosisResultView.doctor.username}",
+            text = "Doctor: ${state.diagnosisResultView.doctor?.username}",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier

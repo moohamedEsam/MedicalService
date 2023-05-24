@@ -1,8 +1,5 @@
 package com.example.model.app.diagnosis
 
-import com.example.model.serializers.DateSerializer
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import java.util.Date
 import java.util.UUID
 

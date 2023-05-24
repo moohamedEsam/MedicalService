@@ -1,12 +1,11 @@
 package com.example.domain
 
 import android.content.Context
-import android.util.Log
 import androidx.core.net.toUri
 import com.example.common.functions.loadToken
 import com.example.common.functions.saveToken
-import com.example.common.models.Result
 import com.example.data.auth.AuthRepository
+import com.example.data.diagnosis.request.DiagnosisRequestRepository
 import com.example.data.diagnosis.result.DiagnosisResultRepository
 import com.example.data.disease.DiseaseRepository
 import com.example.data.donation.DonationRepository
@@ -21,13 +20,12 @@ import com.example.domain.usecase.diagnosis.GetDiagnosisResultsUseCase
 import com.example.domain.usecase.diagnosis.GetUserLatestDiagnosisUseCase
 import com.example.domain.usecase.disease.GetAvailableSymptomsUseCase
 import com.example.domain.usecase.disease.GetDiseaseDetailsUseCase
-import com.example.domain.usecase.disease.PredictDiseaseBySymptomsUseCase
+import com.example.domain.usecase.disease.GetDiseasesUseCase
 import com.example.domain.usecase.donationRequest.GetBookmarkedDonationRequestsUseCase
 import com.example.domain.usecase.donationRequest.GetDonationRequestByIdUseCase
 import com.example.domain.usecase.donationRequest.GetDonationRequestsUseCase
 import com.example.domain.usecase.donationRequest.SetDonationRequestBookmarkUseCase
 import com.example.domain.usecase.medicine.GetMedicineDetailsUseCase
-import com.example.domain.usecase.medicine.GetMedicinesUseCase
 import com.example.domain.usecase.sync.OneTimeSyncWorkUseCase
 import com.example.domain.usecase.transaction.CreateTransactionUseCase
 import com.example.domain.usecase.transaction.DeleteTransactionUseCase
@@ -39,19 +37,12 @@ import com.example.domain.usecase.user.GetCurrentUserUseCase
 import com.example.domain.usecase.user.IsUserLoggedInUseCase
 import com.example.domain.usecase.user.LoginUseCase
 import com.example.domain.usecase.user.RegisterUseCase
-import com.example.model.app.diagnosis.DiagnosisRequest
 import com.example.model.app.diagnosis.DiagnosisResult
-import com.example.model.app.diagnosis.DiagnosisResultView
 import com.example.model.app.diagnosis.empty
 import com.example.model.app.disease.DiseaseView
 import com.example.model.app.disease.Symptom
 import com.example.model.app.disease.dummyList
 import com.example.model.app.disease.headache
-import com.example.model.app.medicine.MedicineView
-import com.example.model.app.medicine.empty
-import com.example.model.app.medicine.paracetamol
-import com.example.model.app.user.User
-import com.example.model.app.user.emptyDoctor
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
@@ -59,13 +50,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Module
 import org.koin.core.scope.Scope
-import java.util.Date
 
 @Module
 @ComponentScan
@@ -123,11 +112,6 @@ class DomainModule {
         GetMedicineDetailsUseCase(medicineRepository::getMedicineDetails)
 
     @Factory
-    fun provideMedicinesUseCase() = GetMedicinesUseCase {
-        listOf(MedicineView.paracetamol())
-    }
-
-    @Factory
     fun provideDonationRequestsUseCase(donationRepository: DonationRepository) =
         GetDonationRequestsUseCase(donationRepository::getDonationRequests)
 
@@ -149,18 +133,12 @@ class DomainModule {
         Symptom.dummyList()
     }
 
-    @Factory
-    fun providePredictDiseasesUseCase() = PredictDiseaseBySymptomsUseCase {
-        listOf(DiseaseView.headache())
-    }
-
 
     @Factory
     fun provideGetCurrentUserTransactionsUseCase(
         transactionRepository: TransactionRepository,
         getCurrentUserIdUseCase: GetCurrentUserIdUseCase
     ) = GetCurrentUserTransactionsUseCase {
-        Log.i("DomainModule", "provideGetCurrentUserTransactionsUseCase: called")
         val id = getCurrentUserIdUseCase()
         transactionRepository.getTransactionsByUserId(id)
     }
@@ -183,52 +161,28 @@ class DomainModule {
 
 
     @Factory
-    fun provideGetLatestDiagnosisRequestUseCase() = GetUserLatestDiagnosisUseCase {
-        flowOf(
-            DiagnosisResultView.empty().copy(
-                diagnosis = "Based on your symptoms, it sounds like you have a viral infection. This is a common cause of fever. The good news is that most viral infections go away on their own within a week or two.",
-                doctor = User.emptyDoctor().copy(username = "Dr. John Doe")
+    fun provideGetLatestDiagnosisRequestUseCase(diagnosisResultRepository: DiagnosisResultRepository) =
+        GetUserLatestDiagnosisUseCase(diagnosisResultRepository::getLatestDiagnosisResult)
+
+    @Factory
+    fun provideCreateDiagnosisRequestUseCase(
+        diagnosisRequestRepository: DiagnosisRequestRepository,
+        diagnosisResultRepository: DiagnosisResultRepository
+    ) = CreateDiagnosisRequestUseCase {
+        val result = diagnosisRequestRepository.insertDiagnosisRequest(it)
+        result.ifSuccess { diagnosisRequest ->
+            val diagnosisResult = DiagnosisResult.empty().copy(
+                status = DiagnosisResult.Status.Pending,
+                diagnosisRequestId = diagnosisRequest.id
             )
-        )
+            diagnosisResultRepository.insertDiagnosis(diagnosisResult)
+        }
+        result
     }
 
     @Factory
-    fun provideCreateDiagnosisRequestUseCase() = CreateDiagnosisRequestUseCase {
-        Result.Success(it)
-    }
-
-    @Factory
-    fun provideGetDiagnosisResultByIdUseCase() = GetDiagnosisResultByIdUseCase {
-        val diagnosis =
-            "Acute sinusitis is an inflammation of the sinuses, which are air-filled cavities located in the bones of the skull. The sinuses are lined with a thin layer of mucus membrane, which helps to trap dust, pollen, and other particles from the air. When this mucus membrane becomes inflamed, it can produce more mucus, which can block the sinus openings and cause pain, pressure, and swelling."
-        val doctor: User.Doctor = User.emptyDoctor().copy(username = "Dr. Smith")
-        val status: DiagnosisResult.Status = DiagnosisResult.Status.Pending
-        val id = "1234567890"
-        val createdAt = Date()
-        val updatedAt = Date()
-        val diagnosisResultView = DiagnosisResultView(
-            diagnosis = diagnosis,
-            doctor = doctor,
-            status = status,
-            id = id,
-            createdAt = createdAt,
-            updatedAt = updatedAt,
-            request = DiagnosisRequest.empty().copy(
-                symptoms = listOf(
-                    Symptom("Headache"),
-                    Symptom("Fever"),
-                    Symptom("Nasal congestion"),
-                    Symptom("Facial pain")
-                ),
-            ),
-            medications = listOf(
-                MedicineView.empty().copy(name = "Nasal decongestant"),
-                MedicineView.empty().copy(name = "Pain reliever"),
-                MedicineView.empty().copy(name = "Antihistamine"),
-            )
-        )
-        flowOf(diagnosisResultView)
-    }
+    fun provideGetDiagnosisResultByIdUseCase(diagnosisResultRepository: DiagnosisResultRepository) =
+        GetDiagnosisResultByIdUseCase(diagnosisResultRepository::getDiagnosis)
 
     @Factory
     fun provideExtractImageTextUseCase(context: Context) =
@@ -241,4 +195,8 @@ class DomainModule {
     @Factory
     fun provideGetDiagnosisResultsView(diagnosisResultRepository: DiagnosisResultRepository) =
         GetDiagnosisResultsUseCase(diagnosisResultRepository::getDiagnosisResultsView)
+
+    @Factory
+    fun provideGetDiseasesUseCase(diseaseRepository: DiseaseRepository) =
+        GetDiseasesUseCase(diseaseRepository::getDiseasesFlow)
 }

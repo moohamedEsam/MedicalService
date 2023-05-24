@@ -47,7 +47,6 @@ sealed class Destination(val route: String, private vararg val params: String) {
     object UploadPrescription : NoArgumentsDestination("upload-prescription")
 
 
-
     object DonationDetails : Destination("donation", "id") {
         operator fun invoke(id: String = " ") = "$route/$id"
         const val donationIdKey = "id"
@@ -62,5 +61,4 @@ sealed class Destination(val route: String, private vararg val params: String) {
         operator fun invoke(id: String = " ") = "$route/$id"
         const val medicineIdKey = "id"
     }
-
 }

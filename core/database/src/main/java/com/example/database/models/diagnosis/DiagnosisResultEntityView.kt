@@ -21,7 +21,7 @@ data class DiagnosisResultEntityView(
         entityColumn = "id",
         entity = UserEntity::class
     )
-    val doctor: UserEntity
+    val doctor: UserEntity?
 )
 
 fun DiagnosisResultEntityView.toDiagnosisResultView() = DiagnosisResultView(
@@ -29,7 +29,7 @@ fun DiagnosisResultEntityView.toDiagnosisResultView() = DiagnosisResultView(
     createdAt = diagnosisResult.createdAt,
     updatedAt = diagnosisResult.updatedAt,
     diagnosis = diagnosisResult.diagnosis,
-    doctor = (doctor.toUser() as? User.Doctor) ?: User.emptyDoctor(),
+    doctor = (doctor?.toUser() as? User.Doctor),
     status = diagnosisResult.status,
     request = diagnosisRequest.toDiagnosisRequest(),
 )

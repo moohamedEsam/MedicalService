@@ -25,6 +25,9 @@ class OfflineFirstDiseaseRepository(
     override fun getDiseaseDetails(diseaseId: String): Flow<DiseaseView> =
         localDataSource.getDisease(diseaseId).filterNotNull().map(DiseaseEntityView::toDiseaseView)
 
+    override fun getDiseasesFlow(): Flow<List<DiseaseView>> =
+        localDataSource.getDiseasesFlow().map { it.map(DiseaseEntityView::toDiseaseView) }
+
     override fun getDiseases(): PagingSource<Int, Disease> = localDataSource.getDiseases()
         .map(DiseaseEntity::toDisease)
         .asPagingSourceFactory()

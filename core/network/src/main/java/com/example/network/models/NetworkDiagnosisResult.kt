@@ -32,7 +32,7 @@ fun DiagnosisResult.toNetwork() = NetworkDiagnosisResult(
     diagnosisRequestId = diagnosisRequestId,
 )
 
-fun NetworkDiagnosisResult.toDiagnosisResult() = DiagnosisResult(
+fun NetworkDiagnosisResult.toDiagnosisRequest() = DiagnosisResult(
     diagnosis = diagnosis,
     doctorId = doctorId,
     status = when (status) {

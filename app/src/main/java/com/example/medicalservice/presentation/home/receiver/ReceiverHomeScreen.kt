@@ -215,7 +215,7 @@ private fun LatestDiagnosisResult(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "Doctor: ")
                     TextButton(onClick = { }) {
-                        Text(text = diagnosisResultView.doctor.username)
+                        Text(text = diagnosisResultView.doctor?.username?:"")
                     }
                 }
 

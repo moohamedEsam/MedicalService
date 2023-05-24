@@ -1,6 +1,5 @@
-package com.example.medicalservice.presentation.diagnosis.details
+package com.example.medicalservice.presentation.diagnosisResult.details
 
-import com.example.model.app.diagnosis.DiagnosisResult
 import com.example.model.app.diagnosis.DiagnosisResultView
 import com.example.model.app.diagnosis.empty
 

@@ -14,13 +14,14 @@ import com.example.model.app.medicine.Medicine
 import com.example.model.app.transaction.Transaction
 import com.example.model.app.user.CreateUserDto
 import com.example.model.app.user.User
+import com.example.network.models.NetworkDiagnosisRequest
 import com.example.network.models.NetworkTransaction
 import com.example.network.models.NetworkUser
 import com.example.network.models.NetworkDiagnosisResult
 import com.example.network.models.RemoteResponse
 import com.example.network.models.asDomainModel
 import com.example.network.models.asNetworkModel
-import com.example.network.models.toDiagnosisResult
+import com.example.network.models.toDiagnosisRequest
 import com.example.network.models.toNetwork
 import com.example.network.models.toNetworkCreateUserDto
 import com.example.network.models.toUser
@@ -135,20 +136,21 @@ class KtorRemoteDataSource(
     override suspend fun getCurrentUserDiagnosisRequests(): Result<List<DiagnosisRequest>> =
         tryWrapper {
             val response = client.get(EndPoints.getDiagnosisRequests())
-            mapResponse(response.body())
+            val result = mapResponse<List<NetworkDiagnosisRequest>>(response.body())
+            result.map { it.map { networkDiagnosisRequest -> networkDiagnosisRequest.toDiagnosisRequest() } }
         }
 
     override suspend fun getCurrentUserDiagnosisResults(): Result<List<DiagnosisResult>> =
         tryWrapper {
             val response = client.get(EndPoints.getCurrentUserDiagnosisResult())
             val result = mapResponse<List<NetworkDiagnosisResult>>(response.body())
-            result.map { it.map { networkDiagnosisResult -> networkDiagnosisResult.toDiagnosisResult() } }
+            result.map { it.map { networkDiagnosisResult -> networkDiagnosisResult.toDiagnosisRequest() } }
         }
 
     override suspend fun createDiagnosisRequest(donationRequest: DiagnosisRequest): Result<Unit> =
         tryWrapper {
             val response = client.post(EndPoints.createDiagnosisRequest()) {
-                setBody(donationRequest)
+                setBody(donationRequest.toNetwork())
                 contentType(ContentType.Application.Json)
             }
             mapResponse(response.body())
@@ -157,7 +159,7 @@ class KtorRemoteDataSource(
     override suspend fun updateDiagnosisRequest(donationRequest: DiagnosisRequest): Result<Unit> =
         tryWrapper {
             val response = client.put(EndPoints.updateDiagnosisRequest(donationRequest.id)) {
-                setBody(donationRequest)
+                setBody(donationRequest.toNetwork())
                 contentType(ContentType.Application.Json)
             }
             mapResponse(response.body())

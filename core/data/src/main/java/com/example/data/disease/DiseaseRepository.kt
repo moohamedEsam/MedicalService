@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.Flow
 interface DiseaseRepository {
     fun getDiseaseDetails(diseaseId: String): Flow<DiseaseView>
 
+    fun getDiseasesFlow(): Flow<List<DiseaseView>>
+
     fun getDiseases(): PagingSource<Int, Disease>
 
     suspend fun predictDiseaseBySymptoms(symptoms: List<Symptom>): Result<DiseaseView>
