@@ -27,4 +27,7 @@ data class DiagnosisResultFormState(
     val isAddDiseaseVisible = disease == null
 
     val medications = disease?.medicines?.filter { it.id in medicationsIds } ?: emptyList()
+
+    val isSaveButtonEnabled = disease != null && diagnosis.isNotBlank() && medications.map { it.id }
+        .plus(unRegisteredMedicines).isNotEmpty()
 }

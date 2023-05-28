@@ -14,10 +14,12 @@ import com.example.data.transaction.TransactionRepository
 import com.example.data.user.UserRepository
 import com.example.datastore.dataStore
 import com.example.domain.usecase.diagnosis.CreateDiagnosisRequestUseCase
+import com.example.domain.usecase.diagnosis.CreateDiagnosisResultUseCase
 import com.example.domain.usecase.diagnosis.ExtractPrescriptionFromImageUseCase
 import com.example.domain.usecase.diagnosis.GetDiagnosisResultByIdUseCase
 import com.example.domain.usecase.diagnosis.GetDiagnosisResultsUseCase
 import com.example.domain.usecase.diagnosis.GetUserLatestDiagnosisUseCase
+import com.example.domain.usecase.disease.CreateDiseaseUseCase
 import com.example.domain.usecase.disease.GetAvailableSymptomsUseCase
 import com.example.domain.usecase.disease.GetDiseaseDetailsUseCase
 import com.example.domain.usecase.disease.GetDiseasesUseCase
@@ -25,7 +27,10 @@ import com.example.domain.usecase.donationRequest.GetBookmarkedDonationRequestsU
 import com.example.domain.usecase.donationRequest.GetDonationRequestByIdUseCase
 import com.example.domain.usecase.donationRequest.GetDonationRequestsUseCase
 import com.example.domain.usecase.donationRequest.SetDonationRequestBookmarkUseCase
+import com.example.domain.usecase.medicine.CreateMedicineUseCase
 import com.example.domain.usecase.medicine.GetMedicineDetailsUseCase
+import com.example.domain.usecase.settings.ChangeIpUseCase
+import com.example.domain.usecase.settings.ObserveIpUseCase
 import com.example.domain.usecase.sync.OneTimeSyncWorkUseCase
 import com.example.domain.usecase.transaction.CreateTransactionUseCase
 import com.example.domain.usecase.transaction.DeleteTransactionUseCase
@@ -47,9 +52,11 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Factory
@@ -199,4 +206,30 @@ class DomainModule {
     @Factory
     fun provideGetDiseasesUseCase(diseaseRepository: DiseaseRepository) =
         GetDiseasesUseCase(diseaseRepository::getDiseasesFlow)
+
+    @Factory
+    fun provideCreateDiseaseUseCase(diseaseRepository: DiseaseRepository) =
+        CreateDiseaseUseCase(diseaseRepository::insertDisease)
+
+    @Factory
+    fun provideCreateMedicineUseCase(medicineRepository: MedicineRepository) =
+        CreateMedicineUseCase(medicineRepository::createMedicine)
+
+    context(Scope)
+    @Factory
+    fun provideChangeIpUseCase() = ChangeIpUseCase {
+        androidContext().dataStore.updateData { userSettings ->
+            userSettings.copy(remoteServerIp = it)
+        }
+    }
+
+    context(Scope)
+    @Factory
+    fun provideGetIpUseCase() = ObserveIpUseCase {
+        androidContext().dataStore.data.map { it.remoteServerIp }
+    }
+
+    @Factory
+    fun provideCreateDiagnosisResultUseCase(diagnosisResultRepository: DiagnosisResultRepository) =
+        CreateDiagnosisResultUseCase(diagnosisResultRepository::insertDiagnosis)
 }

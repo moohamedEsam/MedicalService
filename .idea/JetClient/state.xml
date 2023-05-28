@@ -4,6 +4,16 @@
     <option name="folders">
       <list>
         <folderState>
+          <option name="auth">
+            <authState>
+              <option name="bearer">
+                <iW>
+                  <option name="token" value="{{token}}" />
+                </iW>
+              </option>
+              <option name="type" value="BEARER" />
+            </authState>
+          </option>
           <option name="description" value="/api/v1/upload" />
           <option name="folders">
             <list>
@@ -147,7 +157,7 @@
                       </option>
                       <option name="body">
                         <bodyState>
-                          <option name="raw" value="{&#13;&#10;    &quot;username&quot;: &quot;mohamedEsam@gmail.com&quot;,&#13;&#10;    &quot;password&quot;: &quot;somethingRandom&quot;&#13;&#10;}" />
+                          <option name="raw" value="{&#10;  &quot;username&quot;: &quot;mohamedEsam@gmail.com&quot;,&#10;  &quot;password&quot;: &quot;somethingRandom&quot;&#10;}" />
                           <option name="type" value="JSON" />
                         </bodyState>
                       </option>
@@ -163,7 +173,7 @@
                       <option name="id" value="a33a1590-0c2a-486c-bb3c-8cf347dce1af" />
                       <option name="method" value="POST" />
                       <option name="name" value="login" />
-                      <option name="testScript" value="response = jc.response.json()&#10;jc.collectionVariables.set(&quot;token&quot;, response.token)" />
+                      <option name="testScript" value="jc.globalVariables.setDefault(&quot;token&quot;, jc.response.json().token)" />
                       <option name="url" value="{{baseUrl}}/api/users/auth/login" />
                     </requestState>
                   </list>
@@ -174,9 +184,9 @@
                 <option name="auth">
                   <authState>
                     <option name="bearer">
-                      <iV>
+                      <iW>
                         <option name="token" value="{{token}}" />
-                      </iV>
+                      </iW>
                     </option>
                     <option name="type" value="BEARER" />
                   </authState>
@@ -284,9 +294,9 @@
                 <option name="auth">
                   <authState>
                     <option name="bearer">
-                      <iV>
+                      <iW>
                         <option name="token" value="{{token}}" />
-                      </iV>
+                      </iW>
                     </option>
                     <option name="type" value="BEARER" />
                   </authState>
@@ -385,9 +395,9 @@
                 <option name="auth">
                   <authState>
                     <option name="bearer">
-                      <iV>
+                      <iW>
                         <option name="token" value="{{token}}" />
-                      </iV>
+                      </iW>
                     </option>
                     <option name="type" value="BEARER" />
                   </authState>
@@ -710,9 +720,9 @@
                 <option name="auth">
                   <authState>
                     <option name="bearer">
-                      <iV>
+                      <iW>
                         <option name="token" value="{{token}}" />
-                      </iV>
+                      </iW>
                     </option>
                     <option name="type" value="BEARER" />
                   </authState>
@@ -755,9 +765,9 @@
                 <option name="auth">
                   <authState>
                     <option name="bearer">
-                      <iV>
+                      <iW>
                         <option name="token" value="{{token}}" />
-                      </iV>
+                      </iW>
                     </option>
                     <option name="type" value="BEARER" />
                   </authState>
@@ -793,6 +803,14 @@
             </list>
           </option>
           <option name="id" value="99240083-0ddc-43ec-957e-cfd8a78d33d0" />
+          <option name="integrationProperties">
+            <integrationProperties>
+              <option name="framework" value="OPEN_API" />
+              <option name="openApi">
+                <openApiIntegrationProperties />
+              </option>
+            </integrationProperties>
+          </option>
           <option name="name" value="MedicalService" />
           <option name="requests">
             <list>
@@ -800,9 +818,9 @@
                 <option name="auth">
                   <authState>
                     <option name="bearer">
-                      <iV>
+                      <iW>
                         <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYSIsImNyZWF0ZWQiOjE2Nzk3NTY3ODkzNTgsImV4cCI6MTY4MDM2MTU4OX0.-U248bTiS4YjrGcYqsHUOp78qSk7J-sfQdmCs9c9_WR8lv75ayzRDnlOren35zSWJMCrKFwUxKNY8yUvfTWl1w" />
-                      </iV>
+                      </iW>
                     </option>
                     <option name="type" value="BEARER" />
                   </authState>

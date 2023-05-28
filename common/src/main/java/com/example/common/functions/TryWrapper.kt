@@ -1,9 +1,8 @@
 package com.example.common.functions
 
-import android.util.Log
 import com.example.common.models.Result
 
-suspend fun <T> tryWrapper(block: suspend () -> Result<T>) =
+inline fun <T> tryWrapper(block: () -> Result<T>) =
     try {
         block()
     } catch (e: Exception) {

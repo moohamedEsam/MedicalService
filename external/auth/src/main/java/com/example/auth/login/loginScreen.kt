@@ -12,8 +12,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -68,6 +70,15 @@ private fun LoginScreenContent(
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        IconButton(
+            onClick = { onEvent(LoginScreenEvent.OnSettingsClick) },
+            modifier = Modifier.align(Alignment.End)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = null
+            )
+        }
         AsyncImage(
             model = logo,
             modifier = Modifier

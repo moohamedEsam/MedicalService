@@ -1,6 +1,7 @@
 package com.example.data.medicine
 
 import androidx.paging.PagingSource
+import com.example.common.functions.tryWrapper
 import com.example.common.models.Result
 import com.example.database.models.disease.DiseaseMedicineCrossRef
 import com.example.database.models.medicine.MedicineEntityView
@@ -21,6 +22,11 @@ class OfflineFirstMedicineRepository(
     private val localDataSource: MedicineDao,
     private val remoteDataSource: RemoteDataSource
 ) : MedicineRepository {
+    override suspend fun createMedicine(medicine: Medicine): Result<Medicine> = tryWrapper {
+        localDataSource.insert(medicine.toEntity().copy(isCreated = true))
+        Result.Success(medicine)
+    }
+
     override fun getMedicineDetails(medicineId: String): Flow<MedicineView> =
         localDataSource.getMedicine(medicineId).filterNotNull()
             .map(MedicineEntityView::toMedicineView)

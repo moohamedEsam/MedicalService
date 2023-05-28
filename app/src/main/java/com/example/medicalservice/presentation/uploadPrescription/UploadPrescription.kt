@@ -101,7 +101,7 @@ fun UploadPrescriptionScreen(
 private fun UploadPrescriptionPreview() {
     Surface(modifier=Modifier.fillMaxSize()) {
         UploadPrescriptionScreen(
-            state = UploadPrescriptionScreenState(extractedText = "", isLoading = true),
+            state = UploadPrescriptionScreenState(extractedText = "", isLoading = false),
             onEvent = {}
         )
     }

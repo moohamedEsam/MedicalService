@@ -75,3 +75,13 @@ fun DiseaseView.Companion.headache() = DiseaseView(
         ),
     )
 )
+
+fun DiseaseView.toDisease() = Disease(
+    id = id,
+    name = name,
+    description = description,
+    symptoms = symptoms,
+    treatment = treatment,
+    prevention = prevention,
+    diagnosis = diagnosis,
+)

@@ -1,6 +1,5 @@
 package com.example.medicalservice.presentation.layout
 
-import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -46,13 +45,14 @@ class MainLayoutViewModel(
 
     fun handleEvent(event: MainLayoutScreenEvent) = viewModelScope.launch {
         when (event) {
-            MainLayoutScreenEvent.NavigateToDonationsList -> onDonationsListClick()
-            MainLayoutScreenEvent.NavigateToHome -> onHomeClick()
-            MainLayoutScreenEvent.NavigateToMyDonations -> onMyDonationsListClick()
-            MainLayoutScreenEvent.NavigateToSearch -> Unit
-            MainLayoutScreenEvent.NavigateToDiagnosis -> appNavigator.navigateTo(Destination.DiagnosisForm())
-            MainLayoutScreenEvent.NavigateToUploadPrescription -> appNavigator.navigateTo(Destination.UploadPrescription())
+            MainLayoutScreenEvent.OnDonationsClick -> onDonationsListClick()
+            MainLayoutScreenEvent.OnHomeClick -> onHomeClick()
+            MainLayoutScreenEvent.OnSavedClick -> onMyDonationsListClick()
+            MainLayoutScreenEvent.OnDiagnosisClick -> appNavigator.navigateTo(Destination.DiagnosisForm())
+            MainLayoutScreenEvent.OnUploadClick -> appNavigator.navigateTo(Destination.UploadPrescription())
             is MainLayoutScreenEvent.SyncClicked -> sync(event.owner)
+            MainLayoutScreenEvent.OnLogoutClick -> appNavigator.navigateTo(Destination.Login())
+            MainLayoutScreenEvent.OnSettingsClick -> appNavigator.navigateTo(Destination.Settings())
         }
     }
 

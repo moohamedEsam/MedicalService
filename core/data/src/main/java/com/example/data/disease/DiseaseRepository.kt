@@ -8,6 +8,9 @@ import com.example.model.app.disease.Symptom
 import kotlinx.coroutines.flow.Flow
 
 interface DiseaseRepository {
+
+    suspend fun insertDisease(disease: Disease): Result<Disease>
+
     fun getDiseaseDetails(diseaseId: String): Flow<DiseaseView>
 
     fun getDiseasesFlow(): Flow<List<DiseaseView>>

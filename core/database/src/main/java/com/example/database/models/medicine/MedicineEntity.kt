@@ -12,6 +12,7 @@ data class MedicineEntity(
     val precautions: List<String>,
     val overDoes: List<String>,
     @PrimaryKey val id:String,
+    val isCreated: Boolean = false,
 )
 
 fun MedicineEntity.toMedicine() = Medicine(

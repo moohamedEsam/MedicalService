@@ -13,6 +13,8 @@ data class DiseaseEntity(
     val prevention: List<String>,
     val diagnosis: List<String>,
     @PrimaryKey val id: String,
+    val isCreated: Boolean = false,
+    val isUpdated: Boolean = false,
 )
 
 fun DiseaseEntity.toDisease() = Disease(

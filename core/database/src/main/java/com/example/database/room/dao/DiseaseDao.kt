@@ -29,6 +29,8 @@ interface DiseaseDao {
     @Insert
     fun insert(disease: DiseaseEntity)
 
+
+
     @Insert
     fun insertAll(diseases: List<DiseaseEntity>, crossRefs: List<DiseaseMedicineCrossRef> = emptyList())
 

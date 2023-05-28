@@ -27,8 +27,6 @@ class LoginScreenTest{
             val context = LocalContext.current
             LoginScreen(
                 logo = "",
-                onLoggedIn = {},
-                onRegisterClick = {},
                 imageLoader = ImageLoader.Builder(context).build(),
                 viewModel = loginViewModel
             )

@@ -60,6 +60,7 @@ class LoginViewModel(
                 Destination.Register().invoke()
             )
 
+            LoginScreenEvent.OnSettingsClick -> appNavigator.navigateTo(Destination.Settings())
         }
     }
 

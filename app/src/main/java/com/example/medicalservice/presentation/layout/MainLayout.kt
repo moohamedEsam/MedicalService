@@ -1,8 +1,8 @@
 package com.example.medicalservice.presentation.layout
 
 import android.app.Activity
-import android.util.Log
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
@@ -19,11 +19,15 @@ import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.FormatListBulleted
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.OnlinePrediction
+import androidx.compose.material.icons.outlined.Logout
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,7 +36,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -41,6 +44,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
@@ -54,8 +58,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.common.navigation.Destination
 import com.example.common.navigation.NavigationIntent
-import com.example.datastore.UserSettings
-import com.example.datastore.dataStore
 import com.example.functions.handleSnackBarEvent
 import com.example.functions.snackbar.SnackBarManager
 import com.example.medicalservice.MedicalServiceNavGraph
@@ -111,7 +113,10 @@ fun MedicalServiceLayout(
         topBar = {
             TopBar(
                 navHostController = navHostController,
-                onSyncClick = { onEvent(MainLayoutScreenEvent.SyncClicked(owner)) })
+                onSyncClick = { onEvent(MainLayoutScreenEvent.SyncClicked(owner)) },
+                onLogoutClick = { onEvent(MainLayoutScreenEvent.OnLogoutClick) },
+                onSettingsClick = { onEvent(MainLayoutScreenEvent.OnSettingsClick) },
+            )
         },
         content = {
             MedicalServiceNavGraph(
@@ -188,14 +193,14 @@ fun BottomBar(
     ) {
         NavigationBarItem(
             selected = currentRoute == Destination.Home.route,
-            onClick = { onEvent(MainLayoutScreenEvent.NavigateToHome) },
+            onClick = { onEvent(MainLayoutScreenEvent.OnHomeClick) },
             icon = { Icon(imageVector = Icons.Outlined.Home, contentDescription = null) },
             label = { Text(text = "Home") },
         )
         if (userType == UserType.Donner) {
             NavigationBarItem(
                 selected = currentRoute == Destination.DonationsList.route,
-                onClick = { onEvent(MainLayoutScreenEvent.NavigateToDonationsList) },
+                onClick = { onEvent(MainLayoutScreenEvent.OnDonationsClick) },
                 icon = {
                     Icon(
                         imageVector = Icons.Outlined.FormatListBulleted,
@@ -206,7 +211,7 @@ fun BottomBar(
             )
             NavigationBarItem(
                 selected = currentRoute == Destination.MyDonationsList.route,
-                onClick = { onEvent(MainLayoutScreenEvent.NavigateToMyDonations) },
+                onClick = { onEvent(MainLayoutScreenEvent.OnSavedClick) },
                 icon = {
                     if (currentRoute != Destination.MyDonationsList.route)
                         Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = null)
@@ -218,7 +223,7 @@ fun BottomBar(
         } else {
             NavigationBarItem(
                 selected = currentRoute == Destination.DiagnosisForm.route,
-                onClick = { onEvent(MainLayoutScreenEvent.NavigateToDiagnosis) },
+                onClick = { onEvent(MainLayoutScreenEvent.OnDiagnosisClick) },
                 icon = {
                     Icon(
                         painter = painterResource(id = R.drawable.diagnosis),
@@ -230,7 +235,7 @@ fun BottomBar(
             )
             NavigationBarItem(
                 selected = currentRoute == Destination.UploadPrescription.route,
-                onClick = { onEvent(MainLayoutScreenEvent.NavigateToUploadPrescription) },
+                onClick = { onEvent(MainLayoutScreenEvent.OnUploadClick) },
                 icon = {
                     Icon(
                         painter = painterResource(id = R.drawable.upload),
@@ -248,7 +253,9 @@ fun BottomBar(
 @Composable
 private fun TopBar(
     navHostController: NavHostController,
-    onSyncClick: () -> Unit
+    onSyncClick: () -> Unit,
+    onSettingsClick: () -> Unit,
+    onLogoutClick: () -> Unit
 ) {
     val navEntry by navHostController.currentBackStackEntryAsState()
     val currentRoute by remember {
@@ -267,6 +274,8 @@ private fun TopBar(
             IconButton(onClick = {}) {
                 Icon(imageVector = Icons.Outlined.Person, contentDescription = null)
             }
+
+            MoreIconButton(onSettingsClick = onSettingsClick, onLogoutClick = onLogoutClick)
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -285,21 +294,66 @@ private fun TopBar(
 }
 
 @Composable
+private fun MoreIconButton(
+    onSettingsClick: () -> Unit = {},
+    onLogoutClick: () -> Unit = {},
+) {
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+    Box {
+        IconButton(onClick = { expanded = true }) {
+            Icon(imageVector = Icons.Outlined.MoreVert, contentDescription = null)
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .padding(end = 16.dp)
+        ) {
+            DropdownMenuItem(
+                onClick = {
+                    onSettingsClick()
+                    expanded = false
+                },
+                text = { Text(text = "Settings") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Settings,
+                        contentDescription = null
+                    )
+                }
+            )
+            DropdownMenuItem(
+                onClick = {
+                    onLogoutClick()
+                    expanded = false
+                },
+                text = { Text(text = "Logout") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Logout,
+                        contentDescription = null
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Composable
 private fun shouldShowLayoutBars(currentRoute: String?) =
     currentRoute !in listOf(
         Destination.Login.route,
         Destination.Register().route,
-        Destination.Map.route
+        Destination.Map.route,
+        Destination.Settings.route
     )
 
 @Preview(showBackground = true)
 @Composable
 private fun MainLayoutPreview() {
     Column(modifier = Modifier.fillMaxSize()) {
-        BottomBar(
-            userType = UserType.Receiver,
-            navHostController = rememberNavController(),
-            onEvent = {}
-        )
+
     }
 }

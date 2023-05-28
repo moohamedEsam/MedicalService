@@ -6,4 +6,6 @@ sealed interface LoginScreenEvent {
     object LoginClicked : LoginScreenEvent
 
     object RegisterClicked : LoginScreenEvent
+
+    object OnSettingsClick : LoginScreenEvent
 }

@@ -3,13 +3,16 @@ package com.example.medicalservice.presentation.layout
 import androidx.lifecycle.LifecycleOwner
 
 sealed interface MainLayoutScreenEvent {
-    object NavigateToHome : MainLayoutScreenEvent
-    object NavigateToSearch : MainLayoutScreenEvent
-    object NavigateToMyDonations : MainLayoutScreenEvent
-    object NavigateToDonationsList : MainLayoutScreenEvent
+    object OnHomeClick : MainLayoutScreenEvent
+    object OnSavedClick : MainLayoutScreenEvent
+    object OnDonationsClick : MainLayoutScreenEvent
 
-    object NavigateToDiagnosis : MainLayoutScreenEvent
+    object OnDiagnosisClick : MainLayoutScreenEvent
 
-    object NavigateToUploadPrescription : MainLayoutScreenEvent
+    object OnUploadClick : MainLayoutScreenEvent
+
+    object OnLogoutClick : MainLayoutScreenEvent
+
+    object OnSettingsClick : MainLayoutScreenEvent
     data class SyncClicked(val owner: LifecycleOwner) : MainLayoutScreenEvent
 }

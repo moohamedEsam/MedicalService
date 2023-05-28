@@ -23,6 +23,9 @@ interface MedicineDao {
     @Query("DELETE FROM medicines")
     suspend fun deleteAll()
 
+    @Insert
+    suspend fun insert(medicine: MedicineEntity)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(medicines: List<MedicineEntity>, crossRefs: List<DiseaseMedicineCrossRef> = emptyList())
 }

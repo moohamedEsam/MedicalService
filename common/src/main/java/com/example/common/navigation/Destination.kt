@@ -15,6 +15,7 @@ sealed class Destination(val route: String, private vararg val params: String) {
     }
 
     object Login : NoArgumentsDestination("login")
+    object Settings : NoArgumentsDestination("settings")
     class Register : Destination("Register", Map.latKey, Map.lngKey) {
         operator fun invoke(lat: Double = 0.0, lng: Double = 0.0) =
             "$route/$lat/$lng"
