@@ -1,5 +1,6 @@
 package com.example.medicalservice.presentation.diagnosisResult.form
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.common.navigation.AppNavigator
@@ -7,6 +8,7 @@ import com.example.common.navigation.Destination
 import com.example.domain.usecase.diagnosis.CreateDiagnosisRequestUseCase
 import com.example.domain.usecase.diagnosis.CreateDiagnosisResultUseCase
 import com.example.domain.usecase.diagnosis.GetDiagnosisResultByIdUseCase
+import com.example.domain.usecase.diagnosis.UpdateDiagnosisResultUseCase
 import com.example.domain.usecase.disease.CreateDiseaseUseCase
 import com.example.domain.usecase.disease.GetDiseasesUseCase
 import com.example.domain.usecase.medicine.CreateMedicineUseCase
@@ -30,7 +32,7 @@ class DiagnosisResultFormViewModel(
     private val createMedicineUseCase: CreateMedicineUseCase,
     private val createDiseaseUseCase: CreateDiseaseUseCase,
     private val getDiseasesUseCase: GetDiseasesUseCase,
-    private val createDiagnosisResultUseCase: CreateDiagnosisResultUseCase,
+    private val updateDiagnosisResultUseCase: UpdateDiagnosisResultUseCase,
     private val appNavigator: AppNavigator,
     private val diagnosisResultId: String
 ) : ViewModel() {
@@ -42,9 +44,13 @@ class DiagnosisResultFormViewModel(
             getDiagnosisResultByIdUseCase(diagnosisResultId).collectLatest {
                 _uiState.value = uiState.value.copy(
                     diagnosisRequest = it.request,
-                    diagnosis = it.diagnosis
+                    diagnosis = it.diagnosis,
+                    disease = it.disease,
+                    medicationsIds = it.medications.map { medicine -> medicine.id },
                 )
             }
+        }
+        viewModelScope.launch {
             getDiseasesUseCase().collectLatest {
                 _uiState.value = uiState.value.copy(diseaseOptions = it)
             }
@@ -54,9 +60,18 @@ class DiagnosisResultFormViewModel(
     fun handleEvent(event: DiagnosisResultFormEvent) = viewModelScope.launch {
         when (event) {
             is DiagnosisResultFormEvent.Form -> handleFormEvent(event)
-            is DiagnosisResultFormEvent.UnregisteredMedicineDialog -> handleUnregisteredMedicineDialogEvent(event)
-            is DiagnosisResultFormEvent.UnregisteredDiseaseDialog -> handleUnregisteredDiseaseDialogEvent(event)
-            is DiagnosisResultFormEvent.MedicineOptionDialog -> handleMedicineOptionDialogEvent(event)
+            is DiagnosisResultFormEvent.UnregisteredMedicineDialog -> handleUnregisteredMedicineDialogEvent(
+                event
+            )
+
+            is DiagnosisResultFormEvent.UnregisteredDiseaseDialog -> handleUnregisteredDiseaseDialogEvent(
+                event
+            )
+
+            is DiagnosisResultFormEvent.MedicineOptionDialog -> handleMedicineOptionDialogEvent(
+                event
+            )
+
             is DiagnosisResultFormEvent.DiseaseOptionDialog -> handleDiseaseOptionDialogEvent(event)
         }
     }
@@ -129,6 +144,7 @@ class DiagnosisResultFormViewModel(
             is DiagnosisResultFormEvent.DiseaseOptionDialog.OnQueryChange -> _uiState.value =
                 uiState.value.copy(diseaseOptionDialogSearchQuery = event.query)
         }
+
     private fun handleMedicineOptionDialogEvent(event: DiagnosisResultFormEvent.MedicineOptionDialog) =
         when (event) {
             is DiagnosisResultFormEvent.MedicineOptionDialog.OnMedicineClick -> _uiState.value =
@@ -148,7 +164,8 @@ class DiagnosisResultFormViewModel(
         when (event) {
             is DiagnosisResultFormEvent.UnregisteredDiseaseDialog.OnSaveClick -> _uiState.value =
                 uiState.value.copy(
-                    disease = DiseaseView.empty().copy(name = uiState.value.unregisteredDiseaseValue),
+                    disease = DiseaseView.empty()
+                        .copy(name = uiState.value.unregisteredDiseaseValue),
                     isUnregisteredDiseaseDialogVisible = false
                 )
 
@@ -184,7 +201,7 @@ class DiagnosisResultFormViewModel(
                 )
             }
         }
-        createDiagnosisResultUseCase(getDiagnosisResultFromState())
+        updateDiagnosisResultUseCase(getDiagnosisResultFromState())
     }
 
     private fun getDiagnosisResultFromState() = uiState.value.let {
@@ -195,7 +212,9 @@ class DiagnosisResultFormViewModel(
             status = DiagnosisResult.Status.Pending,
             createdAt = Date(),
             updatedAt = Date(),
-            diagnosisRequestId = it.diagnosisRequest.id
+            diagnosisRequestId = it.diagnosisRequest.id,
+            diseaseId = it.disease?.id ?: "",
+            medicationsIds = it.medicationsIds
         )
     }
 }

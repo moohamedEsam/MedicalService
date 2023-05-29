@@ -70,7 +70,7 @@ fun DiagnosisResultFormScreen(
 }
 
 @Composable
-fun DiagnosisResultFormScreen(
+private fun DiagnosisResultFormScreen(
     state: DiagnosisResultFormState,
     onEvent: (DiagnosisResultFormEvent) -> Unit
 ) {
@@ -166,16 +166,6 @@ private fun DiseaseOptionsDialog(
     state: DiagnosisResultFormState,
     onEvent: (DiagnosisResultFormEvent) -> Unit
 ) {
-    val filteredOptions by remember {
-        derivedStateOf {
-            state.diseaseOptions.filter {
-                it.name.contains(
-                    state.diseaseOptionDialogSearchQuery,
-                    ignoreCase = true
-                )
-            }
-        }
-    }
     Dialog(onDismissRequest = { onEvent(DiagnosisResultFormEvent.DiseaseOptionDialog.Dismiss) }) {
         Card {
             Column(Modifier.fillMaxWidth()) {
@@ -197,7 +187,7 @@ private fun DiseaseOptionsDialog(
                         )
                     }
                 )
-                filteredOptions.forEach {
+                state.diseaseOptions.forEach {
                     Text(
                         text = it.name,
                         style = MaterialTheme.typography.bodyLarge,
@@ -225,16 +215,6 @@ private fun MedicineOptionsDialog(
     state: DiagnosisResultFormState,
     onEvent: (DiagnosisResultFormEvent) -> Unit
 ) {
-    val filteredMedicines by remember {
-        derivedStateOf {
-            state.disease?.medicines?.filter {
-                it.name.contains(
-                    state.medicineOptionDialogSearchQuery,
-                    ignoreCase = true
-                )
-            } ?: emptyList()
-        }
-    }
     Dialog(onDismissRequest = { onEvent(DiagnosisResultFormEvent.MedicineOptionDialog.Dismiss) }) {
         Card {
             Column(Modifier.fillMaxWidth()) {
@@ -256,7 +236,7 @@ private fun MedicineOptionsDialog(
                         )
                     }
                 )
-                filteredMedicines.forEach {
+                state.disease?.medicines?.forEach {
                     Text(
                         text = it.name,
                         style = MaterialTheme.typography.bodyLarge,

@@ -1,5 +1,9 @@
 package com.example.model.app.diagnosis
 
+import com.example.model.app.disease.Disease
+import com.example.model.app.disease.DiseaseView
+import com.example.model.app.disease.empty
+import com.example.model.app.medicine.Medicine
 import com.example.model.app.medicine.MedicineView
 import com.example.model.app.user.User
 import com.example.model.app.user.emptyDoctor
@@ -14,7 +18,8 @@ data class DiagnosisResultView(
     val createdAt: Date,
     val updatedAt: Date,
     val request: DiagnosisRequest,
-    val medications: List<MedicineView> = emptyList(),
+    val medications: List<Medicine> = emptyList(),
+    val disease: DiseaseView?,
 ) {
     companion object
 }
@@ -27,4 +32,5 @@ fun DiagnosisResultView.Companion.empty() = DiagnosisResultView(
     createdAt = Date(),
     updatedAt = Date(),
     request = DiagnosisRequest.empty(),
+    disease = DiseaseView.empty()
 )

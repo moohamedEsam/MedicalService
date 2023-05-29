@@ -28,8 +28,8 @@ class SyncWorker(
 ) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result = try {
         val isSyncSuccessful = listOf(
-            medicineRepository.syncMedicines(),
             diseaseRepository.syncDiseases(),
+            medicineRepository.syncMedicines(),
             donationRepository.syncDonationRequests(),
             transactionRepository.syncTransactions(),
             diagnosisRequestRepository.syncDiagnosisRequest(),

@@ -4,7 +4,6 @@ import com.example.model.app.diagnosis.DiagnosisRequest
 import com.example.model.app.diagnosis.empty
 import com.example.model.app.disease.DiseaseView
 import com.example.model.app.disease.empty
-import com.example.model.app.medicine.Medicine
 
 
 data class DiagnosisResultFormState(

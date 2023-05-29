@@ -3,9 +3,11 @@ package com.example.database.room.dao
 import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.example.database.models.diagnosis.DiagnosisMedicineCrossRef
 import com.example.database.models.diagnosis.DiagnosisRequestEntity
 import com.example.database.models.diagnosis.DiagnosisResultEntity
 import com.example.database.models.diagnosis.DiagnosisResultEntityView
@@ -42,12 +44,15 @@ interface DiagnosisResultDao {
     @Query("DELETE FROM diagnosisResults where id = :id")
     suspend fun deleteDiagnosisResult(id: String)
 
-    @Insert
-    suspend fun insert(diagnosisResult: DiagnosisResultEntity)
+    @Insert(onConflict = REPLACE)
+    suspend fun insert(diagnosisResult: DiagnosisResultEntity, crossRefs: List<DiagnosisMedicineCrossRef> = emptyList())
+
+    @Insert(onConflict = REPLACE)
+    suspend fun insertCrossRefs(crossRefs: List<DiagnosisMedicineCrossRef>)
 
     @Insert
     suspend fun insertAll(diagnosisResults: List<DiagnosisResultEntity>)
 
-    @Update
-    suspend fun update(diagnosisResult: DiagnosisResultEntity)
+    @Update(onConflict = REPLACE)
+    suspend fun update(diagnosisResult: DiagnosisResultEntity, crossRefs: List<DiagnosisMedicineCrossRef> = emptyList())
 }

@@ -23,7 +23,11 @@ sealed interface RemoteDataSource {
     suspend fun getDonationRequests(): Result<List<DonationRequest>>
     suspend fun getMedicines(): Result<List<Medicine>>
 
+    suspend fun createMedicine(medicine: Medicine) : Result<Medicine>
+
     suspend fun getDiseases(): Result<List<Disease>>
+
+    suspend fun createDisease(disease: Disease): Result<Disease>
 
     suspend fun getSymptoms(): Result<List<Symptom>>
 

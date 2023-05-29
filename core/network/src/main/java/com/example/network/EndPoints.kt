@@ -1,7 +1,6 @@
 package com.example.network
 
 import android.content.Context
-import android.util.Log
 import com.example.datastore.dataStore
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -19,6 +18,7 @@ object EndPoints {
     val PREDICT_DISEASE = "$BASE_URL/predictdisease"
     val USER = "$BASE_URL/users"
 
+    fun createDisease(): String = "$BASE_URL/disease/adddisease"
     fun getUser(id: String): String = "$USER/$id"
 
     fun getUsers(): String = "$USER/getalluser"
@@ -53,4 +53,6 @@ object EndPoints {
             BASE_URL = "http://$it/api"
         }
     }
+
+    fun createMedicine(): String = "$BASE_URL/medicine/addmedicine"
 }

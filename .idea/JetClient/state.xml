@@ -198,7 +198,7 @@
                     <requestState>
                       <option name="body">
                         <bodyState>
-                          <option name="raw" value="{&#10;  &quot;name&quot;: &quot;Fioricet&quot;,&#10;  &quot;uses&quot;: [&#10;    &quot;Fioricet capsules contain a combination of acetaminophen, butalbital, and caffeine. Acetaminophen is a pain reliever and fever reducer. Butalbital is in a group of drugs called barbiturates. It relaxes muscle contractions involved in a tension headache. Caffeine is a central nervous system stimulant. It relaxes muscle contractions in blood vessels to improve blood flow.&quot;&#10;  ],&#10;  &quot;sideEffects&quot;:[&#10;    &quot;confusion, a seizure&quot;&#10;  ] ,&#10;  &quot;overDos&quot;: [&#10;    &quot;The first signs of an acetaminophen overdose include loss of appetite, nausea, vomiting, stomach pain, sweating, and confusion or weakness. Later symptoms may include pain in your upper stomach, dark urine, and yellowing of your skin or the whites of your eyes.&quot;&#10;  ],&#10;  &quot;precautions&quot;: [&#10;    &quot;Do not use Fioricet if you have used an MAO inhibitor in the past 14 days. A dangerous drug interaction could occur. MAO inhibitors include isocarboxazid, linezolid, methylene blue injection, phenelzine, and tranylcypromine.&quot;&#10;  ],&#10;  &quot;diseasesID&quot;: []&#10;}" />
+                          <option name="raw" value="{&#10;  &quot;name&quot;: &quot;Fioricet&quot;,&#10;  &quot;uses&quot;: [],&#10;  &quot;sideEffects&quot;:[] ,&#10;  &quot;overDos&quot;: [],&#10;  &quot;precautions&quot;: [],&#10;  &quot;diseasesID&quot;: [&quot;6474b09238778119a27b23ab&quot;]&#10;}" />
                           <option name="type" value="JSON" />
                         </bodyState>
                       </option>
@@ -309,7 +309,7 @@
                     <requestState>
                       <option name="body">
                         <bodyState>
-                          <option name="raw" value="{&#10;  &quot;name&quot;: &quot;headaches&quot;,&#10;  &quot;description&quot;: &quot;The International Headache Society classifies headaches into two main types: primary headache and secondary headache.&quot;,&#10;  &quot;symptomsList&quot;: [&#10;    &quot;By definition, a headache is a pain in the head. But the type, location, and severity of pain are highly variable. And for migraine, there can be profound symptoms without a headache.&quot;&#10;  ],&#10;  &quot;treatmentList&quot;: [&#10;    &quot;For infrequent headaches, over-the-counter pain relievers are convenient, effective, and relatively safe. Examples include aspirin, acetaminophen (Tylenol), ibuprofen (Advil, Motrin), and naproxen (Aleve). Some people get more pain relief with combination pain relievers that contain caffeine.&quot;&#10;  ],&#10;  &quot;preventionList&quot;: [&#10;    &quot;Relaxation techniques and avoidance of stressful situations may help to prevent headaches. Many things can trigger a headache. Identifying and correcting one or more triggers may reduce headache frequency and severity.&quot;&#10;  ],&#10;  &quot;diagnosisList&quot;: [&#10;    &#10;  ]&#10;}" />
+                          <option name="raw" value="{&#10;  &quot;name&quot;: &quot;headache&quot;&#10;}" />
                           <option name="type" value="JSON" />
                         </bodyState>
                       </option>
@@ -325,7 +325,7 @@
                       <option name="id" value="a335c5c8-f3a7-4811-886c-6af92019920e" />
                       <option name="method" value="POST" />
                       <option name="name" value="adddisease" />
-                      <option name="url" value="http://localhost:3000/api/disease/adddisease" />
+                      <option name="url" value="{{baseUrl}}/api/disease/adddisease" />
                     </requestState>
                     <requestState>
                       <option name="body">

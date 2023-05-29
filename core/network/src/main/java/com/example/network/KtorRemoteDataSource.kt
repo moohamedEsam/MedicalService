@@ -78,6 +78,22 @@ class KtorRemoteDataSource(
         mapResponse(response.body())
     }
 
+    override suspend fun createDisease(disease: Disease): Result<Disease> {
+        val response = client.post(EndPoints.createDisease()) {
+            setBody(disease)
+            contentType(ContentType.Application.Json)
+        }
+        return mapResponse(response.body())
+    }
+
+    override suspend fun createMedicine(medicine: Medicine): Result<Medicine> {
+        val response = client.post(EndPoints.createMedicine()) {
+            setBody(medicine)
+            contentType(ContentType.Application.Json)
+        }
+        return mapResponse(response.body())
+    }
+
     override suspend fun getSymptoms(): Result<List<Symptom>> = tryWrapper {
         val response = client.get(EndPoints.SYMPTOM)
         if (response.status.isSuccess())

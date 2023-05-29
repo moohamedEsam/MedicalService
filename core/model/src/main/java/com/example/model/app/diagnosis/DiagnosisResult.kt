@@ -10,6 +10,8 @@ data class DiagnosisResult(
     val id: String,
     val createdAt: Date,
     val updatedAt: Date,
+    val diseaseId: String = "",
+    val medicationsIds: List<String> = emptyList(),
     val diagnosisRequestId: String,
 ) {
     enum class Status {
@@ -29,4 +31,5 @@ fun DiagnosisResult.Companion.empty() = DiagnosisResult(
     createdAt = Date(),
     updatedAt = Date(),
     diagnosisRequestId = "",
+    diseaseId = "",
 )

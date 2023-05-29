@@ -11,6 +11,7 @@ import com.example.auth.register.registerScreen
 import com.example.maplocation.mapScreen
 import com.example.medicalservice.presentation.diagnosisResult.details.diagnosisDetailsScreen
 import com.example.medicalservice.presentation.diagnosisRequest.form.diagnosisFormScreen
+import com.example.medicalservice.presentation.diagnosisResult.form.diagnosisResultForm
 import com.example.medicalservice.presentation.disease.diseaseScreen
 import com.example.medicalservice.presentation.donation.donationScreen
 import com.example.medicalservice.presentation.donationList.donationListScreen
@@ -47,6 +48,7 @@ fun MedicalServiceNavGraph(
         myDonationsScreen()
         uploadPrescriptionScreen()
         settingsScreen()
+        diagnosisResultForm()
     }
 }
 

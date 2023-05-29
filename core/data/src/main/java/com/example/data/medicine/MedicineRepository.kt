@@ -14,4 +14,5 @@ interface MedicineRepository {
     fun getMedicines(): PagingSource<Int, Medicine>
 
     suspend fun syncMedicines(): Boolean
+    fun getMedicinesFlow(): Flow<List<MedicineView>>
 }

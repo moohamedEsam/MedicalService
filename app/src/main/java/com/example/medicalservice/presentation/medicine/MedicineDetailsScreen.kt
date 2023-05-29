@@ -54,25 +54,15 @@ private fun MedicineDetailsScreenContent(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun MedicinePreCautions(medicine: MedicineView) {
     Text(text = "Precautions", style = MaterialTheme.typography.headlineMedium)
-    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        items(medicine.precautions) { precaution ->
-            SuggestionChip(onClick = { }, label = { Text(text = precaution) })
-        }
-    }
+    Text(text = medicine.precautions.joinToString("\n"), style = MaterialTheme.typography.bodyLarge)
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun MedicineSideEffects(medicine: MedicineView) {
     Text(text = "Side Effects", style = MaterialTheme.typography.headlineMedium)
-    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        items(medicine.sideEffects) { sideEffect ->
-            SuggestionChip(onClick = { }, label = { Text(text = sideEffect) })
-        }
-    }
+    Text(text = medicine.sideEffects.joinToString("\n"), style = MaterialTheme.typography.bodyLarge)
 }
 
 @Composable

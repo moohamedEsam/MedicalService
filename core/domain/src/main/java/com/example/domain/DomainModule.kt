@@ -19,6 +19,7 @@ import com.example.domain.usecase.diagnosis.ExtractPrescriptionFromImageUseCase
 import com.example.domain.usecase.diagnosis.GetDiagnosisResultByIdUseCase
 import com.example.domain.usecase.diagnosis.GetDiagnosisResultsUseCase
 import com.example.domain.usecase.diagnosis.GetUserLatestDiagnosisUseCase
+import com.example.domain.usecase.diagnosis.UpdateDiagnosisResultUseCase
 import com.example.domain.usecase.disease.CreateDiseaseUseCase
 import com.example.domain.usecase.disease.GetAvailableSymptomsUseCase
 import com.example.domain.usecase.disease.GetDiseaseDetailsUseCase
@@ -214,6 +215,10 @@ class DomainModule {
     @Factory
     fun provideCreateMedicineUseCase(medicineRepository: MedicineRepository) =
         CreateMedicineUseCase(medicineRepository::createMedicine)
+
+    @Factory
+    fun provideUpdateDiagnosisResultUseCase(diagnosisResultRepository: DiagnosisResultRepository) =
+        UpdateDiagnosisResultUseCase(diagnosisResultRepository::updateDiagnosis)
 
     context(Scope)
     @Factory

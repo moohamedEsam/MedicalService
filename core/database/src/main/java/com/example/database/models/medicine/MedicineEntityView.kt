@@ -21,7 +21,11 @@ data class MedicineEntityView(
         entityColumn = "id"
     )
     val diseases: List<DiseaseEntity>,
-)
+) {
+}
+
+fun MedicineEntityView.toMedicine() = medicineEntity.toMedicine()
+    .copy(diseasesId = diseases.map { it.id })
 
 fun MedicineEntityView.toMedicineView() = MedicineView(
     name = medicineEntity.name,

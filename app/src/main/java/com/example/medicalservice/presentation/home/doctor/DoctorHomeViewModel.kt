@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.example.common.navigation.AppNavigator
+import com.example.common.navigation.Destination
 import com.example.domain.usecase.diagnosis.GetDiagnosisResultsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +15,8 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 class DoctorHomeViewModel(
-    getDiagnosisResultsUseCase: GetDiagnosisResultsUseCase
+    getDiagnosisResultsUseCase: GetDiagnosisResultsUseCase,
+    private val appNavigator: AppNavigator
 ) : ViewModel() {
 
     private val pager = Pager(
@@ -26,7 +29,7 @@ class DoctorHomeViewModel(
 
     fun handleEvent(event: DoctorHomeScreenEvent) = viewModelScope.launch {
         when (event) {
-            is DoctorHomeScreenEvent.DiagnosisResultClicked -> Unit
+            is DoctorHomeScreenEvent.DiagnosisResultClicked -> appNavigator.navigateTo(Destination.DiagnosisResultForm(event.diagnosisResultId))
         }
     }
 }

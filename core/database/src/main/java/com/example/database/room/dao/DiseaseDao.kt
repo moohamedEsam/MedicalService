@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.example.database.models.disease.DiseaseEntity
 import com.example.database.models.disease.DiseaseEntityView
 import com.example.database.models.disease.DiseaseMedicineCrossRef
@@ -14,6 +15,9 @@ import kotlinx.coroutines.flow.Flow
 interface DiseaseDao {
     @Query("SELECT * FROM diseases")
     fun getDiseases(): DataSource.Factory<Int, DiseaseEntity>
+
+    @Query("SELECT * FROM diseases WHERE isCreated = 1")
+    suspend fun getCreatedDiseases(): List<DiseaseEntity>
 
     @Query("SELECT * FROM diseases")
     @Transaction
@@ -30,6 +34,14 @@ interface DiseaseDao {
     fun insert(disease: DiseaseEntity)
 
 
+    @Query("select * from diseaseMedicineCrossRef where diseaseId = :diseaseId")
+    suspend fun getCrossRefs(diseaseId:String) : List<DiseaseMedicineCrossRef>
+
+    @Query("DELETE FROM diseaseMedicineCrossRef where diseaseId = :diseaseId")
+    suspend fun deleteCrossRefs(diseaseId:String)
+
+    @Query("update diagnosisResults set diseaseId = :newKey where diseaseId = :oldKey")
+    suspend fun updateDiagnosisResultDiseaseId(oldKey: String, newKey: String)
 
     @Insert
     fun insertAll(diseases: List<DiseaseEntity>, crossRefs: List<DiseaseMedicineCrossRef> = emptyList())

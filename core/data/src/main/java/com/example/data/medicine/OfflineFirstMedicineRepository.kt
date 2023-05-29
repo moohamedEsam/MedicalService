@@ -23,9 +23,16 @@ class OfflineFirstMedicineRepository(
     private val remoteDataSource: RemoteDataSource
 ) : MedicineRepository {
     override suspend fun createMedicine(medicine: Medicine): Result<Medicine> = tryWrapper {
-        localDataSource.insert(medicine.toEntity().copy(isCreated = true))
+        localDataSource.insert(
+            medicine.toEntity().copy(isCreated = true),
+            medicine.diseasesId.map { DiseaseMedicineCrossRef(it, medicine.id) }
+        )
+
         Result.Success(medicine)
     }
+
+    override fun getMedicinesFlow(): Flow<List<MedicineView>> = localDataSource.getMedicinesFlow()
+        .map { it.map(MedicineEntityView::toMedicineView) }
 
     override fun getMedicineDetails(medicineId: String): Flow<MedicineView> =
         localDataSource.getMedicine(medicineId).filterNotNull()
@@ -35,6 +42,23 @@ class OfflineFirstMedicineRepository(
         localDataSource.getMedicines().map { it.toMedicine() }.asPagingSourceFactory().invoke()
 
     override suspend fun syncMedicines(): Boolean {
+        val createdMedicines = localDataSource.getCreatedMedicines()
+        createdMedicines.forEach { oldMedicine ->
+            val result = remoteDataSource.createMedicine(oldMedicine.toMedicine())
+            result.ifSuccess { medicine ->
+                val crossRefs =
+                    localDataSource.getDiagnosisMedicineCrossRefs(oldMedicine.medicineEntity.id)
+                        .map { ref -> ref.copy(medicineId = medicine.id) }
+
+                localDataSource.insertDiseaseCrossRefs(crossRefs)
+                localDataSource.deleteCrossRefs(oldMedicine.medicineEntity.id)
+                localDataSource.updateTransactionMedicineIds(
+                    oldMedicine.medicineEntity.id,
+                    medicine.id
+                )
+            }
+        }
+
         val result = remoteDataSource.getMedicines()
         result.ifSuccess { medicines ->
             localDataSource.deleteAll()

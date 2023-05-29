@@ -85,7 +85,7 @@ class NetworkModule {
 
             install(Auth) {
                 val token =
-                    "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtb2hhbWVkRXNhbUBnbWFpbC5jb20iLCJjcmVhdGVkIjoxNjg0OTQ0ODgxNjI3LCJleHAiOjE2ODU1NDk2ODF9.O593KZqHgTh2Je3aeltXBSkjhiktRPaCPc2VFtI9nbJQPK0L3VvHucpnHVlhYFe7Qd77l9mIGhx6UQgQHG_bQQ"
+                    "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtb2hhbWVkRXNhbUBnbWFpbC5jb20iLCJjcmVhdGVkIjoxNjg1MjgwMzE0MDE1LCJleHAiOjE2ODU4ODUxMTR9.inb67zLlyfXy4XyJmFP15OsgioC2LDDm9lantj4M1rtvRGda13pDiwkn22KAG_SylBBDDar46oudiWo1BxPTlg"
                 bearer {
                     loadTokens {
                         BearerTokens(token, token)

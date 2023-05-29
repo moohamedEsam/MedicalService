@@ -34,6 +34,7 @@ import com.example.model.app.diagnosis.DiagnosisResult
 import com.example.model.app.diagnosis.DiagnosisResultView
 import com.example.model.app.diagnosis.empty
 import com.example.model.app.disease.Symptom
+import com.example.model.app.medicine.Medicine
 import com.example.model.app.medicine.MedicineView
 import com.example.model.app.medicine.empty
 import com.example.model.app.user.User
@@ -156,8 +157,8 @@ private fun DiagnosisMainDetails(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MedicineItem(
-    medicineView: MedicineView,
-    onClick: (MedicineView) -> Unit,
+    medicineView: Medicine,
+    onClick: (Medicine) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     OutlinedCard(modifier = modifier, onClick = { onClick(medicineView) }) {
@@ -221,10 +222,11 @@ private fun DiagnosisDetailsScreenPreview() {
             ),
         ),
         medications = listOf(
-            MedicineView.empty().copy(name = "Nasal decongestant"),
-            MedicineView.empty().copy(name = "Pain reliever"),
-            MedicineView.empty().copy(name = "Antihistamine"),
-        )
+            Medicine.empty().copy(name = "Nasal decongestant"),
+            Medicine.empty().copy(name = "Pain reliever"),
+            Medicine.empty().copy(name = "Antihistamine"),
+        ),
+        disease = null
     )
 
     Surface {

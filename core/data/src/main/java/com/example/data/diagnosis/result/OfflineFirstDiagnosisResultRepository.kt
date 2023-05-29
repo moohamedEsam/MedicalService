@@ -3,6 +3,7 @@ package com.example.data.diagnosis.result
 import androidx.paging.PagingSource
 import com.example.common.functions.tryWrapper
 import com.example.common.models.Result
+import com.example.database.models.diagnosis.DiagnosisMedicineCrossRef
 import com.example.database.models.diagnosis.toDiagnosisResult
 import com.example.database.models.diagnosis.toDiagnosisResultView
 import com.example.database.models.diagnosis.toEntity
@@ -22,13 +23,17 @@ class OfflineFirstDiagnosisResultRepository(
 ) : DiagnosisResultRepository {
     override suspend fun insertDiagnosis(diagnosis: DiagnosisResult): Result<DiagnosisResult> =
         tryWrapper {
-            local.insert(diagnosis.toEntity().copy(isCreated = true))
+            local.insert(
+                diagnosis.toEntity().copy(isCreated = true),
+                diagnosis.medicationsIds.map { DiagnosisMedicineCrossRef(diagnosis.id, it) }
+            )
             Result.Success(diagnosis)
         }
 
     override suspend fun updateDiagnosis(diagnosis: DiagnosisResult): Result<DiagnosisResult> =
         tryWrapper {
             local.update(diagnosis.toEntity().copy(isUpdated = true))
+            local.insertCrossRefs(diagnosis.medicationsIds.map { DiagnosisMedicineCrossRef(diagnosis.id, it) })
             Result.Success(diagnosis)
         }
 

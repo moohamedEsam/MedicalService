@@ -5,6 +5,7 @@ import com.example.common.functions.tryWrapper
 import com.example.common.models.Result
 import com.example.database.models.disease.DiseaseEntity
 import com.example.database.models.disease.DiseaseEntityView
+import com.example.database.models.disease.DiseaseMedicineCrossRef
 import com.example.database.models.disease.toDisease
 import com.example.database.models.disease.toDiseaseView
 import com.example.database.models.disease.toEntity
@@ -46,6 +47,17 @@ class OfflineFirstDiseaseRepository(
         localDataSource.getSymptoms().map { names -> names.map { Symptom(it) } }
 
     override suspend fun syncDiseases(): Boolean {
+        val createdDiseases = localDataSource.getCreatedDiseases()
+        createdDiseases.forEach { oldDisease ->
+            val result = remoteDataSource.createDisease(oldDisease.toDisease())
+            result.ifSuccess { disease ->
+                var crossRefs = localDataSource.getCrossRefs(oldDisease.id)
+                crossRefs = crossRefs.map { DiseaseMedicineCrossRef(disease.id, it.medicineId) }
+                localDataSource.deleteCrossRefs(oldDisease.id)
+                localDataSource.insertAll(listOf(disease.toEntity()), crossRefs)
+                localDataSource.updateDiagnosisResultDiseaseId(oldDisease.id, disease.id)
+            }
+        }
         val diseases = remoteDataSource.getDiseases()
         diseases.ifSuccess {
             localDataSource.deleteAll()

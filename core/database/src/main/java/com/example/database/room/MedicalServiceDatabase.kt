@@ -3,6 +3,7 @@ package com.example.database.room
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.database.models.diagnosis.DiagnosisMedicineCrossRef
 import com.example.database.models.diagnosis.DiagnosisRequestEntity
 import com.example.database.models.diagnosis.DiagnosisResultEntity
 import com.example.database.models.disease.DiseaseEntity
@@ -27,7 +28,7 @@ import com.example.database.room.typeConverters.SymptomTypeConverter
     entities = [
         DiseaseEntity::class, MedicineEntity::class, SymptomEntity::class,
         TransactionEntity::class, DonationRequestEntity::class, DiseaseMedicineCrossRef::class,
-        DiagnosisRequestEntity::class, DiagnosisResultEntity::class, UserEntity::class
+        DiagnosisRequestEntity::class, DiagnosisResultEntity::class, UserEntity::class, DiagnosisMedicineCrossRef::class
     ],
     version = 1
 )

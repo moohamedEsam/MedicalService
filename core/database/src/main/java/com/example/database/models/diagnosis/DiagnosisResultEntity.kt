@@ -13,6 +13,7 @@ data class DiagnosisResultEntity(
     val createdAt: Date,
     val updatedAt: Date,
     val diagnosisRequestId: String,
+    val diseaseId:String,
     val isCreated: Boolean = false,
     val isDeleted: Boolean = false,
     val isUpdated: Boolean = false,
@@ -28,6 +29,7 @@ fun DiagnosisResultEntity.toDiagnosisResult() = DiagnosisResult(
     createdAt = createdAt,
     updatedAt = updatedAt,
     diagnosisRequestId = diagnosisRequestId,
+    diseaseId = diseaseId,
 )
 
 fun DiagnosisResult.toEntity() = DiagnosisResultEntity(
@@ -38,4 +40,5 @@ fun DiagnosisResult.toEntity() = DiagnosisResultEntity(
     createdAt = createdAt,
     updatedAt = updatedAt,
     diagnosisRequestId = diagnosisRequestId,
+    diseaseId = diseaseId,
 )

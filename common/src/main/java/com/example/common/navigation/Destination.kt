@@ -62,4 +62,9 @@ sealed class Destination(val route: String, private vararg val params: String) {
         operator fun invoke(id: String = " ") = "$route/$id"
         const val medicineIdKey = "id"
     }
+
+    object DiagnosisResultForm: Destination("diagnosis form", "id") {
+        operator fun invoke(id: String = " ") = "$route/$id"
+        const val diagnosisResultIdKey = "id"
+    }
 }
