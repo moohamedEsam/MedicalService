@@ -1,6 +1,7 @@
 package com.example.database.room.dao
 
 import androidx.paging.DataSource
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -8,6 +9,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.example.database.models.transaction.TransactionEntity
 import com.example.database.models.transaction.TransactionEntityView
+import com.example.model.app.transaction.TransactionView
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -16,6 +18,16 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions")
     @Transaction
     fun getTransactions(): DataSource.Factory<Int, TransactionEntityView>
+
+    @Query("SELECT * FROM transactions where receiverId !=:userId and senderId !=:userId and status =:status")
+    fun getTransactions(
+        userId: String,
+        status: TransactionView.Status = TransactionView.Status.Active
+    ): DataSource.Factory<Int, TransactionEntityView>
+
+    @Query("SELECT * FROM transactions where receiverId =:userId or senderId =:userId limit 10")
+    @Transaction
+    fun getRecentTransactions(userId: String): Flow<List<TransactionEntityView>>
 
     @Query("SELECT * FROM transactions")
     @Transaction
@@ -26,10 +38,10 @@ interface TransactionDao {
     fun getTransactionsByUserId(userId: String): DataSource.Factory<Int, TransactionEntityView>
 
     @Query("SELECT * FROM transactions where isCreated = 1")
-    suspend fun getCreatedTransactions():List<TransactionEntity>
+    suspend fun getCreatedTransactions(): List<TransactionEntity>
 
     @Query("SELECT * FROM transactions where isUpdated = 1 and isCreated = 0")
-    suspend fun getUpdatedTransactions():List<TransactionEntity>
+    suspend fun getUpdatedTransactions(): List<TransactionEntity>
 
     @Query("SELECT * FROM transactions WHERE id = :id")
     @Transaction

@@ -20,7 +20,7 @@ data class TransactionView(
     val donationRequestView: DonationRequestView? = null,
 ) {
     enum class Status {
-        Pending, Delivered, Rejected, Completed, Cancelled, InProgress
+        Pending, Delivered, Rejected, Completed, Cancelled, InProgress, Active
     }
 
     companion object
@@ -37,4 +37,18 @@ fun TransactionView.Companion.empty() = TransactionView(
     senderId = "",
     senderName = "",
     status = TransactionView.Status.values().random(),
+)
+
+
+fun TransactionView.toTransaction() = Transaction(
+    id = id,
+    createdAt = createdAt,
+    updatedAt = updatedAt,
+    quantity = quantity,
+    receiverId = receiverId,
+    receiverName = receiverName,
+    senderId = senderId,
+    senderName = senderName,
+    status = status,
+    medicineId = medicine.id,
 )

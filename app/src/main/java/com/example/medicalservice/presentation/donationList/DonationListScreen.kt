@@ -12,10 +12,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Group
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Timer
-import androidx.compose.material3.Card
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +29,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,14 +40,15 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.example.composecomponents.loadStateItem
 import com.example.medicalservice.presentation.components.HorizontalDonationRequestsList
-import com.example.model.app.donation.DonationRequestView
+import com.example.medicalservice.presentation.components.TransactionItem
 import com.example.model.app.donation.dummyDonationRequests
+import com.example.model.app.medicine.MedicineView
+import com.example.model.app.medicine.paracetamol
+import com.example.model.app.transaction.TransactionView
+import com.example.model.app.transaction.empty
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.koin.androidx.compose.koinViewModel
-import kotlin.random.Random
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 @Composable
 fun DonationListScreen(
@@ -76,8 +78,48 @@ private fun DonationListScreen(
                 .fillMaxWidth()
                 .shadow(8.dp),
         )
-        DonationListContent(state.donationRequestViews, onEvent)
+        DonationListContent(state, onEvent)
     }
+    if (!state.isConfirmationDialogVisible || state.selectedTransactionView == null) return
+    AlertDialog(
+        onDismissRequest = { onEvent(DonationListScreenEvent.ConfirmationDialogEvent.OnCancelClick) },
+        confirmButton = {
+            TextButton(
+                onClick = { onEvent(DonationListScreenEvent.ConfirmationDialogEvent.OnConfirmClick) }
+            ) {
+                Text("Confirm")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = { onEvent(DonationListScreenEvent.ConfirmationDialogEvent.OnCancelClick) }
+            ) {
+                Text("Cancel")
+            }
+        },
+        title = { Text("Confirmation") },
+        text = {
+            val text = buildAnnotatedString {
+                append("confirm donation for ")
+                withStyle(SpanStyle(MaterialTheme.colorScheme.primary)) {
+                    append(state.selectedTransactionView.quantity.toString())
+                    append(" ")
+                    append(state.selectedTransactionView.medicine.name)
+                }
+
+            }
+            Text(text, style = MaterialTheme.typography.bodyLarge)
+        },
+        titleContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        icon = {
+            Icon(
+                imageVector = Icons.Outlined.CheckCircle,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -101,11 +143,11 @@ private fun DonationListTopBar(
 
 @Composable
 private fun DonationListContent(
-    donationRequestViews: Flow<PagingData<DonationRequestView>>,
+    state: DonationListState,
     onEvent: (DonationListScreenEvent) -> Unit
 ) {
     HorizontalDonationRequestsList(
-        donationRequestViewPagingData = donationRequestViews,
+        donationRequestViewPagingData = state.donationRequestViews,
         title = "Urgent Donations",
         onDonationRequestCardClick = { onEvent(DonationListScreenEvent.OnDonationRequestClick(it)) },
         onDonationRequestClick = { onEvent(DonationListScreenEvent.OnDonationRequestClick(it)) },
@@ -118,12 +160,10 @@ private fun DonationListContent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text("Featured Donations", style = MaterialTheme.typography.headlineSmall)
-        TextButton(onClick = { }) {
-            Text("See All")
-        }
     }
     FeaturedDonationList(
-        donationRequestViews,
+        transactionsFlow = state.transactions,
+        onEvent = onEvent,
         modifier = Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp / 2).dp)
     )
 }
@@ -131,59 +171,30 @@ private fun DonationListContent(
 
 @Composable
 private fun FeaturedDonationList(
-    donationRequestViewsFlow: Flow<PagingData<DonationRequestView>>,
+    transactionsFlow: Flow<PagingData<TransactionView>>,
+    onEvent: (DonationListScreenEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val donationRequestViews = donationRequestViewsFlow.collectAsLazyPagingItems()
+    val transactions = transactionsFlow.collectAsLazyPagingItems()
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier
     ) {
-        items(donationRequestViews, key = { it.id }) {
+        items(transactions) {
             if (it == null) return@items
-            VerticalDonationItem(
-                donationRequestView = it,
-                modifier = Modifier.fillMaxWidth()
+            TransactionItem(
+                transactionView = it,
+                onClick = { onEvent(DonationListScreenEvent.OnTransactionClick(it)) },
+                onMedicineClick = { medicineId ->
+                    onEvent(
+                        DonationListScreenEvent.OnMedicineClick(
+                            medicineId
+                        )
+                    )
+                },
             )
         }
-        loadStateItem(donationRequestViews.loadState, spacerModifier = Modifier.height(32.dp))
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun VerticalDonationItem(
-    donationRequestView: DonationRequestView,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit = { },
-    onDonateClick: () -> Unit = { }
-) {
-    Card(
-        modifier = modifier,
-        onClick = onClick,
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(donationRequestView.medicine.name, fontWeight = FontWeight.Bold)
-            Text(donationRequestView.medicine.uses.firstOrNull() ?: "", maxLines = 1)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(imageVector = Icons.Outlined.Group, contentDescription = null)
-                    Text("${donationRequestView.contributorsCount} Contributors")
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(imageVector = Icons.Outlined.Timer, contentDescription = null)
-                    val duration =
-                        (donationRequestView.endDate - System.currentTimeMillis()).toDuration(
-                            DurationUnit.DAYS
-                        )
-                    Text("ends in ${Random.nextInt(1, 100)} days")
-                }
-            }
-        }
+        loadStateItem(transactions.loadState, spacerModifier = Modifier.height(32.dp))
     }
 }
 
@@ -194,7 +205,10 @@ private fun DonationListScreenPreview() {
         DonationListScreen(
             state = DonationListState(
                 donationRequestViews = flowOf(PagingData.from(dummyDonationRequests())),
-                query = "paracetamol"
+                query = "paracetamol",
+                isConfirmationDialogVisible = true,
+                selectedTransactionView = TransactionView.empty()
+                    .copy(medicine = MedicineView.paracetamol(), quantity = 10)
             )
         )
     }

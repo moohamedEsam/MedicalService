@@ -7,7 +7,9 @@ import com.example.model.app.transaction.TransactionView
 import kotlinx.coroutines.flow.Flow
 
 interface TransactionRepository {
-    fun getTransactions(): PagingSource<Int, TransactionView>
+    fun getTransactions(userId: String): () -> PagingSource<Int, TransactionView>
+
+    fun getRecentTransactions(userId: String) : Flow<List<TransactionView>>
 
     fun getTransactionsFlow(): Flow<List<Transaction>>
 

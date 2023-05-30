@@ -36,6 +36,7 @@ import com.example.domain.usecase.sync.OneTimeSyncWorkUseCase
 import com.example.domain.usecase.transaction.CreateTransactionUseCase
 import com.example.domain.usecase.transaction.DeleteTransactionUseCase
 import com.example.domain.usecase.transaction.GetCurrentUserTransactionsUseCase
+import com.example.domain.usecase.transaction.GetRecentTransactionsUseCase
 import com.example.domain.usecase.transaction.GetTransactionDetailsUseCase
 import com.example.domain.usecase.transaction.GetTransactionsUseCase
 import com.example.domain.usecase.user.GetCurrentUserIdUseCase
@@ -156,8 +157,19 @@ class DomainModule {
         GetTransactionsUseCase(transactionRepository::getTransactions)
 
     @Factory
-    fun provideDeleteTransactionUseCase(transactionRepository: TransactionRepository) =
-        DeleteTransactionUseCase(transactionRepository::deleteTransaction)
+    fun provideGetRecentTransactionsUseCase(
+        transactionRepository: TransactionRepository,
+        getCurrentUserUseCase: GetCurrentUserUseCase
+    ) = GetRecentTransactionsUseCase {
+        getCurrentUserUseCase().map { it.id }.flatMapLatest {
+            transactionRepository.getRecentTransactions(it)
+        }
+    }
+
+
+        @Factory
+        fun provideDeleteTransactionUseCase(transactionRepository: TransactionRepository) =
+            DeleteTransactionUseCase(transactionRepository::deleteTransaction)
 
     @Factory
     fun provideGetTransactionDetailsUseCase(transactionRepository: TransactionRepository) =
@@ -221,7 +233,7 @@ class DomainModule {
         UpdateDiagnosisResultUseCase(diagnosisResultRepository::updateDiagnosis)
 
     context(Scope)
-    @Factory
+            @Factory
     fun provideChangeIpUseCase() = ChangeIpUseCase {
         androidContext().dataStore.updateData { userSettings ->
             userSettings.copy(remoteServerIp = it)
@@ -229,7 +241,7 @@ class DomainModule {
     }
 
     context(Scope)
-    @Factory
+            @Factory
     fun provideGetIpUseCase() = ObserveIpUseCase {
         androidContext().dataStore.data.map { it.remoteServerIp }
     }

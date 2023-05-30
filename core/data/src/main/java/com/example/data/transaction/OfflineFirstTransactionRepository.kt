@@ -22,8 +22,11 @@ class OfflineFirstTransactionRepository(
     private val local: TransactionDao,
     private val remote: RemoteDataSource
 ) : TransactionRepository {
-    override fun getTransactions(): PagingSource<Int, TransactionView> =
-        local.getTransactions().map { it.toTransactionView() }.asPagingSourceFactory().invoke()
+    override fun getTransactions(userId: String): () -> PagingSource<Int, TransactionView> =
+        local.getTransactions(userId).map { it.toTransactionView() }.asPagingSourceFactory()
+
+    override fun getRecentTransactions(userId: String): Flow<List<TransactionView>> =
+        local.getRecentTransactions(userId).map { it.map(TransactionEntityView::toTransactionView) }
 
     override fun getTransactionsFlow(): Flow<List<Transaction>> =
         local.getTransactionsFlow().map { it.map(TransactionEntity::toTransaction) }

@@ -11,10 +11,12 @@ import com.example.common.navigation.Destination
 import com.example.domain.usecase.donationRequest.GetDonationRequestsUseCase
 import com.example.domain.usecase.donationRequest.SetDonationRequestBookmarkUseCase
 import com.example.domain.usecase.transaction.GetCurrentUserTransactionsUseCase
+import com.example.domain.usecase.transaction.GetRecentTransactionsUseCase
 import com.example.model.app.transaction.TransactionView
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -22,7 +24,7 @@ import org.koin.android.annotation.KoinViewModel
 class DonnerHomeViewModel(
     private val getDonationRequestsUseCase: GetDonationRequestsUseCase,
     private val setDonationRequestBookmarkUseCase: SetDonationRequestBookmarkUseCase,
-    private val getCurrentUserTransactionsUseCase: GetCurrentUserTransactionsUseCase,
+    private val getRecentTransactionsUseCase: GetRecentTransactionsUseCase,
     private val appNavigator: AppNavigator
 ) : ViewModel() {
     private val donationPager = Pager(
@@ -33,8 +35,6 @@ class DonnerHomeViewModel(
         getDonationRequestsUseCase().invoke()
     }.flow.cachedIn(viewModelScope)
 
-    private lateinit var transactionPager: Flow<PagingData<TransactionView>>
-
     private val _uiState = MutableStateFlow(
         DonnerHomeState(donationRequestViews = donationPager)
     )
@@ -42,12 +42,9 @@ class DonnerHomeViewModel(
 
     init {
         viewModelScope.launch {
-            transactionPager = Pager(
-                config = PagingConfig(pageSize = 10),
-                pagingSourceFactory = getCurrentUserTransactionsUseCase()
-            ).flow.cachedIn(viewModelScope)
-
-            _uiState.value = _uiState.value.copy(transactionViews = transactionPager)
+            getRecentTransactionsUseCase().collectLatest {
+                _uiState.value = _uiState.value.copy(transactionViews = it)
+            }
         }
     }
 
