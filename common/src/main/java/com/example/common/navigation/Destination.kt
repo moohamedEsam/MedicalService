@@ -21,9 +21,11 @@ sealed class Destination(val route: String, private vararg val params: String) {
             "$route/$lat/$lng"
     }
 
-    object Map : NoArgumentsDestination("map") {
+    object Map : Destination("map", "lat", "lng") {
         const val latKey = "lat"
         const val lngKey = "lng"
+        operator fun invoke(lat: Double = 0.0, lng: Double = 0.0) =
+            "$route/$lat/$lng"
     }
 
     object Home : NoArgumentsDestination("home")

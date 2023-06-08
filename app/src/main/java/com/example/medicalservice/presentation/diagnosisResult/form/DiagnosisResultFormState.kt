@@ -14,16 +14,26 @@ data class DiagnosisResultFormState(
     val isDiseaseInDatabase: Boolean = true,
     val diagnosis: String = "",
     val diseaseOptions: List<DiseaseView> = emptyList(),
-    val isDiseaseOptionDialogVisible: Boolean = false,
-    val diseaseOptionDialogSearchQuery: String = "",
-    val isMedicineOptionDialogVisible: Boolean = false,
-    val medicineOptionDialogSearchQuery: String = "",
+    val isDiseaseSearchBarVisible: Boolean = false,
+    val diseaseOptionsSearchQuery: String = "",
+    val isMedicineOptionSearchVisible: Boolean = false,
+    val medicineOptionSearchQuery: String = "",
     val isUnregisteredDiseaseDialogVisible: Boolean = false,
     val unregisteredDiseaseValue: String = "",
     val isUnregisteredMedicineDialogVisible: Boolean = false,
     val unregisteredMedicineValue: String = "",
 ) {
     val isAddDiseaseVisible = disease == null
+
+    val filteredDiseaseOptions =
+        if (diseaseOptionsSearchQuery.isBlank()) diseaseOptions
+        else diseaseOptions.filter { it.name.contains(diseaseOptionsSearchQuery, true) }
+
+    val filteredMedicineOptions = buildList {
+        if (medicineOptionSearchQuery.isBlank() && disease != null)
+            addAll(disease.medicines.filterNot { it.id in medicationsIds })
+    }
+
 
     val medications = disease?.medicines?.filter { it.id in medicationsIds } ?: emptyList()
 

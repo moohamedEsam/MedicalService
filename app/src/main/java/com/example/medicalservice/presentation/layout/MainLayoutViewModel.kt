@@ -10,6 +10,7 @@ import com.example.common.navigation.Destination
 import com.example.domain.usecase.sync.OneTimeSyncWorkUseCase
 import com.example.domain.usecase.user.GetCurrentUserUseCase
 import com.example.domain.usecase.user.IsUserLoggedInUseCase
+import com.example.domain.usecase.user.LogOutUseCase
 import com.example.functions.snackbar.SnackBarManager
 import com.example.model.app.user.User
 import com.example.model.app.user.emptyReceiver
@@ -24,6 +25,7 @@ class MainLayoutViewModel(
     private val oneTimeSyncWorkUseCase: OneTimeSyncWorkUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val isUserLoggedInUseCase: IsUserLoggedInUseCase,
+    private val logOutUseCase: LogOutUseCase,
     private val snackBarManager: SnackBarManager,
     private val appNavigator: AppNavigator
 ) : ViewModel() {
@@ -51,7 +53,12 @@ class MainLayoutViewModel(
             MainLayoutScreenEvent.OnDiagnosisClick -> appNavigator.navigateTo(Destination.DiagnosisForm())
             MainLayoutScreenEvent.OnUploadClick -> appNavigator.navigateTo(Destination.UploadPrescription())
             is MainLayoutScreenEvent.SyncClicked -> sync(event.owner)
-            MainLayoutScreenEvent.OnLogoutClick -> appNavigator.navigateTo(Destination.Login())
+            MainLayoutScreenEvent.OnLogoutClick -> {
+                logOutUseCase().ifSuccess {
+                    appNavigator.navigateTo(Destination.Login())
+                }
+            }
+
             MainLayoutScreenEvent.OnSettingsClick -> appNavigator.navigateTo(Destination.Settings())
         }
     }

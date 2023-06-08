@@ -7,15 +7,12 @@ import com.example.database.models.disease.DiseaseEntity
 import com.example.database.models.disease.DiseaseEntityView
 import com.example.database.models.disease.toDiseaseView
 import com.example.database.models.medicine.MedicineEntity
-import com.example.database.models.medicine.MedicineEntityView
 import com.example.database.models.medicine.toMedicine
-import com.example.database.models.medicine.toMedicineView
 import com.example.database.models.user.UserEntity
 import com.example.database.models.user.toUser
+import com.example.model.app.diagnosis.DiagnosisResult
 import com.example.model.app.diagnosis.DiagnosisResultView
-import com.example.model.app.medicine.MedicineView
 import com.example.model.app.user.User
-import com.example.model.app.user.emptyDoctor
 
 data class DiagnosisResultEntityView(
     @Embedded val diagnosisResult: DiagnosisResultEntity,
@@ -49,6 +46,18 @@ data class DiagnosisResultEntityView(
         entity = UserEntity::class
     )
     val doctor: UserEntity?
+)
+
+fun DiagnosisResultEntityView.toDiagnosisResult(): DiagnosisResult = DiagnosisResult(
+    diagnosis = diagnosisResult.diagnosis,
+    status = diagnosisResult.status,
+    id = diagnosisResult.id,
+    createdAt = diagnosisResult.createdAt,
+    updatedAt = diagnosisResult.updatedAt,
+    doctorId = doctor?.id ?: "",
+    diseaseId = diagnosisResult.diseaseId,
+    medicationsIds = medications.map { it.id },
+    diagnosisRequestId = diagnosisResult.diagnosisRequestId
 )
 
 fun DiagnosisResultEntityView.toDiagnosisResultView() = DiagnosisResultView(

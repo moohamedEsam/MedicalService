@@ -2,7 +2,6 @@ package com.example.medicalservice.presentation.home.receiver
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -12,12 +11,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.PagingData
 import com.example.medicalservice.R
 import com.example.medicalservice.presentation.components.VerticalTransactionsList
+import com.example.model.app.diagnosis.DiagnosisResult
 import com.example.model.app.diagnosis.DiagnosisResultView
 import com.example.model.app.diagnosis.empty
 import com.example.model.app.medicine.MedicineView
@@ -162,7 +159,7 @@ private fun UploadDiagnosisRequest(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LatestDiagnosisResult(
     diagnosisResultView: DiagnosisResultView,
@@ -177,53 +174,98 @@ private fun LatestDiagnosisResult(
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer
         )
     ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+        if (diagnosisResultView.status == DiagnosisResult.Status.Complete)
+            DiagnosisResult(diagnosisResultView, dateFormatter)
+        else
+            DiagnosisRequest(diagnosisResultView, dateFormatter)
+
+    }
+}
+
+@Composable
+private fun DiagnosisRequest(
+    diagnosisResultView: DiagnosisResultView,
+    dateFormatter: SimpleDateFormat
+) {
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text = "Your diagnosis request is being processed",
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Text("Latest Diagnosis Request", style = MaterialTheme.typography.bodyLarge)
+        Text(
+            text = "description",
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Text(
+            text = diagnosisResultView.request.description,
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = 2
+        )
+        Text(
+            text = "diagnosed: ${dateFormatter.format(diagnosisResultView.createdAt)}",
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalLayoutApi::class)
+private fun DiagnosisResult(
+    diagnosisResultView: DiagnosisResultView,
+    dateFormatter: SimpleDateFormat
+) {
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text = "Latest diagnosis result",
+            style = MaterialTheme.typography.bodyLarge
+        )
+        Text(
+            text = diagnosisResultView.diagnosis,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Latest diagnosis result",
-                style = MaterialTheme.typography.bodyLarge
+                text = "diagnosed: ${dateFormatter.format(diagnosisResultView.createdAt)}",
+                style = MaterialTheme.typography.bodyMedium
             )
+
             Text(
-                text = diagnosisResultView.diagnosis,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium,
+                text = "last updated: ${dateFormatter.format(diagnosisResultView.updatedAt)}",
+                style = MaterialTheme.typography.bodyMedium
             )
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "diagnosed: ${dateFormatter.format(diagnosisResultView.createdAt)}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Text(
-                    text = "last updated: ${dateFormatter.format(diagnosisResultView.updatedAt)}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "Doctor: ")
-                    TextButton(onClick = { }) {
-                        Text(text = diagnosisResultView.doctor?.username?:"")
-                    }
+        }
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "Doctor: ")
+                TextButton(onClick = { }) {
+                    Text(text = diagnosisResultView.doctor?.username ?: "")
                 }
-
-                Text(
-                    text = "Status: ${diagnosisResultView.status}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
             }
+
+            Text(
+                text = "Status: ${diagnosisResultView.status}",
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }

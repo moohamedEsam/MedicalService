@@ -22,7 +22,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,7 +34,6 @@ import com.example.model.app.diagnosis.DiagnosisResultView
 import com.example.model.app.diagnosis.empty
 import com.example.model.app.disease.Symptom
 import com.example.model.app.medicine.Medicine
-import com.example.model.app.medicine.MedicineView
 import com.example.model.app.medicine.empty
 import com.example.model.app.user.User
 import com.example.model.app.user.emptyDoctor
@@ -120,7 +118,7 @@ private fun DiagnosisMainDetails(
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalArrangement = Arrangement.Center,
     ) {
         Text(
             text = "Doctor: ${state.diagnosisResultView.doctor?.username}",
@@ -140,7 +138,7 @@ private fun DiagnosisMainDetails(
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalArrangement = Arrangement.Center,
     ) {
         Text(
             text = "Created: ${dateFormat.format(state.diagnosisResultView.createdAt)}",
@@ -173,7 +171,6 @@ private fun MedicineItem(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DiagnosisRequestDetails(
     state: DiagnosisDetailsScreenState

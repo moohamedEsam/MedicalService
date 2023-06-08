@@ -11,5 +11,4 @@ sealed interface AuthRepository{
     suspend fun register(createUserDto: CreateUserDto): Result<Unit>
 
     suspend fun logout()
-    suspend fun isLoggedIn(): Boolean
 }

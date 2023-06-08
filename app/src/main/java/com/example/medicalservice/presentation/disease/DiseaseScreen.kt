@@ -48,7 +48,7 @@ private fun DiseaseScreenContent(
         "Diagnosis",
         "Medicines"
     )
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState(pageCount = pages::size)
     var pageToScroll by remember {
         mutableStateOf(pagerState.currentPage)
     }
@@ -73,7 +73,6 @@ private fun DiseaseScreenContent(
             }
         }
         DiseaseContentPager(
-            pages = pages,
             pagerState = pagerState,
             disease = disease,
             modifier = Modifier.weight(1f),
@@ -85,7 +84,6 @@ private fun DiseaseScreenContent(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun DiseaseContentPager(
-    pages: List<String>,
     pagerState: PagerState,
     disease: DiseaseView,
     modifier: Modifier = Modifier,
@@ -94,8 +92,7 @@ private fun DiseaseContentPager(
     HorizontalPager(
         modifier = modifier,
         state = pagerState,
-        pageCount = pages.size,
-        pageSpacing = 8.dp
+        pageSpacing = 8.dp,
     ) { page: Int ->
         Column(
             modifier = Modifier

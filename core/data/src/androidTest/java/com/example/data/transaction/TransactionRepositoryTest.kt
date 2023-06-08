@@ -79,7 +79,7 @@ class TransactionRepositoryTest {
         assertThat(result).isTrue()
 
         // Act
-        transactionRepository.updateTransaction(transaction.copy(status = TransactionView.Status.Completed))
+        transactionRepository.updateTransaction(transaction.copy(status = TransactionView.Status.Completed, senderId = "123", receiverId = "321"))
         val updateResult = transactionRepository.syncTransactions()
 
         // Assert
@@ -89,6 +89,8 @@ class TransactionRepositoryTest {
             val updatedTransaction = items.find { it.id == transaction.id }
             assertThat(updatedTransaction).isNotNull()
             assertThat(updatedTransaction!!.status).isEqualTo(TransactionView.Status.Completed)
+            assertThat(updatedTransaction.receiverId).isEqualTo("321")
+            assertThat(updatedTransaction.senderId).isEqualTo("123")
         }
 
     }

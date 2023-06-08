@@ -8,7 +8,6 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.example.database.models.diagnosis.DiagnosisMedicineCrossRef
-import com.example.database.models.diagnosis.DiagnosisRequestEntity
 import com.example.database.models.diagnosis.DiagnosisResultEntity
 import com.example.database.models.diagnosis.DiagnosisResultEntityView
 import com.example.model.app.diagnosis.DiagnosisResult
@@ -33,10 +32,12 @@ interface DiagnosisResultDao {
     fun getDiagnosisResult(id: String): Flow<DiagnosisResultEntityView?>
 
     @Query("SELECT * FROM diagnosisResults WHERE isCreated = 1")
-    suspend fun getCreatedDiagnosisResults(): List<DiagnosisResultEntity>
+    @Transaction
+    suspend fun getCreatedDiagnosisResults(): List<DiagnosisResultEntityView>
 
     @Query("SELECT * FROM diagnosisResults WHERE isUpdated = 1 and isCreated = 0")
-    suspend fun getUpdatedDiagnosisResults(): List<DiagnosisResultEntity>
+    @Transaction
+    suspend fun getUpdatedDiagnosisResults(): List<DiagnosisResultEntityView>
 
     @Query("DELETE FROM diagnosisResults")
     suspend fun deleteAllDiagnosisResults()
@@ -54,5 +55,5 @@ interface DiagnosisResultDao {
     suspend fun insertAll(diagnosisResults: List<DiagnosisResultEntity>)
 
     @Update(onConflict = REPLACE)
-    suspend fun update(diagnosisResult: DiagnosisResultEntity, crossRefs: List<DiagnosisMedicineCrossRef> = emptyList())
+    suspend fun update(diagnosisResult: DiagnosisResultEntity)
 }

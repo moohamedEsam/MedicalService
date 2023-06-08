@@ -39,18 +39,12 @@ fun DiseaseView.Companion.headache() = DiseaseView(
     ),
     treatment = listOf(
         "Treatment for headaches depends on the type of headache. For example, a person with a tension headache may benefit from over-the-counter pain relievers, while a person with a migraine may need prescription medications.",
-        "Some people find that lifestyle changes, such as reducing stress, getting more sleep, and avoiding certain foods, can help prevent headaches.",
-        "In some cases, a person may need to see a doctor to determine the cause of their headaches. A doctor may recommend further tests or refer a person to a specialist.",
     ),
     prevention = listOf(
         "Prevention for headaches depends on the type of headache. For example, a person with a tension headache may benefit from over-the-counter pain relievers, while a person with a migraine may need prescription medications.",
-        "Some people find that lifestyle changes, such as reducing stress, getting more sleep, and avoiding certain foods, can help prevent headaches.",
-        "In some cases, a person may need to see a doctor to determine the cause of their headaches. A doctor may recommend further tests or refer a person to a specialist.",
     ),
     diagnosis = listOf(
         "Diagnosis for headaches depends on the type of headache. For example, a person with a tension headache may benefit from over-the-counter pain relievers, while a person with a migraine may need prescription medications.",
-        "Some people find that lifestyle changes, such as reducing stress, getting more sleep, and avoiding certain foods, can help prevent headaches.",
-        "In some cases, a person may need to see a doctor to determine the cause of their headaches. A doctor may recommend further tests or refer a person to a specialist.",
     ),
     medicines = listOf(
         Medicine.empty().copy(

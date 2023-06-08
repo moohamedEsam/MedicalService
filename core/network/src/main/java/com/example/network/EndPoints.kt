@@ -1,6 +1,7 @@
 package com.example.network
 
 import android.content.Context
+import android.util.Log
 import com.example.datastore.dataStore
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -9,21 +10,21 @@ import kotlinx.coroutines.flow.map
 object EndPoints {
     private var BASE_URL = "http://192.168.1.2:3000/api"
 
-    val LOGIN = "$BASE_URL/users/auth/login"
-    val REGISTER = "$BASE_URL/users/adduser"
-    val DONATION_REQUEST = "$BASE_URL/donationrequest/getalldonationrequest"
-    val MEDICINE = "$BASE_URL/medicine/getallmedicine"
-    val DISEASE = "$BASE_URL/disease/getalldisease"
-    val SYMPTOM = "$BASE_URL/users/model/symptoms"
-    val PREDICT_DISEASE = "$BASE_URL/predictdisease"
-    val USER = "$BASE_URL/users"
+    fun login() = "$BASE_URL/users/auth/login"
+    fun register() = "$BASE_URL/users/adduser"
+    fun donationRequest() = "$BASE_URL/donationrequest/getalldonationrequest"
+    fun medicine() = "$BASE_URL/medicine/getallmedicine"
+    fun disease() = "$BASE_URL/disease/getalldisease"
+    fun symptom() = "$BASE_URL/users/model/symptoms"
+    fun predictDisease() = "$BASE_URL/predictdisease"
+    fun user() = "$BASE_URL/users"
 
     fun createDisease(): String = "$BASE_URL/disease/adddisease"
-    fun getUser(id: String): String = "$USER/$id"
+    fun getUser(id: String): String = "${user()}/$id"
 
-    fun getUsers(): String = "$USER/getalluser"
+    fun getUsers(): String = "${user()}/getalluser"
 
-    fun getCurrentUser(): String = "$USER/getalluser"
+    fun getCurrentUser(): String = "${user()}/getalluser"
     fun getUserTransactions(): String = "$BASE_URL/transaction/gettransactionbyuserid"
     fun getTransactions(): String = "$BASE_URL/transaction/getalltransaction"
 
@@ -50,6 +51,7 @@ object EndPoints {
 
     suspend fun Context.updateBaseUrl() {
         dataStore.data.map { it.remoteServerIp }.distinctUntilChanged().collectLatest {
+            Log.i("EndPoints", "updateBaseUrl: $it")
             BASE_URL = "http://$it/api"
         }
     }

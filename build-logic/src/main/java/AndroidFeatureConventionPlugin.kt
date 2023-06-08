@@ -40,7 +40,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
 fun DependencyHandlerScope.addComposeDependencies(libs: VersionCatalog) {
     add("implementation", libs.findLibrary("androidx-compose-foundation").get())
     add("implementation", libs.findLibrary("androidx-compose-runtime").get())
-    add("debugImplementation", libs.findLibrary("androidx-compose-ui-tooling").get())
+    add("implementation", libs.findLibrary("androidx-compose-ui-tooling").get())
     add("implementation", libs.findLibrary("androidx-compose-material3").get())
     add("implementation", libs.findLibrary("androidx.compose.material.iconsExtended").get())
     add("implementation", libs.findLibrary("androidx-navigation-compose").get())

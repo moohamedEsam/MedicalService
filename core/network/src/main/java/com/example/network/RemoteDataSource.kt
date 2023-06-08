@@ -18,6 +18,8 @@ import com.example.model.app.user.User.Receiver
 
 sealed interface RemoteDataSource {
     suspend fun login(credentials: Credentials): Result<Token>
+
+    suspend fun logout()
     suspend fun register(createUserDto: CreateUserDto): Result<Unit>
 
     suspend fun getDonationRequests(): Result<List<DonationRequest>>
@@ -52,5 +54,5 @@ sealed interface RemoteDataSource {
 
     suspend fun createDiagnosisResult(donationResult: DiagnosisResult): Result<Unit>
 
-    suspend fun updateDiagnosisResult(donationResult: DiagnosisResult): Result<Unit>
+    suspend fun updateDiagnosisResult(donationResult: DiagnosisResult): Result<DiagnosisResult>
 }

@@ -18,6 +18,7 @@ interface MedicineDao {
     fun getMedicines(): DataSource.Factory<Int, MedicineEntity>
 
     @Query("SELECT * FROM medicines WHERE isCreated = 1")
+    @Transaction
     suspend fun getCreatedMedicines(): List<MedicineEntityView>
 
     @Insert
@@ -50,5 +51,6 @@ interface MedicineDao {
     suspend fun insertAll(medicines: List<MedicineEntity>, crossRefs: List<DiseaseMedicineCrossRef> = emptyList())
 
     @Query("SELECT * FROM medicines")
+    @Transaction
     fun getMedicinesFlow(): Flow<List<MedicineEntityView>>
 }

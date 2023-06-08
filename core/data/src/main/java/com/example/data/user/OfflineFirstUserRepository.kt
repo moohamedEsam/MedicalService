@@ -7,7 +7,6 @@ import com.example.model.app.user.User
 import com.example.network.RemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
 

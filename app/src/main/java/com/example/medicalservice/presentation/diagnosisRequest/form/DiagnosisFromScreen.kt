@@ -1,12 +1,11 @@
 package com.example.medicalservice.presentation.diagnosisRequest.form
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -17,23 +16,30 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.composecomponents.OneTimeEventButton
-import com.example.composecomponents.textField.OutlinedSearchTextField
 import com.example.model.app.disease.Symptom
 import com.example.model.app.disease.dummyList
 import org.koin.androidx.compose.koinViewModel
@@ -56,9 +62,7 @@ private fun DiagnosisRequestFormScreen(
 ) {
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .animateContentSize()
             .padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -87,15 +91,12 @@ private fun SymptomsList(
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text("Select Symptoms", style = MaterialTheme.typography.headlineSmall)
     }
-    OutlinedSearchTextField(
-        query = state.query,
-        onQueryChange = { onEvent(DiagnosisFormEvent.OnQueryChange(it)) },
-        modifier = Modifier.fillMaxWidth()
-    )
+    SymptomsSearchBar(state, onEvent)
+
     LazyColumn(
         modifier = Modifier
             .heightIn(max = (LocalConfiguration.current.screenHeightDp / 4).dp)
@@ -119,8 +120,6 @@ private fun SymptomsList(
                 textAlign = TextAlign.Center,
                 color = if (state.selectedSymptoms.contains(symptom)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
             )
-
-
         }
     }
     if (state.selectedSymptoms.isNotEmpty())
@@ -140,7 +139,48 @@ private fun SymptomsList(
     }
 }
 
+@Composable
 @OptIn(ExperimentalMaterial3Api::class)
+private fun SymptomsSearchBar(
+    state: DiagnosisFormState,
+    onEvent: (DiagnosisFormEvent) -> Unit
+) {
+    var active by remember {
+        mutableStateOf(false)
+    }
+    Box(
+        modifier = Modifier
+            .zIndex(1f)
+            .fillMaxWidth()
+            .heightIn(max = LocalConfiguration.current.screenHeightDp.dp)
+    ) {
+        SearchBar(
+            query = state.query,
+            onQueryChange = { onEvent(DiagnosisFormEvent.OnQueryChange(it)) },
+            onSearch = { onEvent(DiagnosisFormEvent.OnQueryChange(it)) },
+            active = active,
+            onActiveChange = { active = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.TopCenter),
+            placeholder = { Text("Search Symptoms") },
+            leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
+            shape = MaterialTheme.shapes.small,
+        ) {
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(state.filteredSymptoms) {
+                    ListItem(
+                        headlineContent = { Text(it.name) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onEvent(DiagnosisFormEvent.OnSymptomClick(it)) },
+                    )
+                }
+            }
+        }
+    }
+}
+
 @Composable
 private fun DescriptionTextField(
     state: DiagnosisFormState,

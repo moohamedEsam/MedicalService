@@ -1,7 +1,6 @@
 package com.example.medicalservice.presentation.medicine
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.common.navigation.Destination
 

@@ -3,7 +3,6 @@ package com.example.medicalservice.presentation.myDonations
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -16,7 +15,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.composecomponents.textField.OutlinedSearchTextField
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.medicalservice.presentation.components.DonationRequestAndTransactionsSearchBar
 import com.example.medicalservice.presentation.components.HorizontalDonationRequestsList
 import com.example.medicalservice.presentation.components.VerticalTransactionsList
 import org.koin.androidx.compose.koinViewModel
@@ -44,12 +44,7 @@ private fun MyDonationsScreen(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        OutlinedSearchTextField(
-            query = state.query,
-            onQueryChange = { onEvent(MyDonationsScreenEvent.QueryChanged(it)) },
-            modifier = Modifier.fillMaxWidth(),
-            label = "Search by name"
-        )
+        SearchBar(state, onEvent)
         HorizontalDonationRequestsList(
             donationRequestViewPagingData = state.donationRequests,
             title = "Bookmarked Donations",
@@ -66,6 +61,24 @@ private fun MyDonationsScreen(
         )
 
     }
+}
+
+@Composable
+private fun SearchBar(
+    state: MyDonationsScreenState,
+    onEvent: (MyDonationsScreenEvent) -> Unit
+) {
+    val donationRequests = state.filteredDonationRequests.collectAsLazyPagingItems()
+    val transactions = state.filteredTransactions.collectAsLazyPagingItems()
+    DonationRequestAndTransactionsSearchBar(
+        query = state.query,
+        onQueryChange = { onEvent(MyDonationsScreenEvent.QueryChanged(it)) },
+        donationRequests = donationRequests,
+        onDonationRequestClick = { onEvent(MyDonationsScreenEvent.OnDonationRequestClick(it)) },
+        transactions = transactions,
+        onTransactionClick = { onEvent(MyDonationsScreenEvent.OnTransactionClick(it)) },
+        onMedicineClick = { onEvent(MyDonationsScreenEvent.OnMedicineClick(it)) },
+    )
 }
 
 @Preview(showBackground = true)

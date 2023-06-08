@@ -22,7 +22,7 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class MapViewModel(
     private val coroutineExceptionHandler: CoroutineExceptionHandler,
-    private val appNavigator: AppNavigator
+    private val appNavigator: AppNavigator,
 ) : ViewModel() {
 
     private val _query = MutableStateFlow("")
@@ -37,7 +37,6 @@ class MapViewModel(
     fun setQuery(value: String) = viewModelScope.launch {
         _query.update { value }
     }
-
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     fun findByLocationName(geocoder: Geocoder) = viewModelScope.launch(coroutineExceptionHandler) {

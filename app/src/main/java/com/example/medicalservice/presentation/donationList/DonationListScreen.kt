@@ -13,21 +13,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -39,6 +34,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.example.composecomponents.loadStateItem
+import com.example.medicalservice.presentation.components.DonationRequestAndTransactionsSearchBar
 import com.example.medicalservice.presentation.components.HorizontalDonationRequestsList
 import com.example.medicalservice.presentation.components.TransactionItem
 import com.example.model.app.donation.dummyDonationRequests
@@ -71,16 +67,20 @@ private fun DonationListScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         DonationListTopBar(
-            query = state.query,
-            onQueryChange = { },
-            modifier = Modifier
-                .align(alignment = Alignment.CenterHorizontally)
-                .fillMaxWidth()
-                .shadow(8.dp),
+            state = state,
+            onEvent = onEvent
         )
         DonationListContent(state, onEvent)
     }
     if (!state.isConfirmationDialogVisible || state.selectedTransactionView == null) return
+    TransactionConfirmationDialog(onEvent, state.selectedTransactionView)
+}
+
+@Composable
+private fun TransactionConfirmationDialog(
+    onEvent: (DonationListScreenEvent) -> Unit,
+    selectedTransactionView: TransactionView
+) {
     AlertDialog(
         onDismissRequest = { onEvent(DonationListScreenEvent.ConfirmationDialogEvent.OnCancelClick) },
         confirmButton = {
@@ -102,9 +102,9 @@ private fun DonationListScreen(
             val text = buildAnnotatedString {
                 append("confirm donation for ")
                 withStyle(SpanStyle(MaterialTheme.colorScheme.primary)) {
-                    append(state.selectedTransactionView.quantity.toString())
+                    append(selectedTransactionView.quantity.toString())
                     append(" ")
-                    append(state.selectedTransactionView.medicine.name)
+                    append(selectedTransactionView.medicine.name)
                 }
 
             }
@@ -122,24 +122,26 @@ private fun DonationListScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DonationListTopBar(
-    query: String,
-    modifier: Modifier = Modifier,
-    onQueryChange: (String) -> Unit = {}
+    state: DonationListState,
+    onEvent: (DonationListScreenEvent) -> Unit
 ) {
-    TextField(
-        value = query,
-        onValueChange = onQueryChange,
-        modifier = modifier,
-        label = { Text("Search by medicine or disease name ") },
-        leadingIcon = { Icon(imageVector = Icons.Outlined.Search, contentDescription = null) },
-        colors = TextFieldDefaults.textFieldColors(
-            focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
-        )
+    val transactions = state.filteredTransactions.collectAsLazyPagingItems()
+    val donationRequests = state.filteredDonationRequestViews.collectAsLazyPagingItems()
+    DonationRequestAndTransactionsSearchBar(
+        query = state.query,
+        onQueryChange = { onEvent(DonationListScreenEvent.OnQueryChange(it)) },
+        donationRequests = donationRequests,
+        transactions = transactions,
+        onDonationRequestClick = { onEvent(DonationListScreenEvent.OnDonationRequestClick(it)) },
+        onTransactionClick = { onEvent(DonationListScreenEvent.OnTransactionClick(it)) },
+        onMedicineClick = { onEvent(DonationListScreenEvent.OnMedicineClick(it)) },
     )
+
 }
+
+
 
 @Composable
 private fun DonationListContent(
@@ -206,9 +208,11 @@ private fun DonationListScreenPreview() {
             state = DonationListState(
                 donationRequestViews = flowOf(PagingData.from(dummyDonationRequests())),
                 query = "paracetamol",
-                isConfirmationDialogVisible = true,
+                isConfirmationDialogVisible = false,
                 selectedTransactionView = TransactionView.empty()
-                    .copy(medicine = MedicineView.paracetamol(), quantity = 10)
+                    .copy(medicine = MedicineView.paracetamol(), quantity = 10),
+                filteredTransactions = flowOf(PagingData.from(listOf(TransactionView.empty()))),
+                filteredDonationRequestViews = flowOf(PagingData.from(dummyDonationRequests())),
             )
         )
     }

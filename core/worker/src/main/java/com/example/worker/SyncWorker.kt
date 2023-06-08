@@ -30,11 +30,11 @@ class SyncWorker(
         val isSyncSuccessful = listOf(
             diseaseRepository.syncDiseases(),
             medicineRepository.syncMedicines(),
-            donationRepository.syncDonationRequests(),
+            userRepository.syncUser(),
             transactionRepository.syncTransactions(),
+            donationRepository.syncDonationRequests(),
             diagnosisRequestRepository.syncDiagnosisRequest(),
-            diagnosisResultRepository.syncDiagnosis(),
-            userRepository.syncUser()
+            diagnosisResultRepository.syncDiagnosis()
         ).all { it }
 
         if (isSyncSuccessful)
@@ -54,7 +54,5 @@ class SyncWorker(
             .build()
 
         const val workName = "SyncWorker"
-
-        const val Progress = "Progress"
     }
 }

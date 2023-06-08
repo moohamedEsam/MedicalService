@@ -35,6 +35,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MapScreen(
+    lat: Double = 0.0,
+    lng: Double = 0.0,
     viewModel: MapViewModel = koinViewModel(),
 ) {
     val cameraPosition = rememberCameraPositionState()
@@ -57,8 +59,10 @@ fun MapScreen(
         getCurrentLocation(client, request, fusedLocationClient, viewModel, context)
 
     }
-    val markerState = rememberMarkerState()
-
+    val markerState = rememberMarkerState(position = LatLng(lat, lng))
+    LaunchedEffect(key1 = Unit) {
+        viewModel.setAddress(LatLng(lat, lng))
+    }
     LaunchedEffect(key1 = address) {
         if (address != null)
             markerState.position = LatLng(address!!.latitude, address!!.longitude)
@@ -208,8 +212,8 @@ private fun LocationTextField(
             LazyColumn {
                 items(suggestions) {
                     ListItem(
-                        headlineText = { Text(text = it.featureName) },
-                        supportingText = {
+                        headlineContent = { Text(text = it.featureName) },
+                        supportingContent = {
                             Text(
                                 text = it.getAddressLine(0),
                             )

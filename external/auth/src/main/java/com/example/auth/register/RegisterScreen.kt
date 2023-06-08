@@ -1,5 +1,6 @@
 package com.example.auth.register
 
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -25,7 +26,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.ImageLoader
@@ -33,8 +33,8 @@ import coil.compose.AsyncImage
 import com.example.auth.register.pages.EmailAndUsernamePage
 import com.example.auth.register.pages.LocationPage
 import com.example.auth.register.pages.PasswordPage
-import com.example.auth.register.pages.PhoneAndUserTypePage
 import com.example.auth.register.pages.RegisterPages
+import com.example.auth.register.pages.UserTypePage
 import com.example.model.app.user.Location
 import org.koin.androidx.compose.get
 import org.koin.androidx.compose.koinViewModel
@@ -74,7 +74,7 @@ private fun RegisterScreenContent(
     onEvent: (RegisterScreenEvent) -> Unit,
     imageLoader: ImageLoader,
 ) {
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState(pageCount = RegisterPages.values()::size)
     var pageToScroll by remember { mutableStateOf(pagerState.currentPage) }
     LaunchedEffect(key1 = pageToScroll) { pagerState.animateScrollToPage(pageToScroll) }
 
@@ -84,8 +84,10 @@ private fun RegisterScreenContent(
             .verticalScroll(rememberScrollState())
             .padding(top = 8.dp)
     ) {
+
         ProgressIndicator(state.progress)
         LogoImage(logo, imageLoader)
+
         RegisterPager(
             pagerState = pagerState,
             state = state,
@@ -93,12 +95,10 @@ private fun RegisterScreenContent(
         )
 
         RegisterActionRow(
-            pageToScroll = pageToScroll,
             pagerState = pagerState,
-            onRegisterButtonClick = { onEvent(RegisterScreenEvent.RegisterClicked) },
-            onPageChangeClick = { pageToScroll = it },
-            registerButtonEnabled = state.registerEnabled
-        )
+            registerButtonEnabled = state.registerEnabled,
+            onPageChangeClick = { pageToScroll = it }
+        ) { onEvent(RegisterScreenEvent.RegisterClicked) }
     }
 
 }
@@ -106,12 +106,13 @@ private fun RegisterScreenContent(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 private fun RegisterActionRow(
-    pageToScroll: Int,
     pagerState: PagerState,
     registerButtonEnabled: Boolean,
     onPageChangeClick: (Int) -> Unit,
     onRegisterButtonClick: () -> Unit
 ) {
+    if (pagerState.currentPage == 0)
+        return
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -119,10 +120,9 @@ private fun RegisterActionRow(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AssistChip(
-            onClick = { onPageChangeClick(pageToScroll - 1) },
+            onClick = { onPageChangeClick(pagerState.currentPage - 1) },
             label = { Text("Previous") },
             leadingIcon = { Icon(Icons.Default.ArrowBack, null) },
-            enabled = pagerState.currentPage != 0
         )
 
         if (pagerState.currentPage == RegisterPages.values().size - 1)
@@ -133,7 +133,7 @@ private fun RegisterActionRow(
             )
         else
             AssistChip(
-                onClick = { onPageChangeClick(pageToScroll + 1) },
+                onClick = { onPageChangeClick(pagerState.currentPage + 1) },
                 label = { Text("Next") },
                 trailingIcon = { Icon(Icons.Default.ArrowForward, null) },
                 enabled = pagerState.currentPage != RegisterPages.values().size - 1
@@ -149,21 +149,14 @@ private fun RegisterPager(
     pagerState: PagerState,
 ) {
     HorizontalPager(
-        pageCount = RegisterPages.values().size,
         contentPadding = PaddingValues(8.dp),
         pageSpacing = 8.dp,
         userScrollEnabled = false,
         state = pagerState
     ) { pageNumber ->
         when (RegisterPages.values().find { it.ordinal == pageNumber }) {
-            RegisterPages.EmailAndUsername -> {
-                EmailAndUsernamePage(
-                    email = state.email,
-                    onEmailValueChange = { onEvent(RegisterScreenEvent.EmailChanged(it)) },
-                    username = state.username,
-                    onUsernameValueChange = { onEvent(RegisterScreenEvent.UsernameChanged(it)) }
-                )
-            }
+            RegisterPages.EmailAndUsername -> EmailAndUsernamePage(state = state, onEvent = onEvent)
+
 
             RegisterPages.Password -> {
                 PasswordPage(
@@ -180,10 +173,8 @@ private fun RegisterPager(
                 )
             }
 
-            RegisterPages.PhoneAndUserType -> {
-                PhoneAndUserTypePage(
-                    phone = state.phone,
-                    onPhoneValueChange = { onEvent(RegisterScreenEvent.PhoneChanged(it)) },
+            RegisterPages.UserType -> {
+                UserTypePage(
                     userType = state.userType,
                     onUserTypeValueChange = { onEvent(RegisterScreenEvent.UserTypeChanged(it)) }
                 )

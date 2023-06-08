@@ -81,13 +81,18 @@ fun TransactionItem(
     onMedicineClick: (String) -> Unit
 ) {
     ListItem(
-        headlineText = {
+        headlineContent = {
             Text(
                 text = transactionView.medicine.name,
                 modifier = Modifier.clickable { onMedicineClick(transactionView.medicine.id) })
         },
-        supportingText = { Text(text = "Quantity: ${transactionView.quantity}") },
-        trailingContent = { Text(text = transactionView.status.name) },
+        supportingContent = { Text(text = "Quantity: ${transactionView.quantity}") },
+        trailingContent = {
+            Text(
+                text = transactionView.status.name,
+                color = transactionView.status.color()
+            )
+        },
         leadingContent = {
             Icon(
                 painter = painterResource(id = R.drawable.transaction),

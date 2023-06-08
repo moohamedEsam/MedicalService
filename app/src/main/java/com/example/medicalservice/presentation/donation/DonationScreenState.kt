@@ -13,20 +13,17 @@ data class DonationScreenState(
     val quantity: String = "",
     val isLoading: Boolean = false,
 ) {
-    private val isDonationRequestSelected: Boolean
-        get() = selectedDonationRequest != null
+    private val isDonationRequestSelected: Boolean = selectedDonationRequest != null
 
-    val isDonateButtonEnabled: Boolean
-        get() = isDonationRequestSelected && quantityValidationResult is ValidationResult.Valid && !isLoading
-
-    private val quantityRange
-        get() = selectedDonationRequest?.run {
-            (1..needed - collected)
-        } ?: 0..0
+    private val quantityRange = selectedDonationRequest?.run {
+        (1..needed - collected)
+    } ?: 0..0
 
     val quantityValidationResult = if (quantity.isEmpty())
         ValidationResult.Empty
     else if (quantity.toInt() !in quantityRange)
         ValidationResult.Invalid("Value must be between ${quantityRange.first} and ${quantityRange.last}")
     else ValidationResult.Valid
+
+    val isDonateButtonEnabled: Boolean = isDonationRequestSelected && quantityValidationResult is ValidationResult.Valid && !isLoading
 }

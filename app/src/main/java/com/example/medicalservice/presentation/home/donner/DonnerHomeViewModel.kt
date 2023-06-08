@@ -4,16 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.common.navigation.AppNavigator
 import com.example.common.navigation.Destination
 import com.example.domain.usecase.donationRequest.GetDonationRequestsUseCase
 import com.example.domain.usecase.donationRequest.SetDonationRequestBookmarkUseCase
-import com.example.domain.usecase.transaction.GetCurrentUserTransactionsUseCase
 import com.example.domain.usecase.transaction.GetRecentTransactionsUseCase
-import com.example.model.app.transaction.TransactionView
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -22,18 +18,15 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 class DonnerHomeViewModel(
-    private val getDonationRequestsUseCase: GetDonationRequestsUseCase,
+    getDonationRequestsUseCase: GetDonationRequestsUseCase,
     private val setDonationRequestBookmarkUseCase: SetDonationRequestBookmarkUseCase,
     private val getRecentTransactionsUseCase: GetRecentTransactionsUseCase,
     private val appNavigator: AppNavigator
 ) : ViewModel() {
     private val donationPager = Pager(
-        config = PagingConfig(
-            pageSize = 10
-        ),
-    ) {
-        getDonationRequestsUseCase().invoke()
-    }.flow.cachedIn(viewModelScope)
+        config = PagingConfig(pageSize = 10),
+        pagingSourceFactory = getDonationRequestsUseCase()
+    ).flow.cachedIn(viewModelScope)
 
     private val _uiState = MutableStateFlow(
         DonnerHomeState(donationRequestViews = donationPager)

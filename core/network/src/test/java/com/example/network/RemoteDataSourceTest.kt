@@ -251,6 +251,7 @@ class RemoteDataSourceTest {
 
         // assert
         assertThat(response).isInstanceOf(Result.Success::class.java)
+        assertThat((response as Result.Success).data).isNotEmpty()
     }
 
     @Test
@@ -281,7 +282,7 @@ class RemoteDataSourceTest {
     @Test
     fun createDiagnosisResult() = runTest {
         // arrange
-        val diagnosisResult = DiagnosisResult.empty()
+        val diagnosisResult = DiagnosisResult.empty().copy(diseaseId = "some id", medicationsIds = listOf("some id"))
         // act
         val response = remoteDataSource.createDiagnosisResult(diagnosisResult)
 
@@ -292,13 +293,26 @@ class RemoteDataSourceTest {
     @Test
     fun updateDiagnosisResult() = runTest {
         // arrange
-        val diagnosisResult = DiagnosisResult.empty()
+        val diagnosisRequest = DiagnosisRequest.empty()
+        val diagnosisResult = DiagnosisResult.empty().copy(diagnosisRequestId = diagnosisRequest.id)
 
         // act
+        remoteDataSource.createDiagnosisRequest(diagnosisRequest)
         remoteDataSource.createDiagnosisResult(diagnosisResult)
-        val response = remoteDataSource.updateDiagnosisResult(diagnosisResult)
+        val response = remoteDataSource.updateDiagnosisResult(
+            diagnosisResult.copy(
+                status = DiagnosisResult.Status.Complete,
+                medicationsIds = listOf("some id"),
+                diseaseId = "some id"
+            )
+        )
 
         // assert
         assertThat(response).isInstanceOf(Result.Success::class.java)
+        response.ifSuccess {
+            assertThat(it.status).isEqualTo(DiagnosisResult.Status.Complete)
+            assertThat(it.medicationsIds).isEqualTo(listOf("some id"))
+            assertThat(it.diseaseId).isEqualTo("some id")
+        }
     }
 }

@@ -13,4 +13,5 @@ fun TransactionView.Status.color() = when (this) {
     TransactionView.Status.Completed -> MaterialTheme.colorScheme.primary
     TransactionView.Status.Cancelled -> Color.Gray
     TransactionView.Status.InProgress -> MaterialTheme.colorScheme.secondary
+    TransactionView.Status.Active -> MaterialTheme.colorScheme.primary
 }

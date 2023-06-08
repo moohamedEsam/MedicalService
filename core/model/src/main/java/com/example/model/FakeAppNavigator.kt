@@ -1,4 +1,4 @@
-package com.example.medicalservice.presentation.navigation
+package com.example.model
 
 import com.example.common.navigation.AppNavigator
 
@@ -9,10 +9,10 @@ class FakeAppNavigator : AppNavigator {
         singleTop: Boolean,
         inclusive: Boolean
     ) {
-
+        // no-op
     }
 
     override suspend fun navigateBack(vararg arguments: Pair<String, String>) {
-
+        // no-op
     }
 }

@@ -61,7 +61,6 @@ class OfflineFirstMedicineRepository(
 
         val result = remoteDataSource.getMedicines()
         result.ifSuccess { medicines ->
-            localDataSource.deleteAll()
             val entities = medicines.map { med -> med.toEntity() }
             val crossRefs = buildList {
                 for (med in medicines) {

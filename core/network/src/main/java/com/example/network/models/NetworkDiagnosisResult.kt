@@ -19,7 +19,10 @@ data class NetworkDiagnosisResult(
     @Serializable(with = DateSerializer::class)
     val updatedAt: Date,
     val diagnosisRequestId: String,
-    val userId: String = ""
+    val userId: String = "",
+    @SerialName("medicationId")
+    val medicationsIds: List<String> = emptyList(),
+    val diseaseId: String = "",
 )
 
 fun DiagnosisResult.toNetwork() = NetworkDiagnosisResult(
@@ -30,19 +33,24 @@ fun DiagnosisResult.toNetwork() = NetworkDiagnosisResult(
     createdAt = createdAt,
     updatedAt = updatedAt,
     diagnosisRequestId = diagnosisRequestId,
+    medicationsIds = medicationsIds,
+    diseaseId = diseaseId
 )
 
-fun NetworkDiagnosisResult.toDiagnosisRequest() = DiagnosisResult(
+fun NetworkDiagnosisResult.toDiagnosisResult() = DiagnosisResult(
     diagnosis = diagnosis,
     doctorId = doctorId,
     status = when (status) {
         "PENDING" -> DiagnosisResult.Status.Pending
         "INPROGRESS" -> DiagnosisResult.Status.InProgress
         "COMPLETE" -> DiagnosisResult.Status.Complete
+
         else -> throw IllegalArgumentException("Unknown status: $status")
     },
     id = id,
     createdAt = createdAt,
     updatedAt = updatedAt,
     diagnosisRequestId = diagnosisRequestId,
+    medicationsIds = medicationsIds,
+    diseaseId = diseaseId
 )

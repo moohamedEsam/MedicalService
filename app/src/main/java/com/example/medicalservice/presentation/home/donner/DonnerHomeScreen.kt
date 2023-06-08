@@ -23,7 +23,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.PagingData
 import com.example.medicalservice.presentation.components.HorizontalDonationRequestsList
 import com.example.medicalservice.presentation.components.TransactionItem
-import com.example.medicalservice.presentation.components.VerticalTransactionsList
 import com.example.model.app.donation.dummyDonationRequests
 import com.example.model.app.medicine.MedicineView
 import com.example.model.app.medicine.paracetamol
@@ -67,10 +66,8 @@ private fun DonnerHomeScreenContent(
         VerticalTransactionsList(
             transactionViews = state.transactionViews,
             onTransactionClick = { onEvent(DonnerHomeScreenEvent.OnTransactionClick(it)) },
-            modifier = Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp / 2).dp),
-            onMedicineClick = { onEvent(DonnerHomeScreenEvent.OnMedicineClick(it)) },
-            title = "Recent Transactions"
-        )
+            modifier = Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp / 2).dp)
+        ) { onEvent(DonnerHomeScreenEvent.OnMedicineClick(it)) }
     }
 }
 
@@ -80,9 +77,8 @@ private fun VerticalTransactionsList(
     onTransactionClick: (TransactionView) -> Unit,
     modifier: Modifier = Modifier,
     onMedicineClick: (String) -> Unit,
-    title: String,
 ) {
-    Text(text = title, style = MaterialTheme.typography.headlineMedium)
+    Text(text = "Recent Transactions", style = MaterialTheme.typography.headlineMedium)
     LazyColumn(
         modifier = modifier.animateContentSize(),
         verticalArrangement = Arrangement.spacedBy(8.dp)

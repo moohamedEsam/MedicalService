@@ -14,7 +14,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.common.models.ValidationResult
-import com.example.functions.DefaultTextFieldColor
+import com.example.functions.defaultTextFieldColor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -55,10 +55,11 @@ fun ValidationPasswordTextField(
                 .testTag(testTag),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             maxLines = 1,
-            colors = DefaultTextFieldColor()
+            colors = defaultTextFieldColor()
         )
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ValidationPasswordTextField(
@@ -94,7 +95,7 @@ fun ValidationPasswordTextField(
                 .testTag(testTag),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             maxLines = 1,
-            colors = DefaultTextFieldColor()
+            colors = defaultTextFieldColor()
         )
     }
 }

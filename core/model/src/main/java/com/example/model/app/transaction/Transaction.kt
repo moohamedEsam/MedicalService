@@ -6,15 +6,14 @@ import java.util.UUID
 data class Transaction(
     val medicineId: String,
     val quantity: Int,
-    val receiverId: String,
-    val receiverName: String,
-    val senderId: String,
-    val senderName: String,
+    val receiverId: String?,
+    val senderId: String?,
     val status: TransactionView.Status = TransactionView.Status.Pending,
     val updatedAt: Date = Date(),
     val createdAt: Date = Date(),
     val id: String = UUID.randomUUID().toString(),
-//    @Contextual val donationRequestId: String? = null,
+    val isDelivered: Boolean = false,
+    val isReceived: Boolean = false,
 ){
     companion object
 }
@@ -23,9 +22,7 @@ fun Transaction.Companion.empty() = Transaction(
     medicineId = "",
     quantity = 0,
     receiverId = "",
-    receiverName = "",
     senderId = "",
-    senderName = "",
     status = TransactionView.Status.Pending,
     updatedAt = Date(),
     createdAt = Date(),

@@ -43,11 +43,13 @@ sealed interface Result<T> {
                 actionLabel = successActionLabel,
                 action = successAction
             )
+
             is Error -> SnackBarEvent(
                 message = exception ?: "Error",
                 actionLabel = errorActionLabel,
                 action = errorAction
             )
+
             else -> SnackBarEvent(message = successMessage)
         }
 }

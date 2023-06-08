@@ -4,6 +4,7 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import com.example.common.models.Result
 import com.example.functions.snackbar.FakeSnackBarManager
+import com.example.model.FakeAppNavigator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestResult
@@ -20,9 +21,6 @@ class CreateUserDtoScreenTest{
     fun setUp() {
         composeTestRule.setContent {
             RegisterScreen(
-                onRegistered = {},
-                onLoginClick = {},
-                onLocationRequested = {},
                 lat = 23.0,
                 lng = 23.0,
                 viewModel = RegisterViewModel(
@@ -30,8 +28,10 @@ class CreateUserDtoScreenTest{
                         delay(2000)
                         Result.Success(Unit)
                     },
-                    snackBarManager = FakeSnackBarManager()
-                )
+                    snackBarManager = FakeSnackBarManager(),
+                    appNavigator = FakeAppNavigator()
+                ),
+                logo = ""
             )
         }
     }

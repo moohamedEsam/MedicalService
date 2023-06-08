@@ -13,15 +13,14 @@ data class TransactionEntity(
     val updatedAt: Date,
     val medicineId: String,
     val quantity: Int,
-    val receiverId: String,
-    val receiverName: String,
-    val senderId: String,
-    val senderName: String,
+    val receiverId: String?,
+    val senderId: String?,
     val status: TransactionView.Status,
-    val donationRequestId: String? = null,
     val isCreated: Boolean = false,
     val isUpdated: Boolean = false,
     val isDeleted: Boolean = false,
+    val isDelivered: Boolean = false,
+    val isReceived: Boolean = false,
 )
 
 fun TransactionEntity.toTransaction() = Transaction(
@@ -30,12 +29,11 @@ fun TransactionEntity.toTransaction() = Transaction(
     updatedAt = updatedAt,
     quantity = quantity,
     receiverId = receiverId,
-    receiverName = receiverName,
     senderId = senderId,
-    senderName = senderName,
     status = status,
-//    donationRequestId = donationRequestId,
-    medicineId = medicineId
+    medicineId = medicineId,
+    isDelivered = isDelivered,
+    isReceived = isReceived,
 )
 
 fun Transaction.toEntity() = TransactionEntity(
@@ -44,10 +42,9 @@ fun Transaction.toEntity() = TransactionEntity(
     updatedAt = updatedAt,
     quantity = quantity,
     receiverId = receiverId,
-    receiverName = receiverName,
     senderId = senderId,
-    senderName = senderName,
     status = status,
-//    donationRequestId = donationRequestId,
-    medicineId = medicineId
+    medicineId = medicineId,
+    isDelivered = isDelivered,
+    isReceived = isReceived,
 )

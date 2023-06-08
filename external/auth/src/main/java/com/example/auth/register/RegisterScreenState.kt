@@ -16,11 +16,11 @@ data class RegisterScreenState(
     val username: Username = Username(""),
     val phone: Phone = Phone(""),
     val location: Location = Location(0.0, 0.0),
-    val userType: UserType = UserType.Donner,
+    val userType: UserType? = null,
     val isLoading: Boolean = false
 ) {
     val registerEnabled: Boolean
-        get() = validationResults().all { it is ValidationResult.Valid } && !isLoading
+        get() = validationResults().all { it is ValidationResult.Valid } && !isLoading && userType != null
 
     val progress: Float
         get() {

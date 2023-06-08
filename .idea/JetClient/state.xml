@@ -73,7 +73,7 @@
                     <requestState>
                       <option name="body">
                         <bodyState>
-                          <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mohamedEsam@gmail.com&quot;,&#10;  &quot;password&quot;: &quot;somethingRandom&quot;,&#10;  &quot;phone&quot;: &quot;012&quot;,&#10;  &quot;username&quot;: &quot;mohamed esam&quot;,&#10;  &quot;location&quot;: {&#10;    &quot;lat&quot;: 15,&#10;    &quot;lng&quot;: 15&#10;  },&#10;  &quot;enumType&quot;: &quot;USER&quot;&#10;}" />
+                          <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mohamedEsam0@gmail.com&quot;,&#10;  &quot;password&quot;: &quot;somethingRandom&quot;,&#10;  &quot;phone&quot;: &quot;012&quot;,&#10;  &quot;userName&quot;: &quot;mohamed esam&quot;,&#10;  &quot;location&quot;: {&#10;    &quot;lat&quot;: 15,&#10;    &quot;lng&quot;: 15&#10;  },&#10;  &quot;enumType&quot;: &quot;USER&quot;&#10;}" />
                           <option name="type" value="JSON" />
                         </bodyState>
                       </option>
@@ -157,7 +157,7 @@
                       </option>
                       <option name="body">
                         <bodyState>
-                          <option name="raw" value="{&#10;  &quot;username&quot;: &quot;mohamedEsam@gmail.com&quot;,&#10;  &quot;password&quot;: &quot;somethingRandom&quot;&#10;}" />
+                          <option name="raw" value="{&#10;  &quot;username&quot;: &quot;mohamedEsam_doctor@gmail.com&quot;,&#10;  &quot;password&quot;: &quot;somethingRandom&quot;&#10;}" />
                           <option name="type" value="JSON" />
                         </bodyState>
                       </option>
@@ -410,7 +410,7 @@
                     <requestState>
                       <option name="body">
                         <bodyState>
-                          <option name="raw" value="{&#13;&#10;  &quot;userId&quot;: &quot;&quot;,&#10;  &quot;createdAt&quot;: 15,&#10;  &quot;medicineId&quot;: &quot;&quot;,&#10;  &quot;myStatusValue&quot;: &quot;PENDING&quot;,&#10;  &quot;receiverId&quot;: &quot;&quot;,&#10;  &quot;receiverName&quot;: &quot;&quot;,&#10;  &quot;senderId&quot;: &quot;&quot;,&#10;  &quot;senderName&quot;: &quot;&quot;,&#10;  &quot;quantity&quot;: 15,&#10;  &quot;donationReqeustId&quot;: null&#13;&#10;}" />
+                          <option name="raw" value="{&#13;&#10;  &quot;userId&quot;: &quot;&quot;,&#10;  &quot;createdAt&quot;: 15,&#10;  &quot;medicineId&quot;: &quot;&quot;,&#10;  &quot;myStatusValue&quot;: &quot;Pending&quot;,&#10;  &quot;receiverId&quot;: &quot;&quot;,&#10;  &quot;receiverName&quot;: &quot;&quot;,&#10;  &quot;senderId&quot;: &quot;&quot;,&#10;  &quot;senderName&quot;: &quot;&quot;,&#10;  &quot;quantity&quot;: 15,&#10;  &quot;donationReqeustId&quot;: null&#13;&#10;}" />
                           <option name="type" value="JSON" />
                         </bodyState>
                       </option>
@@ -491,15 +491,31 @@
                         </bodyState>
                       </option>
                       <option name="description" value="/api/transaction/deletetransaction/63fff35e29d9203077c0c59f" />
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Content-Type" />
+                            <option name="value" value="application/json" />
+                          </headerState>
+                        </list>
+                      </option>
                       <option name="id" value="c5c8ed55-0e43-4895-a144-21671c370e6a" />
                       <option name="method" value="DELETE" />
                       <option name="name" value="deletetransaction" />
-                      <option name="url" value="http://localhost:3000/api/transaction/deletetransaction/63fff35e29d9203077c0c59f" />
+                      <option name="pathVariables">
+                        <list>
+                          <pathVariableState>
+                            <option name="key" value="id" />
+                            <option name="value" value="647776950b777a4d020e9ef8" />
+                          </pathVariableState>
+                        </list>
+                      </option>
+                      <option name="url" value="http://localhost:3000/api/transaction/deletetransaction/:id" />
                     </requestState>
                     <requestState>
                       <option name="body">
                         <bodyState>
-                          <option name="raw" value="{&#10;  &quot;userId&quot;: &quot;&quot;,&#10;  &quot;createdAt&quot;: 15,&#10;  &quot;medicineId&quot;: &quot;&quot;,&#10;  &quot;myStatusValue&quot;: &quot;PENDING&quot;,&#10;  &quot;receiverId&quot;: &quot;&quot;,&#10;  &quot;receiverName&quot;: &quot;&quot;,&#10;  &quot;senderId&quot;: &quot;&quot;,&#10;  &quot;senderName&quot;: &quot;&quot;,&#10;  &quot;quantity&quot;: 15,&#10;  &quot;donationReqeustId&quot;: null&#10;}" />
+                          <option name="raw" value="{&#10;  &quot;id&quot;: &quot;647776950b777a4d020e9ef8&quot;,&#10;  &quot;createdAt&quot;: 1685523287894,&#10;  &quot;medicineId&quot;: &quot;&quot;,&#10;  &quot;myStatusValue&quot;: &quot;Completed&quot;,&#10;  &quot;receiverId&quot;: &quot;12&quot;,&#10;  &quot;senderId&quot;: &quot;12&quot;,&#10;  &quot;quantity&quot;: 0&#10;}" />
                           <option name="type" value="JSON" />
                         </bodyState>
                       </option>
@@ -519,7 +535,7 @@
                         <list>
                           <pathVariableState>
                             <option name="key" value="id" />
-                            <option name="value" value="6457ba7e359b136a3a42b70d" />
+                            <option name="value" value="647776950b777a4d020e9ef8" />
                           </pathVariableState>
                         </list>
                       </option>

@@ -13,6 +13,7 @@ import com.example.common.navigation.Destination
 import com.example.domain.usecase.user.RegisterUseCase
 import com.example.functions.snackbar.SnackBarManager
 import com.example.model.app.user.CreateUserDto
+import com.example.model.app.user.UserType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -57,7 +58,12 @@ class RegisterViewModel(
                 _uiState.update { it.copy(isLoading = false) }
             }
 
-            RegisterScreenEvent.LocationClicked -> viewModelScope.launch { appNavigator.navigateTo(Destination.Map.route) }
+            RegisterScreenEvent.LocationClicked -> viewModelScope.launch {
+                appNavigator.navigateTo(
+                    Destination.Map.route
+                )
+            }
+
             RegisterScreenEvent.LoginClicked -> viewModelScope.launch { appNavigator.navigateBack() }
         }
     }
@@ -83,6 +89,6 @@ class RegisterViewModel(
         password = uiState.value.password.value,
         phone = uiState.value.phone.value,
         location = uiState.value.location,
-        type = uiState.value.userType,
+        type = uiState.value.userType ?: UserType.Donner,
     )
 }

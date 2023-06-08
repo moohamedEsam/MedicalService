@@ -1,6 +1,5 @@
 package com.example.medicalservice.presentation.medicine
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -10,7 +9,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -19,7 +17,6 @@ import com.example.model.app.medicine.MedicineView
 import com.example.model.app.medicine.paracetamol
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
-import kotlin.random.Random
 
 @Composable
 fun MedicineDetailsScreen(
@@ -89,26 +86,7 @@ private fun MedicineDescription(medicine: MedicineView) {
 
 @Composable
 private fun MedicineName(medicine: MedicineView) {
-    Row(
-        modifier = Modifier
-            .horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = medicine.name, style = MaterialTheme.typography.headlineLarge)
-        if (Random.nextBoolean())
-            Text(
-                text = "Out Of Stock",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.error
-            )
-        else
-            Text(
-                text = "Available",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
-    }
+    Text(text = medicine.name, style = MaterialTheme.typography.headlineLarge)
 }
 
 

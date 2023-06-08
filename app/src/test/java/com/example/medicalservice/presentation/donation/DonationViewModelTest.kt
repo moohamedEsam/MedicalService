@@ -4,7 +4,7 @@ import androidx.paging.testing.asPagingSourceFactory
 import app.cash.turbine.test
 import com.example.common.models.Result
 import com.example.functions.snackbar.FakeSnackBarManager
-import com.example.medicalservice.presentation.navigation.FakeAppNavigator
+import com.example.model.FakeAppNavigator
 import com.example.model.app.donation.dummyDonationRequests
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.CoroutineExceptionHandler

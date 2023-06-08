@@ -40,7 +40,6 @@ class DiagnosisFormViewModel(
 
             DiagnosisFormEvent.OnSubmitClick -> createDiagnosisRequest()
             is DiagnosisFormEvent.OnSymptomClick -> toggleSymptomSelection(event.symptom)
-            is DiagnosisFormEvent.OnImagePicked -> _uiState.value = _uiState.value.copy(imageUri = event.imageUri)
         }
     }
 

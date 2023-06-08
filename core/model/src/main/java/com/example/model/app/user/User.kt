@@ -1,6 +1,5 @@
 package com.example.model.app.user
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.UUID
 

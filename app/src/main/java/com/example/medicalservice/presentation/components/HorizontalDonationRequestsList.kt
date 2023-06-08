@@ -116,7 +116,7 @@ fun HorizontalDonationRequestsList(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DonationListItem(
+fun DonationListItem(
     donationRequestView: DonationRequestView,
     modifier: Modifier = Modifier,
     isDonateButtonVisible: Boolean = true,

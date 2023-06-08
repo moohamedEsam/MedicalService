@@ -1,8 +1,10 @@
 package com.example.model.app.transaction
 
-import com.example.model.app.donation.DonationRequestView
 import com.example.model.app.medicine.MedicineView
 import com.example.model.app.medicine.empty
+import com.example.model.app.user.User
+import com.example.model.app.user.emptyDonor
+import com.example.model.app.user.emptyReceiver
 import java.util.Date
 import java.util.UUID
 
@@ -12,12 +14,11 @@ data class TransactionView(
     val updatedAt: Date,
     val medicine: MedicineView,
     val quantity: Int,
-    val receiverId: String,
-    val receiverName: String,
-    val senderId: String,
-    val senderName: String,
+    val receiver: User?,
+    val sender: User?,
     val status: Status,
-    val donationRequestView: DonationRequestView? = null,
+    val isDelivered: Boolean = false,
+    val isReceived: Boolean = false,
 ) {
     enum class Status {
         Pending, Delivered, Rejected, Completed, Cancelled, InProgress, Active
@@ -32,11 +33,9 @@ fun TransactionView.Companion.empty() = TransactionView(
     updatedAt = Date(),
     medicine = MedicineView.empty(),
     quantity = 0,
-    receiverId = "",
-    receiverName = "",
-    senderId = "",
-    senderName = "",
     status = TransactionView.Status.values().random(),
+    sender = User.emptyDonor(),
+    receiver = User.emptyReceiver(),
 )
 
 
@@ -45,10 +44,8 @@ fun TransactionView.toTransaction() = Transaction(
     createdAt = createdAt,
     updatedAt = updatedAt,
     quantity = quantity,
-    receiverId = receiverId,
-    receiverName = receiverName,
-    senderId = senderId,
-    senderName = senderName,
+    receiverId = receiver?.id,
+    senderId = sender?.id,
     status = status,
     medicineId = medicine.id,
 )

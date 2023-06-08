@@ -18,7 +18,6 @@ class KtorAuthRepository(
     override suspend fun register(createUserDto: CreateUserDto): Result<Unit> =
         remoteDataSource.register(createUserDto)
 
-    override suspend fun logout() = Unit
+    override suspend fun logout() = remoteDataSource.logout()
 
-    override suspend fun isLoggedIn(): Boolean = true
 }

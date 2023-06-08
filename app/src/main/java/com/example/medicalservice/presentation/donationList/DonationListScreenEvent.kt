@@ -11,6 +11,8 @@ sealed interface DonationListScreenEvent{
 
     data class OnMedicineClick(val medicineId: String) : DonationListScreenEvent
 
+    data class OnQueryChange(val query: String) : DonationListScreenEvent
+
     sealed interface ConfirmationDialogEvent : DonationListScreenEvent {
         object OnConfirmClick : ConfirmationDialogEvent
         object OnCancelClick : ConfirmationDialogEvent

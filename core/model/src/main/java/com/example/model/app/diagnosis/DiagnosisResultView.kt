@@ -1,10 +1,8 @@
 package com.example.model.app.diagnosis
 
-import com.example.model.app.disease.Disease
 import com.example.model.app.disease.DiseaseView
 import com.example.model.app.disease.empty
 import com.example.model.app.medicine.Medicine
-import com.example.model.app.medicine.MedicineView
 import com.example.model.app.user.User
 import com.example.model.app.user.emptyDoctor
 import java.util.Date

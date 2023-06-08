@@ -16,7 +16,7 @@ data class NetworkDiagnosisRequest(
     val date: Date = Date(),
 )
 
-fun NetworkDiagnosisRequest.toDiagnosisRequest() = DiagnosisRequest(
+fun NetworkDiagnosisRequest.toDiagnosisResult() = DiagnosisRequest(
     symptoms = symptoms.map { Symptom(it) },
     description = description,
     id = id,

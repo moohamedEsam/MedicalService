@@ -1,7 +1,6 @@
 package com.example.database.room.dao
 
 import androidx.paging.DataSource
-import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -19,13 +18,14 @@ interface TransactionDao {
     @Transaction
     fun getTransactions(): DataSource.Factory<Int, TransactionEntityView>
 
-    @Query("SELECT * FROM transactions where receiverId !=:userId and senderId !=:userId and status =:status")
+    @Query("SELECT * FROM transactions where receiverId !=:userId and senderId !=:userId and status =:status order by createdAt")
+    @Transaction
     fun getTransactions(
         userId: String,
         status: TransactionView.Status = TransactionView.Status.Active
     ): DataSource.Factory<Int, TransactionEntityView>
 
-    @Query("SELECT * FROM transactions where receiverId =:userId or senderId =:userId limit 10")
+    @Query("SELECT * FROM transactions where receiverId =:userId or senderId =:userId order by updatedAt, createdAt desc limit 10")
     @Transaction
     fun getRecentTransactions(userId: String): Flow<List<TransactionEntityView>>
 
@@ -33,7 +33,7 @@ interface TransactionDao {
     @Transaction
     fun getTransactionsFlow(): Flow<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions WHERE senderId = :userId or receiverId = :userId")
+    @Query("SELECT * FROM transactions WHERE senderId = :userId or receiverId = :userId order by updatedAt, createdAt desc")
     @Transaction
     fun getTransactionsByUserId(userId: String): DataSource.Factory<Int, TransactionEntityView>
 

@@ -1,9 +1,12 @@
 package com.example.domain
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.core.net.toUri
 import com.example.common.functions.loadToken
 import com.example.common.functions.saveToken
+import com.example.common.models.Result
 import com.example.data.auth.AuthRepository
 import com.example.data.diagnosis.request.DiagnosisRequestRepository
 import com.example.data.diagnosis.result.DiagnosisResultRepository
@@ -39,22 +42,23 @@ import com.example.domain.usecase.transaction.GetCurrentUserTransactionsUseCase
 import com.example.domain.usecase.transaction.GetRecentTransactionsUseCase
 import com.example.domain.usecase.transaction.GetTransactionDetailsUseCase
 import com.example.domain.usecase.transaction.GetTransactionsUseCase
+import com.example.domain.usecase.transaction.UpdateTransactionUseCase
+import com.example.domain.usecase.user.CallPhoneNumberUseCase
 import com.example.domain.usecase.user.GetCurrentUserIdUseCase
 import com.example.domain.usecase.user.GetCurrentUserUseCase
 import com.example.domain.usecase.user.IsUserLoggedInUseCase
+import com.example.domain.usecase.user.LogOutUseCase
 import com.example.domain.usecase.user.LoginUseCase
 import com.example.domain.usecase.user.RegisterUseCase
 import com.example.model.app.diagnosis.DiagnosisResult
 import com.example.model.app.diagnosis.empty
-import com.example.model.app.disease.DiseaseView
 import com.example.model.app.disease.Symptom
 import com.example.model.app.disease.dummyList
-import com.example.model.app.disease.headache
+import com.example.model.app.transaction.TransactionView
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -91,7 +95,16 @@ class DomainModule {
             oneTimeSyncWorkUseCase()
         }
         result
-
+    }
+    
+    context (Scope)
+    @Factory
+    fun provideLogoutUseCase() = LogOutUseCase {
+        androidContext().saveToken("")
+        androidContext().dataStore.updateData { userSettings ->
+            userSettings.copy(token = "", email = "")
+        }
+        Result.Success(Unit)
     }
 
     @Factory
@@ -156,6 +169,7 @@ class DomainModule {
     fun provideGetTransactionsUseCase(transactionRepository: TransactionRepository) =
         GetTransactionsUseCase(transactionRepository::getTransactions)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Factory
     fun provideGetRecentTransactionsUseCase(
         transactionRepository: TransactionRepository,
@@ -167,9 +181,18 @@ class DomainModule {
     }
 
 
-        @Factory
-        fun provideDeleteTransactionUseCase(transactionRepository: TransactionRepository) =
-            DeleteTransactionUseCase(transactionRepository::deleteTransaction)
+    @Factory
+    fun provideDeleteTransactionUseCase(transactionRepository: TransactionRepository) =
+        DeleteTransactionUseCase(transactionRepository::deleteTransaction)
+
+    @Factory
+    fun provideUpdateTransactionUseCase(transactionRepository: TransactionRepository) =
+        UpdateTransactionUseCase {
+            if (it.isDelivered && it.isReceived)
+                transactionRepository.updateTransaction(it.copy(status = TransactionView.Status.Completed))
+            else
+                transactionRepository.updateTransaction(it)
+        }
 
     @Factory
     fun provideGetTransactionDetailsUseCase(transactionRepository: TransactionRepository) =
@@ -249,4 +272,13 @@ class DomainModule {
     @Factory
     fun provideCreateDiagnosisResultUseCase(diagnosisResultRepository: DiagnosisResultRepository) =
         CreateDiagnosisResultUseCase(diagnosisResultRepository::insertDiagnosis)
+
+    context (Scope)
+            @Factory
+    fun provideCallPhoneUseCase() = CallPhoneNumberUseCase {
+        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$it")).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        androidContext().startActivity(intent)
+    }
 }

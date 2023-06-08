@@ -6,8 +6,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -57,7 +57,9 @@ fun OutlinedSearchTextField(
             )
         },
         singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(focusedLeadingIconColor = MaterialTheme.colorScheme.primary)
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+        )
 
     )
 }

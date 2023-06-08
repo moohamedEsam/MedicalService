@@ -28,16 +28,16 @@ sealed interface DiagnosisResultFormEvent {
         object OnSaveClick : UnregisteredMedicineDialog
     }
 
-    sealed interface DiseaseOptionDialog : DiagnosisResultFormEvent {
-        object Dismiss : DiseaseOptionDialog
-        data class OnQueryChange(val query: String) : DiseaseOptionDialog
-        data class OnDiseaseClick(val diseaseId: String) : DiseaseOptionDialog
+    sealed interface DiseaseOptionSearch : DiagnosisResultFormEvent {
+        object Dismiss : DiseaseOptionSearch
+        data class OnQueryChange(val query: String) : DiseaseOptionSearch
+        data class OnDiseaseClick(val diseaseId: String) : DiseaseOptionSearch
     }
 
-    sealed interface MedicineOptionDialog : DiagnosisResultFormEvent {
-        object Dismiss : MedicineOptionDialog
-        data class OnQueryChange(val query: String) : MedicineOptionDialog
-        data class OnMedicineClick(val medicineId: String) : MedicineOptionDialog
+    sealed interface MedicineOptionSearch : DiagnosisResultFormEvent {
+        object Dismiss : MedicineOptionSearch
+        data class OnQueryChange(val query: String) : MedicineOptionSearch
+        data class OnMedicineClick(val medicineId: String) : MedicineOptionSearch
     }
 
 }

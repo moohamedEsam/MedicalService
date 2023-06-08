@@ -1,5 +1,6 @@
 package com.example.medicalservice.presentation.diagnosisResult.form
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,14 +21,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.RemoveCircle
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
+import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
@@ -35,16 +36,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.model.app.diagnosis.DiagnosisRequest
 import com.example.model.app.diagnosis.empty
@@ -53,6 +50,7 @@ import com.example.model.app.disease.Symptom
 import com.example.model.app.disease.dummyList
 import com.example.model.app.disease.headache
 import com.example.model.app.medicine.Medicine
+import com.example.model.app.medicine.empty
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
@@ -96,13 +94,8 @@ private fun DiagnosisResultFormScreen(
         UnregisteredDiseaseDialog(state, onEvent)
     if (state.isUnregisteredMedicineDialogVisible)
         UnregisteredMedicineDialog(state, onEvent)
-    if (state.isDiseaseOptionDialogVisible)
-        DiseaseOptionsDialog(state, onEvent)
-    if (state.isMedicineOptionDialogVisible)
-        MedicineOptionsDialog(state, onEvent)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun UnregisteredMedicineDialog(
     state: DiagnosisResultFormState,
@@ -131,7 +124,6 @@ private fun UnregisteredMedicineDialog(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun UnregisteredDiseaseDialog(
     state: DiagnosisResultFormState,
@@ -160,104 +152,6 @@ private fun UnregisteredDiseaseDialog(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun DiseaseOptionsDialog(
-    state: DiagnosisResultFormState,
-    onEvent: (DiagnosisResultFormEvent) -> Unit
-) {
-    Dialog(onDismissRequest = { onEvent(DiagnosisResultFormEvent.DiseaseOptionDialog.Dismiss) }) {
-        Card {
-            Column(Modifier.fillMaxWidth()) {
-                TextField(
-                    value = state.diseaseOptionDialogSearchQuery,
-                    onValueChange = {
-                        onEvent(
-                            DiagnosisResultFormEvent.DiseaseOptionDialog.OnQueryChange(
-                                it
-                            )
-                        )
-                    },
-                    label = { Text(text = "Search") },
-                    modifier = Modifier.fillMaxWidth(),
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search",
-                        )
-                    }
-                )
-                state.diseaseOptions.forEach {
-                    Text(
-                        text = it.name,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .fillMaxWidth()
-                            .clickable {
-                                onEvent(
-                                    DiagnosisResultFormEvent.DiseaseOptionDialog.OnDiseaseClick(
-                                        it.id
-                                    )
-                                )
-                            },
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun MedicineOptionsDialog(
-    state: DiagnosisResultFormState,
-    onEvent: (DiagnosisResultFormEvent) -> Unit
-) {
-    Dialog(onDismissRequest = { onEvent(DiagnosisResultFormEvent.MedicineOptionDialog.Dismiss) }) {
-        Card {
-            Column(Modifier.fillMaxWidth()) {
-                TextField(
-                    value = state.medicineOptionDialogSearchQuery,
-                    onValueChange = {
-                        onEvent(
-                            DiagnosisResultFormEvent.MedicineOptionDialog.OnQueryChange(
-                                it
-                            )
-                        )
-                    },
-                    label = { Text(text = "Search") },
-                    modifier = Modifier.fillMaxWidth(),
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search",
-                        )
-                    }
-                )
-                state.disease?.medicines?.forEach {
-                    Text(
-                        text = it.name,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .fillMaxWidth()
-                            .clickable {
-                                onEvent(
-                                    DiagnosisResultFormEvent.MedicineOptionDialog.OnMedicineClick(
-                                        it.id
-                                    )
-                                )
-                            },
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-        }
-    }
-}
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun DiagnosisRequest(
@@ -267,7 +161,7 @@ private fun DiagnosisRequest(
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalArrangement = Arrangement.Center
     ) {
         Text(text = "Diagnosis Request", style = MaterialTheme.typography.headlineMedium)
         Text(text = dateFormat.format(request.date))
@@ -288,7 +182,6 @@ private fun DiagnosisRequest(
         }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ColumnScope.DiagnosisResult(
     state: DiagnosisResultFormState,
@@ -328,8 +221,9 @@ private fun DiagnosisDisease(
             Icon(imageVector = Icons.Default.Add, contentDescription = null)
         }
 
-
     }
+
+    DiseaseOptionsSearch(state, onEvent)
     if (state.disease == null) return
     OutlinedCard(
         onClick = { onEvent(DiagnosisResultFormEvent.Form.OnDiseaseClick) },
@@ -361,6 +255,83 @@ private fun DiagnosisDisease(
     }
 }
 
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun DiseaseOptionsSearch(
+    state: DiagnosisResultFormState,
+    onEvent: (DiagnosisResultFormEvent) -> Unit
+) {
+    AnimatedVisibility(
+        modifier = Modifier.fillMaxWidth(),
+        visible = state.isDiseaseSearchBarVisible
+    ) {
+        DockedSearchBar(
+            query = state.diseaseOptionsSearchQuery,
+            onQueryChange = { onEvent(DiagnosisResultFormEvent.DiseaseOptionSearch.OnQueryChange(it)) },
+            onSearch = { onEvent(DiagnosisResultFormEvent.DiseaseOptionSearch.OnQueryChange(it)) },
+            active = true,
+            onActiveChange = { if (!it) onEvent(DiagnosisResultFormEvent.DiseaseOptionSearch.Dismiss) },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("Search Diseases") },
+            leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
+            shape = MaterialTheme.shapes.small,
+        ) {
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(state.filteredDiseaseOptions) {
+                    ListItem(
+                        headlineContent = { Text(text = it.name) },
+                        supportingContent = { Text(text = it.description, maxLines = 1) },
+                        modifier = Modifier.clickable {
+                            onEvent(DiagnosisResultFormEvent.DiseaseOptionSearch.OnDiseaseClick(it.id))
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MedicineOptionsSearch(
+    state: DiagnosisResultFormState,
+    onEvent: (DiagnosisResultFormEvent) -> Unit
+) {
+    AnimatedVisibility(
+        modifier = Modifier.fillMaxWidth(),
+        visible = state.isMedicineOptionSearchVisible
+    ) {
+        DockedSearchBar(
+            query = state.medicineOptionSearchQuery,
+            onQueryChange = { onEvent(DiagnosisResultFormEvent.MedicineOptionSearch.OnQueryChange(it)) },
+            onSearch = { onEvent(DiagnosisResultFormEvent.MedicineOptionSearch.OnQueryChange(it)) },
+            active = true,
+            onActiveChange = {if(!it) onEvent(DiagnosisResultFormEvent.MedicineOptionSearch.Dismiss) },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("Search Medicines") },
+            leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
+            shape = MaterialTheme.shapes.small,
+        ) {
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(state.filteredMedicineOptions) {
+                    ListItem(
+                        headlineContent = { Text(text = it.name) },
+                        supportingContent = {
+                            Text(
+                                text = it.uses.firstOrNull() ?: "",
+                                maxLines = 1
+                            )
+                        },
+                        modifier = Modifier.clickable {
+                            onEvent(DiagnosisResultFormEvent.MedicineOptionSearch.OnMedicineClick(it.id))
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Composable
 private fun ColumnScope.DiagnosisMedications(
@@ -378,6 +349,7 @@ private fun ColumnScope.DiagnosisMedications(
             Icon(imageVector = Icons.Default.Add, contentDescription = null)
         }
     }
+    MedicineOptionsSearch(state = state, onEvent = onEvent)
     if (state.medications.isEmpty())
         Text(text = "No medications added", style = MaterialTheme.typography.bodyLarge)
     else
@@ -482,8 +454,12 @@ private fun DiagnosisResultFormPreview() {
                     description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
                     symptoms = Symptom.dummyList()
                 ),
-                disease = null,
+                disease = DiseaseView.headache()
+                    .copy(medicines = listOf(Medicine.empty().copy("Ibuprofen"))),
                 unRegisteredMedicines = listOf("Ibuprofen"),
+                isDiseaseSearchBarVisible = true,
+                diseaseOptions = listOf(DiseaseView.headache()),
+                isMedicineOptionSearchVisible = true,
             ),
             onEvent = {}
         )

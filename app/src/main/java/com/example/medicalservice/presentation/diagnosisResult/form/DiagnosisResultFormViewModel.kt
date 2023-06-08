@@ -1,19 +1,18 @@
 package com.example.medicalservice.presentation.diagnosisResult.form
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.common.models.Result
 import com.example.common.navigation.AppNavigator
 import com.example.common.navigation.Destination
-import com.example.domain.usecase.diagnosis.CreateDiagnosisRequestUseCase
-import com.example.domain.usecase.diagnosis.CreateDiagnosisResultUseCase
 import com.example.domain.usecase.diagnosis.GetDiagnosisResultByIdUseCase
 import com.example.domain.usecase.diagnosis.UpdateDiagnosisResultUseCase
 import com.example.domain.usecase.disease.CreateDiseaseUseCase
 import com.example.domain.usecase.disease.GetDiseasesUseCase
 import com.example.domain.usecase.medicine.CreateMedicineUseCase
+import com.example.domain.usecase.user.GetCurrentUserIdUseCase
+import com.example.functions.snackbar.SnackBarManager
 import com.example.model.app.diagnosis.DiagnosisResult
-import com.example.model.app.disease.Disease
 import com.example.model.app.disease.DiseaseView
 import com.example.model.app.disease.empty
 import com.example.model.app.disease.toDisease
@@ -22,6 +21,7 @@ import com.example.model.app.medicine.empty
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import java.util.Date
@@ -34,6 +34,8 @@ class DiagnosisResultFormViewModel(
     private val getDiseasesUseCase: GetDiseasesUseCase,
     private val updateDiagnosisResultUseCase: UpdateDiagnosisResultUseCase,
     private val appNavigator: AppNavigator,
+    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
+    private val snackBarManager: SnackBarManager,
     private val diagnosisResultId: String
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(DiagnosisResultFormState())
@@ -68,23 +70,23 @@ class DiagnosisResultFormViewModel(
                 event
             )
 
-            is DiagnosisResultFormEvent.MedicineOptionDialog -> handleMedicineOptionDialogEvent(
+            is DiagnosisResultFormEvent.MedicineOptionSearch -> handleMedicineOptionSearchEvent(
                 event
             )
 
-            is DiagnosisResultFormEvent.DiseaseOptionDialog -> handleDiseaseOptionDialogEvent(event)
+            is DiagnosisResultFormEvent.DiseaseOptionSearch -> handleDiseaseOptionSearchEvent(event)
         }
     }
 
     private suspend fun handleFormEvent(event: DiagnosisResultFormEvent.Form) = when (event) {
         DiagnosisResultFormEvent.Form.OnAddDiseaseClick -> _uiState.value = uiState.value.copy(
-            isDiseaseOptionDialogVisible = true,
-            diseaseOptionDialogSearchQuery = ""
+            isDiseaseSearchBarVisible = true,
+            diseaseOptionsSearchQuery = ""
         )
 
         DiagnosisResultFormEvent.Form.OnAddMedicineClick -> _uiState.value = uiState.value.copy(
-            isMedicineOptionDialogVisible = true,
-            medicineOptionDialogSearchQuery = ""
+            isMedicineOptionSearchVisible = !_uiState.value.isMedicineOptionSearchVisible,
+            medicineOptionSearchQuery = ""
         )
 
         DiagnosisResultFormEvent.Form.OnAddUnRegisteredDiseaseClick -> _uiState.value =
@@ -127,47 +129,51 @@ class DiagnosisResultFormViewModel(
         is DiagnosisResultFormEvent.Form.OnUnRegisteredMedicineDelete -> _uiState.value =
             uiState.value.copy(unRegisteredMedicines = uiState.value.unRegisteredMedicines - event.medicineName)
 
-        DiagnosisResultFormEvent.Form.OnSaveClick -> save()
+        DiagnosisResultFormEvent.Form.OnSaveClick -> {
+            createUnregisteredDiseaseAndMedicines()
+            save()
+        }
     }
 
-    private fun handleDiseaseOptionDialogEvent(event: DiagnosisResultFormEvent.DiseaseOptionDialog) =
+    private fun handleDiseaseOptionSearchEvent(event: DiagnosisResultFormEvent.DiseaseOptionSearch) =
         when (event) {
-            is DiagnosisResultFormEvent.DiseaseOptionDialog.OnDiseaseClick -> _uiState.value =
+            is DiagnosisResultFormEvent.DiseaseOptionSearch.OnDiseaseClick -> _uiState.value =
                 uiState.value.copy(
                     disease = _uiState.value.diseaseOptions.find { it.id == event.diseaseId },
-                    isDiseaseOptionDialogVisible = false
+                    isDiseaseSearchBarVisible = false
                 )
 
-            DiagnosisResultFormEvent.DiseaseOptionDialog.Dismiss -> _uiState.value =
-                uiState.value.copy(isDiseaseOptionDialogVisible = false)
+            DiagnosisResultFormEvent.DiseaseOptionSearch.Dismiss -> _uiState.value =
+                uiState.value.copy(isDiseaseSearchBarVisible = false)
 
-            is DiagnosisResultFormEvent.DiseaseOptionDialog.OnQueryChange -> _uiState.value =
-                uiState.value.copy(diseaseOptionDialogSearchQuery = event.query)
+            is DiagnosisResultFormEvent.DiseaseOptionSearch.OnQueryChange -> _uiState.value =
+                uiState.value.copy(diseaseOptionsSearchQuery = event.query)
         }
 
-    private fun handleMedicineOptionDialogEvent(event: DiagnosisResultFormEvent.MedicineOptionDialog) =
+    private fun handleMedicineOptionSearchEvent(event: DiagnosisResultFormEvent.MedicineOptionSearch) =
         when (event) {
-            is DiagnosisResultFormEvent.MedicineOptionDialog.OnMedicineClick -> _uiState.value =
-                uiState.value.copy(
-                    medicationsIds = uiState.value.medicationsIds + event.medicineId,
-                    isMedicineOptionDialogVisible = false
-                )
+            is DiagnosisResultFormEvent.MedicineOptionSearch.OnMedicineClick -> _uiState.value =
+                uiState.value.copy(medicationsIds = uiState.value.medicationsIds + event.medicineId)
 
-            DiagnosisResultFormEvent.MedicineOptionDialog.Dismiss -> _uiState.value =
-                uiState.value.copy(isMedicineOptionDialogVisible = false)
+            DiagnosisResultFormEvent.MedicineOptionSearch.Dismiss -> _uiState.value =
+                uiState.value.copy(isMedicineOptionSearchVisible = false)
 
-            is DiagnosisResultFormEvent.MedicineOptionDialog.OnQueryChange -> _uiState.value =
-                uiState.value.copy(medicineOptionDialogSearchQuery = event.query)
+            is DiagnosisResultFormEvent.MedicineOptionSearch.OnQueryChange -> _uiState.value =
+                uiState.value.copy(medicineOptionSearchQuery = event.query)
         }
 
     private fun handleUnregisteredDiseaseDialogEvent(event: DiagnosisResultFormEvent.UnregisteredDiseaseDialog) =
         when (event) {
-            is DiagnosisResultFormEvent.UnregisteredDiseaseDialog.OnSaveClick -> _uiState.value =
-                uiState.value.copy(
-                    disease = DiseaseView.empty()
-                        .copy(name = uiState.value.unregisteredDiseaseValue),
-                    isUnregisteredDiseaseDialogVisible = false
-                )
+            is DiagnosisResultFormEvent.UnregisteredDiseaseDialog.OnSaveClick -> {
+                if (uiState.value.unregisteredDiseaseValue.isNotBlank())
+                    _uiState.value =
+                        uiState.value.copy(
+                            disease = DiseaseView.empty()
+                                .copy(name = uiState.value.unregisteredDiseaseValue),
+                            isUnregisteredDiseaseDialogVisible = false
+                        )
+                Unit
+            }
 
             DiagnosisResultFormEvent.UnregisteredDiseaseDialog.Dismiss -> _uiState.value =
                 uiState.value.copy(isUnregisteredDiseaseDialogVisible = false)
@@ -178,11 +184,15 @@ class DiagnosisResultFormViewModel(
 
     private fun handleUnregisteredMedicineDialogEvent(event: DiagnosisResultFormEvent.UnregisteredMedicineDialog) =
         when (event) {
-            is DiagnosisResultFormEvent.UnregisteredMedicineDialog.OnSaveClick -> _uiState.value =
-                uiState.value.copy(
-                    unRegisteredMedicines = uiState.value.unRegisteredMedicines + uiState.value.unregisteredMedicineValue,
-                    isUnregisteredMedicineDialogVisible = false
-                )
+            is DiagnosisResultFormEvent.UnregisteredMedicineDialog.OnSaveClick -> {
+                if (uiState.value.unregisteredMedicineValue.isNotBlank())
+                    _uiState.value =
+                        uiState.value.copy(
+                            unRegisteredMedicines = uiState.value.unRegisteredMedicines + uiState.value.unregisteredMedicineValue,
+                            isUnregisteredMedicineDialogVisible = false
+                        )
+                Unit
+            }
 
             DiagnosisResultFormEvent.UnregisteredMedicineDialog.Dismiss -> _uiState.value =
                 uiState.value.copy(isUnregisteredMedicineDialogVisible = false)
@@ -192,29 +202,56 @@ class DiagnosisResultFormViewModel(
         }
 
     private suspend fun save() {
-        _uiState.value.let {
-            if (!it.isDiseaseInDatabase && it.disease != null)
-                createDiseaseUseCase(it.disease.toDisease())
-            it.unRegisteredMedicines.forEach { medicineName ->
-                createMedicineUseCase(
-                    Medicine.empty().copy(name = medicineName, diseasesId = listOf(it.disease!!.id))
-                )
-            }
+        val result = updateDiagnosisResultUseCase(getDiagnosisResultFromState())
+        val event = result.getSnackBarEvent(
+            successMessage = "Diagnosis saved successfully",
+            errorActionLabel = "Retry",
+            errorAction = ::save,
+        )
+        snackBarManager.showSnackBarEvent(event)
+        result.ifSuccess {
+            appNavigator.navigateBack()
         }
-        updateDiagnosisResultUseCase(getDiagnosisResultFromState())
     }
 
-    private fun getDiagnosisResultFromState() = uiState.value.let {
+    private suspend fun createUnregisteredDiseaseAndMedicines() {
+        _uiState.update { state ->
+            if (state.isDiseaseInDatabase || state.disease == null) return@update state
+            val result = createDiseaseUseCase(state.disease.toDisease())
+            if (result is Result.Success)
+                return@update state.copy(isDiseaseInDatabase = true)
+            state
+        }
+
+        _uiState.update { state ->
+            val ids = mutableMapOf<String, String>()
+            for (medicineName in state.unRegisteredMedicines) {
+                val result = createMedicineUseCase(
+                    Medicine.empty()
+                        .copy(name = medicineName, diseasesId = listOf(state.disease?.id ?: ""))
+                )
+                if (result is Result.Success)
+                    ids += medicineName to result.data.id
+            }
+
+            state.copy(
+                unRegisteredMedicines = state.unRegisteredMedicines - ids.keys,
+                medicationsIds = state.medicationsIds + ids.values
+            )
+        }
+    }
+
+    private suspend fun getDiagnosisResultFromState() = uiState.value.let {
         DiagnosisResult(
             id = diagnosisResultId,
             diagnosis = it.diagnosis,
-            doctorId = "",
-            status = DiagnosisResult.Status.Pending,
+            doctorId = getCurrentUserIdUseCase(),
+            status = DiagnosisResult.Status.Complete,
             createdAt = Date(),
             updatedAt = Date(),
             diagnosisRequestId = it.diagnosisRequest.id,
             diseaseId = it.disease?.id ?: "",
-            medicationsIds = it.medicationsIds
+            medicationsIds = it.medicationsIds,
         )
     }
 }

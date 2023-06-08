@@ -5,7 +5,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
-import androidx.room.Update
 import com.example.database.models.disease.DiseaseEntity
 import com.example.database.models.disease.DiseaseEntityView
 import com.example.database.models.disease.DiseaseMedicineCrossRef

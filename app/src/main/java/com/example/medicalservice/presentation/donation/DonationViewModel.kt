@@ -12,6 +12,7 @@ import com.example.domain.usecase.donationRequest.GetDonationRequestByIdUseCase
 import com.example.domain.usecase.donationRequest.GetDonationRequestsUseCase
 import com.example.domain.usecase.donationRequest.SetDonationRequestBookmarkUseCase
 import com.example.domain.usecase.transaction.CreateTransactionUseCase
+import com.example.domain.usecase.user.GetCurrentUserIdUseCase
 import com.example.functions.snackbar.SnackBarManager
 import com.example.model.app.transaction.Transaction
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -21,7 +22,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
-import java.util.UUID
 
 @KoinViewModel
 class DonationViewModel(
@@ -31,6 +31,7 @@ class DonationViewModel(
     private val setDonationRequestBookmarkUseCase: SetDonationRequestBookmarkUseCase,
     private val snackBarManager: SnackBarManager,
     private val appNavigator: AppNavigator,
+    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
     private val initialDonationRequestId: String? = null,
     coroutineExceptionHandler: CoroutineExceptionHandler
 ) : ViewModel() {
@@ -98,12 +99,10 @@ class DonationViewModel(
         }
     }
 
-    private fun createTransactionFromCurrentUIState() = Transaction(
+    private suspend fun createTransactionFromCurrentUIState() = Transaction(
         medicineId = _uiState.value.selectedDonationRequest!!.medicine.id,
         quantity = _uiState.value.quantity.toInt(),
-        receiverId = UUID.randomUUID().toString(),
-        receiverName = "Medical Service",
-        senderId = UUID.randomUUID().toString(),
-        senderName = "mohamed",
+        receiverId = "",
+        senderId = getCurrentUserIdUseCase(),
     )
 }
