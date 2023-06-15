@@ -1,5 +1,6 @@
 package com.example.medicalservice.presentation.transaction
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.common.navigation.AppNavigator
@@ -7,6 +8,7 @@ import com.example.common.navigation.Destination
 import com.example.domain.usecase.transaction.GetTransactionDetailsUseCase
 import com.example.domain.usecase.transaction.UpdateTransactionUseCase
 import com.example.domain.usecase.user.CallPhoneNumberUseCase
+import com.example.model.app.transaction.Transaction
 import com.example.model.app.transaction.TransactionView
 import com.example.model.app.transaction.toTransaction
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,12 +50,7 @@ class TransactionViewModel(
                 _uiState.value.copy(isUserDialogVisible = true, showSender = true)
 
             TransactionScreenEvent.OnMarkAsDeliveredClick -> {
-                val transaction = _uiState.value.transactionView.run {
-                    if (_uiState.value.user.id == sender?.id)
-                        copy(isDelivered = true)
-                    else
-                        copy(isReceived = true)
-                }.toTransaction()
+                val transaction = getUpdatedTransaction()
                 updateTransactionUseCase(transaction)
             }
 
@@ -71,6 +68,18 @@ class TransactionViewModel(
             TransactionScreenEvent.OnDeleteClick -> Unit // todo implement
             TransactionScreenEvent.OnEditClick -> Unit // todo implement
         }
+    }
+
+    private fun getUpdatedTransaction(): Transaction {
+        var transaction = _uiState.value.transactionView.toTransaction()
+        transaction = if(_uiState.value.transactionView.sender?.id == _uiState.value.user.id)
+            transaction.copy(isDelivered = true)
+        else
+            transaction.copy(isReceived = true)
+
+        if (transaction.isDelivered && transaction.isReceived)
+            transaction = transaction.copy(status = TransactionView.Status.Completed)
+        return transaction
     }
 
 

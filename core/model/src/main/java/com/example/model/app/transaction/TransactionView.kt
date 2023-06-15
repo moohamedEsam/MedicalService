@@ -48,4 +48,6 @@ fun TransactionView.toTransaction() = Transaction(
     senderId = sender?.id,
     status = status,
     medicineId = medicine.id,
+    isDelivered = isDelivered,
+    isReceived = isReceived,
 )

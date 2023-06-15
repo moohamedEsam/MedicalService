@@ -20,7 +20,9 @@ data class NetworkTransaction(
     val senderId: String,
     @SerialName("myStatusValue")
     val status: String,
-    val donationRequestId: String? = null
+    val donationRequestId: String? = null,
+    val isDelivered: Boolean = false,
+    val isReceived: Boolean = false
 )
 
 fun NetworkTransaction.asDomainModel(): Transaction {
@@ -33,7 +35,9 @@ fun NetworkTransaction.asDomainModel(): Transaction {
         receiverId = receiverId,
         senderId = senderId,
         status = Status.valueOf(status),
-        donationRequestId = donationRequestId
+        donationRequestId = donationRequestId,
+        isDelivered = isDelivered,
+        isReceived = isReceived
     )
 }
 
@@ -47,6 +51,8 @@ fun Transaction.asNetworkModel(): NetworkTransaction {
         receiverId = receiverId ?: "",
         senderId = senderId ?: "",
         status = status.name,
-        donationRequestId = donationRequestId
+        donationRequestId = donationRequestId,
+        isDelivered = isDelivered,
+        isReceived = isReceived
     )
 }

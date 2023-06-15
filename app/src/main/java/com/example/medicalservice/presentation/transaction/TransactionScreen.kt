@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.medicalservice.presentation.components.color
 import com.example.model.app.medicine.MedicineView
 import com.example.model.app.medicine.paracetamol
 import com.example.model.app.transaction.TransactionView
@@ -118,7 +119,8 @@ private fun TransactionDetailsScreen(
         ) {
             Text(
                 text = "Status: ${state.transactionView.status.name}",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                color = state.transactionView.status.color()
             )
 
             Text(
