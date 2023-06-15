@@ -1,6 +1,7 @@
 package com.example.medicalservice.presentation.layout
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -86,8 +87,8 @@ fun MedicalServiceLayout(
 
 @Composable
 fun MedicalServiceLayout(
-    userType: UserType = UserType.Receiver,
-    startDestination: String = Destination.Home.route,
+    userType: UserType,
+    startDestination: String,
     navHostController: NavHostController = rememberNavController(),
     snackBarManager: SnackBarManager = get(),
     navigationChannel: Channel<NavigationIntent> = get(),
@@ -348,13 +349,6 @@ private fun shouldShowLayoutBars(currentRoute: String?) =
         Destination.Login.route,
         Destination.Register().route,
         Destination.Map.route,
-        Destination.Settings.route
+        Destination.Settings.route,
+        null
     )
-
-@Preview(showBackground = true)
-@Composable
-private fun MainLayoutPreview() {
-    Column(modifier = Modifier.fillMaxSize()) {
-
-    }
-}

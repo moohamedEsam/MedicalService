@@ -89,7 +89,7 @@ class MainLayoutViewModel(
         appNavigator.navigateTo(
             Destination.DonationsList(),
             singleTop = true,
-            popUpTo = Destination.Home.fullRoute
+            popUpTo = Destination.DonationsList.fullRoute
         )
     }
 
@@ -97,7 +97,7 @@ class MainLayoutViewModel(
         appNavigator.navigateTo(
             Destination.MyDonationsList(),
             singleTop = true,
-            popUpTo = Destination.Home.fullRoute
+            popUpTo = Destination.MyDonationsList.fullRoute
         )
     }
 
