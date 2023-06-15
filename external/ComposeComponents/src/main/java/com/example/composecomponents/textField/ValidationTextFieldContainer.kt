@@ -27,7 +27,6 @@ fun ValidationTextFieldContainer(
                 text = validation.message,
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.fillMaxWidth(),
-                maxLines = 1,
                 textAlign = TextAlign.End
             )
         else if (validation is ValidationResult.Valid)

@@ -3,6 +3,7 @@ package com.example.model.app.donation
 import com.example.model.app.medicine.MedicineView
 import com.example.model.app.medicine.empty
 import com.example.model.app.medicine.paracetamol
+import com.example.model.app.transaction.Transaction
 import java.util.Date
 import java.util.UUID
 import kotlin.random.Random
@@ -15,6 +16,7 @@ data class DonationRequestView(
     val id: String,
     val isBookmarked: Boolean = false,
     val endDate: Long = Date().time,
+    val transactions: List<Transaction> = emptyList()
 ) {
     companion object
 }

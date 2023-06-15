@@ -8,10 +8,17 @@ import com.example.model.app.transaction.TransactionView
 @Composable
 fun TransactionView.Status.color() = when (this) {
     TransactionView.Status.Pending -> Color.LightGray
-    TransactionView.Status.Delivered -> MaterialTheme.colorScheme.primary
+
+    TransactionView.Status.Delivered,
+    TransactionView.Status.Completed,
+    TransactionView.Status.Active,
+    -> MaterialTheme.colorScheme.primary
+
     TransactionView.Status.Rejected -> Color.Red
-    TransactionView.Status.Completed -> MaterialTheme.colorScheme.primary
     TransactionView.Status.Cancelled -> Color.Gray
-    TransactionView.Status.InProgress -> MaterialTheme.colorScheme.secondary
-    TransactionView.Status.Active -> MaterialTheme.colorScheme.primary
+
+    TransactionView.Status.InProgress,
+    TransactionView.Status.AttachedToDonationRequest
+    -> MaterialTheme.colorScheme.secondary
+
 }

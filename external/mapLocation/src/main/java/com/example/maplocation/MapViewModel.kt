@@ -23,6 +23,8 @@ import org.koin.android.annotation.KoinViewModel
 class MapViewModel(
     private val coroutineExceptionHandler: CoroutineExceptionHandler,
     private val appNavigator: AppNavigator,
+    private val lat: Double,
+    private val lng: Double
 ) : ViewModel() {
 
     private val _query = MutableStateFlow("")
@@ -33,6 +35,11 @@ class MapViewModel(
 
     private val _suggestions = MutableStateFlow(emptyList<Address>())
     val suggestions = _suggestions.asStateFlow()
+
+    init {
+        if(lat != 0.0 && lng != 0.0)
+            _address.update { LatLng(lat, lng) }
+    }
 
     fun setQuery(value: String) = viewModelScope.launch {
         _query.update { value }

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 object EndPoints {
-    private var BASE_URL = "http://192.168.1.2:3000/api"
+    private var BASE_URL = "http://192.168.1.3:3000/api"
 
     fun login() = "$BASE_URL/users/auth/login"
     fun register() = "$BASE_URL/users/adduser"

@@ -67,6 +67,9 @@ class TransactionViewModel(
                     event.longitude
                 )
             )
+
+            TransactionScreenEvent.OnDeleteClick -> Unit // todo implement
+            TransactionScreenEvent.OnEditClick -> Unit // todo implement
         }
     }
 

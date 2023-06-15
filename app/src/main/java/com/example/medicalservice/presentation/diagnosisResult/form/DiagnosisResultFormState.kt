@@ -30,8 +30,13 @@ data class DiagnosisResultFormState(
         else diseaseOptions.filter { it.name.contains(diseaseOptionsSearchQuery, true) }
 
     val filteredMedicineOptions = buildList {
-        if (medicineOptionSearchQuery.isBlank() && disease != null)
-            addAll(disease.medicines.filterNot { it.id in medicationsIds })
+        if (disease == null) return@buildList
+        val suggestions = disease.medicines.filterNot { it.id in medicationsIds }
+        if (medicineOptionSearchQuery.isBlank())
+            addAll(suggestions)
+        else
+            addAll(suggestions.filter { it.name.contains(medicineOptionSearchQuery, true) })
+
     }
 
 

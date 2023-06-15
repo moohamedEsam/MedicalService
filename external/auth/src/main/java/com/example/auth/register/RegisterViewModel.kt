@@ -59,9 +59,7 @@ class RegisterViewModel(
             }
 
             RegisterScreenEvent.LocationClicked -> viewModelScope.launch {
-                appNavigator.navigateTo(
-                    Destination.Map.route
-                )
+                appNavigator.navigateTo(Destination.Map())
             }
 
             RegisterScreenEvent.LoginClicked -> viewModelScope.launch { appNavigator.navigateBack() }

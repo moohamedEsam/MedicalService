@@ -83,19 +83,7 @@ private fun TransactionDetailsScreen(
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.clickable { onEvent(TransactionScreenEvent.OnMedicineClick) }
             )
-            Row {
-                IconButton(onClick = { }) {
-                    Icon(imageVector = Icons.Outlined.Edit, contentDescription = null)
-                }
-
-                IconButton(onClick = { }) {
-                    Icon(
-                        imageVector = Icons.Outlined.Delete,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.error
-                    )
-                }
-            }
+            ActionRow(state, onEvent)
         }
 
 
@@ -130,14 +118,12 @@ private fun TransactionDetailsScreen(
         ) {
             Text(
                 text = "Status: ${state.transactionView.status.name}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.secondary
+                style = MaterialTheme.typography.bodyMedium
             )
 
             Text(
                 text = "Created at: ${dateFormat.format(state.transactionView.createdAt)}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.secondary
+                style = MaterialTheme.typography.bodyMedium
             )
 
         }
@@ -154,6 +140,24 @@ private fun TransactionDetailsScreen(
             user = if (state.showSender) state.transactionView.sender else state.transactionView.receiver,
             onEvent = onEvent
         )
+}
+
+@Composable
+private fun ActionRow(state: TransactionScreenState, onEvent: (TransactionScreenEvent) -> Unit) {
+    if (state.transactionView.status != TransactionView.Status.Pending) return
+    Row {
+        IconButton(onClick = { onEvent(TransactionScreenEvent.OnEditClick) }) {
+            Icon(imageVector = Icons.Outlined.Edit, contentDescription = null)
+        }
+
+        IconButton(onClick = { onEvent(TransactionScreenEvent.OnDeleteClick) }) {
+            Icon(
+                imageVector = Icons.Outlined.Delete,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalLayoutApi::class)

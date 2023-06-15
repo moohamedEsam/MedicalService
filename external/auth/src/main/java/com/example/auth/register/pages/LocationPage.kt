@@ -20,8 +20,9 @@ import com.example.model.app.user.Location
 fun LocationPage(
     location: Location,
     onLocationRequested: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column {
+    Column(modifier = modifier) {
         if (location.latitude != 0.0 && location.longitude != 0.0) {
             val address = Geocoder(LocalContext.current).getFromLocation(
                 location.latitude,

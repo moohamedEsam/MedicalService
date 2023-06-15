@@ -34,6 +34,8 @@ data class RegisterScreenState(
         passwordConfirmation.validate(password.value),
         username.validationResult,
         phone.validationResult,
-        location.validationResult
+        location.validationResult,
+        if (userType != null) ValidationResult.Valid
+        else ValidationResult.Invalid("User type is required")
     )
 }

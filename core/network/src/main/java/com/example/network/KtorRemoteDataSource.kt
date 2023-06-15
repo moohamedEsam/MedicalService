@@ -57,7 +57,8 @@ class KtorRemoteDataSource(
         }
 
     override suspend fun logout() {
-        val authProvider = client.plugin(Auth).providers.firstOrNull() as? BearerAuthProvider ?: return
+        val authProvider =
+            client.plugin(Auth).providers.firstOrNull() as? BearerAuthProvider ?: return
         authProvider.clearToken()
     }
 
@@ -132,13 +133,14 @@ class KtorRemoteDataSource(
         result.map { it.map { transaction -> transaction.asDomainModel() } }
     }
 
-    override suspend fun createTransaction(transaction: Transaction): Result<Unit> = tryWrapper {
-        val response = client.post(EndPoints.createTransaction()) {
-            setBody(transaction.asNetworkModel())
-            contentType(ContentType.Application.Json)
+    override suspend fun createTransaction(transaction: Transaction): Result<Transaction> =
+        tryWrapper {
+            val response = client.post(EndPoints.createTransaction()) {
+                setBody(transaction.asNetworkModel())
+                contentType(ContentType.Application.Json)
+            }
+            mapResponse<NetworkTransaction>(response.body()).map { it.asDomainModel() }
         }
-        mapResponse(response.body())
-    }
 
     override suspend fun updateTransaction(transaction: Transaction): Result<Unit> = tryWrapper {
         val response = client.put(EndPoints.updateTransaction(transaction.id)) {

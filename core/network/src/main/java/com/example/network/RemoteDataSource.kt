@@ -39,7 +39,7 @@ sealed interface RemoteDataSource {
 
     suspend fun getTransactions(): Result<List<Transaction>>
 
-    suspend fun createTransaction(transaction: Transaction): Result<Unit>
+    suspend fun createTransaction(transaction: Transaction): Result<Transaction>
 
     suspend fun updateTransaction(transaction: Transaction): Result<Unit>
     suspend fun getAllUsers(): Result<List<User>>

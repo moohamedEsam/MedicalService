@@ -3,6 +3,7 @@ package com.example.medicalservice.presentation.donation
 import androidx.paging.testing.asPagingSourceFactory
 import app.cash.turbine.test
 import com.example.common.models.Result
+import com.example.domain.usecase.user.GetCurrentUserIdUseCase
 import com.example.functions.snackbar.FakeSnackBarManager
 import com.example.model.FakeAppNavigator
 import com.example.model.app.donation.dummyDonationRequests
@@ -28,43 +29,34 @@ class DonationViewModelTest {
     @OptIn(DelicateCoroutinesApi::class)
     private val thread = newSingleThreadContext("UI thread")
     private val dummyDonationRequests = dummyDonationRequests()
-    private var dummyDonationRequestId: String? = null
+    private val dummyDonationRequestId: String = dummyDonationRequests.first().id
 
     @Before
     fun setUp() {
         Dispatchers.setMain(thread)
-        dummyDonationRequestId =
-            if (Random.nextBoolean()) dummyDonationRequests.first().id else null
         viewModel = DonationViewModel(
-            getDonationRequestsUseCase = {
-                flowOf(dummyDonationRequests)
-                    .asPagingSourceFactory(CoroutineScope(Dispatchers.Main))
-                    .invoke()
-            },
-            initialDonationRequestId = dummyDonationRequestId,
+            donationRequestId = dummyDonationRequestId,
             appNavigator = FakeAppNavigator(),
             coroutineExceptionHandler = CoroutineExceptionHandler { _, _ -> },
             getDonationRequestByIdUseCase = { flowOf(dummyDonationRequests.first()) },
             createTransactionUseCase = { Result.Success(Unit) },
-            setDonationRequestBookmarkUseCase = { _, _ -> Result.Success(Unit) },
-            snackBarManager = FakeSnackBarManager()
+            snackBarManager = FakeSnackBarManager(),
+            getCurrentUserIdUseCase = { "1" },
         )
     }
 
     @Test
     fun `should set donation requests on init`() = runTest {
-        assertThat(viewModel.uiState.value.donationRequestViews).isEqualTo(dummyDonationRequests)
+        assertThat(viewModel.uiState.value.donationRequest).isEqualTo(dummyDonationRequests)
     }
 
     @Test
     fun `should set selected donation request on init`() = runTest {
         viewModel.uiState.test {
             val state = awaitItem()
-            if (dummyDonationRequestId != null) {
-                assertThat(state.selectedDonationRequest).isNotNull()
-                assertThat(state.selectedDonationRequest!!.id).isEqualTo(dummyDonationRequestId)
-            } else
-                assertThat(state.selectedDonationRequest).isNull()
+            assertThat(state.donationRequest).isNotNull()
+            assertThat(state.donationRequest.id).isEqualTo(dummyDonationRequestId)
+
         }
     }
 
@@ -79,7 +71,6 @@ class DonationViewModelTest {
     @Test
     fun `donate button should be enabled if donation request and quantity are selected`() =
         runTest {
-            viewModel.handleEvent(DonationScreenEvent.OnDonationRequestSelected(donationRequest = dummyDonationRequests.random()))
             viewModel.handleEvent(DonationScreenEvent.OnQuantityChange("1"))
             viewModel.uiState.test {
                 val state = awaitItem()

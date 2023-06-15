@@ -84,7 +84,6 @@ fun MedicalServiceLayout(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MedicalServiceLayout(
     userType: UserType = UserType.Receiver,

@@ -27,6 +27,7 @@ fun UserTypePage(
     userType: UserType?,
     modifier: Modifier = Modifier,
     onUserTypeValueChange: (UserType) -> Unit,
+    onCreateAccountClick: () -> Unit
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(32.dp)) {
         Text(text = "Join as a Donner or Receiver", style = MaterialTheme.typography.headlineMedium)
@@ -74,7 +75,7 @@ fun UserTypePage(
             }
         }
         Button(
-            onClick = { },
+            onClick = onCreateAccountClick,
             shape = MaterialTheme.shapes.extraSmall,
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -112,7 +113,8 @@ private fun PhoneAndUserTypePagePreview() {
     ) {
         UserTypePage(
             userType = UserType.Donner,
-            onUserTypeValueChange = {}
+            onUserTypeValueChange = {},
+            onCreateAccountClick = {}
         )
     }
 }

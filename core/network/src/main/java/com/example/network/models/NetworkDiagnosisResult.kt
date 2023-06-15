@@ -10,7 +10,7 @@ import java.util.Date
 data class NetworkDiagnosisResult(
     @SerialName("diagnoses")
     val diagnosis: String,
-    val doctorId: String,
+    val doctorId: String? = "",
     @SerialName("state")
     val status: String,
     val id: String,
@@ -39,7 +39,7 @@ fun DiagnosisResult.toNetwork() = NetworkDiagnosisResult(
 
 fun NetworkDiagnosisResult.toDiagnosisResult() = DiagnosisResult(
     diagnosis = diagnosis,
-    doctorId = doctorId,
+    doctorId = doctorId ?: "",
     status = when (status) {
         "PENDING" -> DiagnosisResult.Status.Pending
         "INPROGRESS" -> DiagnosisResult.Status.InProgress

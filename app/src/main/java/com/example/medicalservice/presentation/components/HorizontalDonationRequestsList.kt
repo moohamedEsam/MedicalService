@@ -82,16 +82,8 @@ fun HorizontalDonationRequestsList(
             listState.scrollToItem(0)
 
     }
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(title, style = MaterialTheme.typography.headlineSmall)
-        TextButton(onClick = onSeeAllClick) {
-            Text("See All")
-        }
-    }
+    Text(title, style = MaterialTheme.typography.headlineSmall)
+
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         state = listState,

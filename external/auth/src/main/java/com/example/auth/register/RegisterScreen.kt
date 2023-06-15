@@ -92,19 +92,23 @@ private fun RegisterScreenContent(
             pagerState = pagerState,
             state = state,
             onEvent = onEvent,
+            onNextClick = { pageToScroll++ },
+            modifier = Modifier
+                .fillMaxWidth()
         )
-
+        Spacer(modifier = Modifier.weight(1f))
         RegisterActionRow(
             pagerState = pagerState,
             registerButtonEnabled = state.registerEnabled,
-            onPageChangeClick = { pageToScroll = it }
-        ) { onEvent(RegisterScreenEvent.RegisterClicked) }
+            onPageChangeClick = { pageToScroll = it },
+            onRegisterButtonClick = { onEvent(RegisterScreenEvent.RegisterClicked) },
+        )
     }
 
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 private fun RegisterActionRow(
     pagerState: PagerState,
     registerButtonEnabled: Boolean,
@@ -147,16 +151,18 @@ private fun RegisterPager(
     state: RegisterScreenState,
     onEvent: (RegisterScreenEvent) -> Unit,
     pagerState: PagerState,
+    modifier: Modifier = Modifier,
+    onNextClick: () -> Unit = {}
 ) {
     HorizontalPager(
         contentPadding = PaddingValues(8.dp),
         pageSpacing = 8.dp,
         userScrollEnabled = false,
-        state = pagerState
+        state = pagerState,
+        modifier = modifier,
     ) { pageNumber ->
         when (RegisterPages.values().find { it.ordinal == pageNumber }) {
             RegisterPages.EmailAndUsername -> EmailAndUsernamePage(state = state, onEvent = onEvent)
-
 
             RegisterPages.Password -> {
                 PasswordPage(
@@ -176,7 +182,8 @@ private fun RegisterPager(
             RegisterPages.UserType -> {
                 UserTypePage(
                     userType = state.userType,
-                    onUserTypeValueChange = { onEvent(RegisterScreenEvent.UserTypeChanged(it)) }
+                    onUserTypeValueChange = { onEvent(RegisterScreenEvent.UserTypeChanged(it)) },
+                    onCreateAccountClick = onNextClick
                 )
             }
 

@@ -198,13 +198,16 @@ class RemoteDataSourceTest {
     @Test
     fun createTransaction() = runTest {
         // arrange
-        val transaction = Transaction.empty()
+        val transaction = Transaction.empty().copy(donationRequestId = "1")
 
         // act
         val response = remoteDataSource.createTransaction(transaction)
 
         // assert
         assertThat(response).isInstanceOf(Result.Success::class.java)
+        response.ifSuccess {
+            assertThat(it.donationRequestId).isEqualTo(transaction.donationRequestId)
+        }
     }
 
     @Test

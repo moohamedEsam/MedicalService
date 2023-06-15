@@ -1,12 +1,8 @@
 package com.example.medicalservice.presentation.donation
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,19 +17,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.PagingData
 import com.example.composecomponents.OneTimeEventButton
-import com.example.composecomponents.textField.OutlinedSearchTextField
 import com.example.composecomponents.textField.ValidationOutlinedTextField
-import com.example.medicalservice.presentation.components.HorizontalDonationRequestsList
-import com.example.model.app.donation.DonationRequestView
 import com.example.model.app.donation.dummyDonationRequests
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -78,112 +70,51 @@ private fun DonationHeader(
     state: DonationScreenState,
     onEvent: (DonationScreenEvent) -> Unit,
 ) {
-    AnimatedVisibility(
-        visible = state.selectedDonationRequest == null,
-        enter = fadeIn()
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            DonationHeader(
-                query = state.query,
-                donationRequestViews = state.donationRequestViews,
-                onDonationRequestClick = { onEvent(DonationScreenEvent.OnDonationRequestSelected(it)) },
-                onQueryChange = { onEvent(DonationScreenEvent.OnQueryChange(it)) },
-                onDonationRequestBookmarkClick = {
-                    onEvent(
-                        DonationScreenEvent.OnDonationRequestBookmarkClick(
-                            it
-                        )
-                    )
-                },
-            )
-        }
-    }
-
-    AnimatedVisibility(
-        visible = state.selectedDonationRequest != null,
-        enter = fadeIn()
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            DonationHeader(
-                donationRequestView = state.selectedDonationRequest,
-                onChooseAnotherDonationRequest = { onEvent(DonationScreenEvent.OnChooseAnotherDonationRequest) },
-                onMedicineReadMoreClick = { onEvent(DonationScreenEvent.OnMedicineReadMoreClick) }
-            )
-        }
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        DonationHeader(
+            state = state,
+            onMedicineReadMoreClick = { onEvent(DonationScreenEvent.OnMedicineReadMoreClick) }
+        )
     }
 }
 
 @Composable
 private fun DonationHeader(
-    query: String,
-    donationRequestViews: Flow<PagingData<DonationRequestView>>,
-    onDonationRequestClick: (DonationRequestView) -> Unit,
-    onQueryChange: (String) -> Unit,
-    onDonationRequestBookmarkClick: (DonationRequestView) -> Unit = {},
-    onSeeAllClick: () -> Unit = {}
-) {
-    OutlinedSearchTextField(
-        query = query,
-        onQueryChange = onQueryChange,
-        modifier = Modifier.fillMaxWidth(),
-        label = "Search for donation requests",
-    )
-
-    HorizontalDonationRequestsList(
-        donationRequestViewPagingData = donationRequestViews,
-        title = "Donations Requests",
-        isDonateButtonVisible = false,
-        onDonationRequestCardClick = { onDonationRequestClick(it) },
-        onBookmarkClick = onDonationRequestBookmarkClick,
-        onSeeAllClick = onSeeAllClick
-    )
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun DonationHeader(
-    donationRequestView: DonationRequestView?,
-    onChooseAnotherDonationRequest: () -> Unit = {},
+    state: DonationScreenState,
     onMedicineReadMoreClick: (String) -> Unit = {}
 ) {
-    if (donationRequestView == null) return
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(text = "Donation Request", style = MaterialTheme.typography.headlineMedium)
-        TextButton(onClick = onChooseAnotherDonationRequest) {
-            Text(text = "Choose Another Donation", style = MaterialTheme.typography.bodyMedium)
-        }
-    }
+    Text(text = "Donation Request", style = MaterialTheme.typography.headlineMedium)
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = donationRequestView.medicine.name,
+            text = state.donationRequest.medicine.name,
             style = MaterialTheme.typography.headlineSmall
         )
-        TextButton(onClick = { onMedicineReadMoreClick(donationRequestView.medicine.id) }) {
+        TextButton(onClick = { onMedicineReadMoreClick(state.donationRequest.medicine.id) }) {
             Text(text = "Read more", style = MaterialTheme.typography.bodyMedium)
         }
     }
     Text(
-        text = donationRequestView.medicine.uses.firstOrNull() ?: "",
+        text = state.donationRequest.medicine.uses.firstOrNull() ?: "",
         style = MaterialTheme.typography.bodyMedium,
         maxLines = 2
     )
-    val progress = donationRequestView.collected.toFloat() / donationRequestView.needed.toFloat()
-    LinearProgressIndicator(
-        progress = progress,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp)
-    )
+    if (!state.progress.isNaN())
+        LinearProgressIndicator(
+            progress = state.progress,
+            modifier = Modifier
+                .fillMaxWidth()
+                .scale(1f, 2f)
+                .padding(top = 8.dp),
+            strokeCap = StrokeCap.Round,
+        )
+
     Text(
-        "Quantity needed: ${donationRequestView.needed - donationRequestView.collected}",
+        "Quantity needed: ${state.donationRequest.needed - state.donationRequest.collected}",
         style = MaterialTheme.typography.bodyLarge
     )
 
@@ -194,7 +125,6 @@ private fun ColumnScope.DonationBody(
     state: DonationScreenState,
     onEvent: (DonationScreenEvent) -> Unit
 ) {
-    if (state.selectedDonationRequest == null) return
     ValidationOutlinedTextField(
         value = state.quantity,
         validation = state.quantityValidationResult,
@@ -221,17 +151,13 @@ private fun ColumnScope.DonationBody(
 @Composable
 private fun DonationScreenPreview() {
     Surface {
-        val donationRequests = donationRequests()
+        val donationRequests = dummyDonationRequests()
         DonationScreen(
             state = DonationScreenState(
-                donationRequestViews = flowOf(PagingData.from(donationRequests)),
-                selectedDonationRequest = donationRequests.random(),
+                donationRequest = donationRequests.random(),
             ),
             onEvent = {}
         )
     }
 
 }
-
-@Composable
-private fun donationRequests() = dummyDonationRequests()

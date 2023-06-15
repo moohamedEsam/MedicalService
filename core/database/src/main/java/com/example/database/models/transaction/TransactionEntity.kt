@@ -6,7 +6,7 @@ import com.example.model.app.transaction.Transaction
 import com.example.model.app.transaction.TransactionView
 import java.util.Date
 
-@Entity(tableName="transactions")
+@Entity(tableName = "transactions")
 data class TransactionEntity(
     @PrimaryKey val id: String,
     val createdAt: Date,
@@ -21,6 +21,7 @@ data class TransactionEntity(
     val isDeleted: Boolean = false,
     val isDelivered: Boolean = false,
     val isReceived: Boolean = false,
+    val donationRequestId: String? = null,
 )
 
 fun TransactionEntity.toTransaction() = Transaction(
@@ -34,6 +35,7 @@ fun TransactionEntity.toTransaction() = Transaction(
     medicineId = medicineId,
     isDelivered = isDelivered,
     isReceived = isReceived,
+    donationRequestId = donationRequestId,
 )
 
 fun Transaction.toEntity() = TransactionEntity(
@@ -47,4 +49,5 @@ fun Transaction.toEntity() = TransactionEntity(
     medicineId = medicineId,
     isDelivered = isDelivered,
     isReceived = isReceived,
+    donationRequestId = donationRequestId,
 )

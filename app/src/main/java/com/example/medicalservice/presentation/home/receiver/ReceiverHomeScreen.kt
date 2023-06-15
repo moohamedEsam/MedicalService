@@ -138,11 +138,10 @@ private fun UploadDiagnosisRequest(
             .fillMaxHeight(0.4f),
         onClick = { onEvent(ReceiverHomeScreenEvent.OnCreateDiagnosisRequestClicked) }
     ) {
-        Spacer(modifier = Modifier.weight(0.4f))
+        Spacer(modifier = Modifier.fillMaxHeight(0.4f))
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .weight(0.6f)
                 .align(Alignment.CenterHorizontally),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -297,10 +296,7 @@ private fun ReceiverHomeScreenPreview() {
                         )
                     )
                 ),
-                latestDiagnosisResult = DiagnosisResultView.empty().copy(
-                    diagnosis = "Based on your symptoms, it sounds like you have a viral infection. This is a common cause of fever. The good news is that most viral infections go away on their own within a week or two.",
-                    doctor = User.emptyDoctor().copy(username = "Dr. John Doe")
-                ),
+                latestDiagnosisResult = null,
                 user = User.emptyReceiver().copy(username = "mohamed"),
                 isSearchVisible = true,
             ),

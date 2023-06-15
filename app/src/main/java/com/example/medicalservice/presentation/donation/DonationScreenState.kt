@@ -1,23 +1,23 @@
 package com.example.medicalservice.presentation.donation
 
-import androidx.paging.PagingData
 import com.example.common.models.ValidationResult
 import com.example.model.app.donation.DonationRequestView
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import com.example.model.app.donation.empty
 
 data class DonationScreenState(
-    val donationRequestViews: Flow<PagingData<DonationRequestView>> = flowOf(PagingData.empty()),
-    val selectedDonationRequest: DonationRequestView? = null,
+    val donationRequest: DonationRequestView = DonationRequestView.empty(),
     val query: String = "",
     val quantity: String = "",
     val isLoading: Boolean = false,
 ) {
-    private val isDonationRequestSelected: Boolean = selectedDonationRequest != null
+    private val quantityRange =
+        1..(donationRequest.needed - donationRequest.collected)
 
-    private val quantityRange = selectedDonationRequest?.run {
-        (1..needed - collected)
-    } ?: 0..0
+    val progress = try {
+        donationRequest.collected.toFloat() / donationRequest.needed.toFloat()
+    } catch (e: Exception) {
+        0f
+    }
 
     val quantityValidationResult = if (quantity.isEmpty())
         ValidationResult.Empty
@@ -25,5 +25,6 @@ data class DonationScreenState(
         ValidationResult.Invalid("Value must be between ${quantityRange.first} and ${quantityRange.last}")
     else ValidationResult.Valid
 
-    val isDonateButtonEnabled: Boolean = isDonationRequestSelected && quantityValidationResult is ValidationResult.Valid && !isLoading
+    val isDonateButtonEnabled: Boolean =
+        quantityValidationResult is ValidationResult.Valid && !isLoading
 }

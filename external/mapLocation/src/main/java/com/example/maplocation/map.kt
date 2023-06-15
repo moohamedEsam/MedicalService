@@ -32,12 +32,13 @@ import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun MapScreen(
     lat: Double = 0.0,
     lng: Double = 0.0,
-    viewModel: MapViewModel = koinViewModel(),
+    viewModel: MapViewModel = koinViewModel { parametersOf(lat, lng) },
 ) {
     val cameraPosition = rememberCameraPositionState()
     val address by viewModel.address.collectAsState()
@@ -59,12 +60,10 @@ fun MapScreen(
         getCurrentLocation(client, request, fusedLocationClient, viewModel, context)
 
     }
-    val markerState = rememberMarkerState(position = LatLng(lat, lng))
-    LaunchedEffect(key1 = Unit) {
-        viewModel.setAddress(LatLng(lat, lng))
-    }
+    val markerState = rememberMarkerState()
+
     LaunchedEffect(key1 = address) {
-        if (address != null)
+        if (address != null && address?.latitude != 0.0 && address?.longitude != 0.0)
             markerState.position = LatLng(address!!.latitude, address!!.longitude)
     }
     Box(modifier = Modifier.fillMaxSize()) {
@@ -166,8 +165,8 @@ private fun LocationConfirmButton(
     }
 }
 
-@Composable
 @OptIn(ExperimentalMaterial3Api::class)
+@Composable
 private fun LocationTextField(
     modifier: Modifier = Modifier,
     viewModel: MapViewModel,
@@ -179,36 +178,27 @@ private fun LocationTextField(
     LaunchedEffect(key1 = geocoder) {
         viewModel.findByLocationName(geocoder)
     }
-    val query by viewModel.query.collectAsState()
-    val suggestions by viewModel.suggestions.collectAsState()
-    var showSuggestions by remember {
+    var active by remember {
         mutableStateOf(false)
     }
-    Column(modifier = modifier) {
-        TextField(
-            value = query,
-            onValueChange = {
-                viewModel.setQuery(it)
-                showSuggestions = true
-            },
-            label = { Text("Search By Location Name") },
-            modifier = Modifier.fillMaxWidth(),
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Outlined.Search,
-                    contentDescription = null
-                )
-            },
-            trailingIcon = {
-                IconButton(onClick = { showSuggestions = !showSuggestions }) {
-                    if (showSuggestions)
-                        Icon(imageVector = Icons.Default.ExpandLess, contentDescription = null)
-                    else
-                        Icon(imageVector = Icons.Outlined.ExpandMore, contentDescription = null)
-                }
-            }
-        )
-        if (showSuggestions)
+    val query by viewModel.query.collectAsState()
+    val suggestions by viewModel.suggestions.collectAsState()
+
+    DockedSearchBar(
+        query = query,
+        onQueryChange = { viewModel.setQuery(it) },
+        placeholder = { Text("Search By Location Name") },
+        onSearch = { viewModel.findByLocationName(geocoder) },
+        modifier = modifier.fillMaxWidth(),
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.Search,
+                contentDescription = null
+            )
+        },
+        active = active,
+        onActiveChange = { active = it },
+        content = {
             LazyColumn {
                 items(suggestions) {
                     ListItem(
@@ -224,5 +214,8 @@ private fun LocationTextField(
                     )
                 }
             }
-    }
+        }
+    )
+
+
 }

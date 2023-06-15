@@ -99,7 +99,8 @@ class DomainModule {
     
     context (Scope)
     @Factory
-    fun provideLogoutUseCase() = LogOutUseCase {
+    fun provideLogoutUseCase(authRepository: AuthRepository) = LogOutUseCase {
+        authRepository.logout()
         androidContext().saveToken("")
         androidContext().dataStore.updateData { userSettings ->
             userSettings.copy(token = "", email = "")

@@ -21,7 +21,7 @@ data class TransactionView(
     val isReceived: Boolean = false,
 ) {
     enum class Status {
-        Pending, Delivered, Rejected, Completed, Cancelled, InProgress, Active
+        Pending, Delivered, Rejected, Completed, Cancelled, InProgress, Active, AttachedToDonationRequest
     }
 
     companion object

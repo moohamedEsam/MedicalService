@@ -14,6 +14,7 @@ data class Transaction(
     val id: String = UUID.randomUUID().toString(),
     val isDelivered: Boolean = false,
     val isReceived: Boolean = false,
+    val donationRequestId: String? = null,
 ){
     companion object
 }

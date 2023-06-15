@@ -24,7 +24,7 @@ class OfflineFirstUserRepository(
     override suspend fun syncUser(): Boolean {
         val usersResult = remote.getAllUsers()
         usersResult.ifSuccess { users ->
-            local.deleteAll()
+            local.deleteAllUsers()
             local.insertAll(users.map { it.toUserEntity() })
         }
         return true

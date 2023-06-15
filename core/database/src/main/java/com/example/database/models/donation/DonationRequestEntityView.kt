@@ -5,6 +5,8 @@ import androidx.room.Relation
 import com.example.database.models.medicine.MedicineEntity
 import com.example.database.models.medicine.MedicineEntityView
 import com.example.database.models.medicine.toMedicineView
+import com.example.database.models.transaction.TransactionEntity
+import com.example.database.models.transaction.toTransaction
 import com.example.model.app.donation.DonationRequestView
 
 data class DonationRequestEntityView(
@@ -15,6 +17,13 @@ data class DonationRequestEntityView(
         entity = MedicineEntity::class,
     )
     val medicine: MedicineEntityView,
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "donationRequestId",
+        entity = TransactionEntity::class,
+    )
+    val transactions:List<TransactionEntity>
 )
 
 fun DonationRequestEntityView.toDonationRequestView() = DonationRequestView(
@@ -25,4 +34,5 @@ fun DonationRequestEntityView.toDonationRequestView() = DonationRequestView(
     id = donationRequestEntity.id,
     endDate = donationRequestEntity.endDate,
     isBookmarked = donationRequestEntity.isBookmarked,
+    transactions = transactions.map { it.toTransaction() }
 )

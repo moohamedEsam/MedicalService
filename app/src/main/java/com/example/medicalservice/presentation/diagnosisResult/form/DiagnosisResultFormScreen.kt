@@ -1,6 +1,7 @@
 package com.example.medicalservice.presentation.diagnosisResult.form
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,14 +9,13 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -31,15 +31,20 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -67,20 +72,61 @@ fun DiagnosisResultFormScreen(
     DiagnosisResultFormScreen(state = uiState, onEvent = viewModel::handleEvent)
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun DiagnosisResultFormScreen(
     state: DiagnosisResultFormState,
     onEvent: (DiagnosisResultFormEvent) -> Unit
 ) {
+    val pages = listOf(
+        "request",
+        "Diagnosis",
+        "Disease and Medicine",
+    )
+    val pager = rememberPagerState(pageCount = pages::size)
+    var pageToScroll by remember {
+        mutableStateOf(pager.currentPage)
+    }
+    LaunchedEffect(key1 = pageToScroll) {
+        pager.animateScrollToPage(pageToScroll)
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        DiagnosisRequest(request = state.diagnosisRequest)
-        DiagnosisResult(state = state, onEvent = onEvent)
+        ScrollableTabRow(selectedTabIndex = pager.currentPage, modifier = Modifier.fillMaxWidth()) {
+            pages.forEachIndexed { index, title ->
+                Tab(
+                    selected = pager.currentPage == index,
+                    onClick = { pageToScroll = index },
+                    text = { Text(text = title) }
+                )
+            }
+        }
+        HorizontalPager(state = pager, modifier = Modifier.weight(1f)) {page->
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .then(if (page == 2) Modifier.verticalScroll(rememberScrollState()) else Modifier)
+            ) {
+                when (pages[page]) {
+                    "request" -> DiagnosisRequest(request = state.diagnosisRequest)
+                    "Diagnosis" -> TextField(
+                        value = state.diagnosis,
+                        onValueChange = { onEvent(DiagnosisResultFormEvent.Form.OnDiagnosisChange(it)) },
+                        modifier = Modifier.fillMaxSize(),
+                        textStyle = MaterialTheme.typography.bodyLarge,
+                        label = { Text(text = "diagnosis") },
+                    )
+
+                    "Disease and Medicine" -> DiagnosisResult(state = state, onEvent = onEvent)
+                }
+            }
+        }
+
         Button(
             onClick = { onEvent(DiagnosisResultFormEvent.Form.OnSaveClick) },
             modifier = Modifier.fillMaxWidth(),
@@ -163,7 +209,7 @@ private fun DiagnosisRequest(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Diagnosis Request", style = MaterialTheme.typography.headlineMedium)
+        Text(text = "Diagnosis Request", style = MaterialTheme.typography.headlineSmall)
         Text(text = dateFormat.format(request.date))
     }
     Text(text = request.description, style = MaterialTheme.typography.bodyLarge)
@@ -171,7 +217,7 @@ private fun DiagnosisRequest(
     if (request.symptoms.isEmpty())
         Text(text = "No symptoms added", style = MaterialTheme.typography.bodyLarge)
     else
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             items(request.symptoms) { symptom ->
                 Text(
                     text = symptom.name,
@@ -187,41 +233,29 @@ private fun ColumnScope.DiagnosisResult(
     state: DiagnosisResultFormState,
     onEvent: (DiagnosisResultFormEvent) -> Unit
 ) {
-    Text(text = "diagnosis", style = MaterialTheme.typography.headlineMedium)
-    TextField(
-        value = state.diagnosis,
-        onValueChange = { onEvent(DiagnosisResultFormEvent.Form.OnDiagnosisChange(it)) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = (LocalConfiguration.current.screenHeightDp / 4).dp),
-        textStyle = MaterialTheme.typography.bodyLarge,
-        label = { Text(text = "diagnosis") },
-    )
     DiagnosisDisease(state, onEvent)
     DiagnosisMedications(state, onEvent)
-
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
-private fun DiagnosisDisease(
+@OptIn(ExperimentalMaterial3Api::class)
+private fun ColumnScope.DiagnosisDisease(
     state: DiagnosisResultFormState,
     onEvent: (DiagnosisResultFormEvent) -> Unit
 ) {
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Text(text = "disease", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.weight(1f))
-        if (!state.isAddDiseaseVisible) return@FlowRow
-        TextButton(onClick = { onEvent(DiagnosisResultFormEvent.Form.OnAddUnRegisteredDiseaseClick) }) {
-            Text("Add Unregistered Disease")
+    Text(text = "disease", style = MaterialTheme.typography.headlineMedium)
+    if (state.isAddDiseaseVisible) {
+        Row(modifier = Modifier.align(Alignment.End)) {
+            TextButton(onClick = { onEvent(DiagnosisResultFormEvent.Form.OnAddUnRegisteredDiseaseClick) }) {
+                Text("Add Unregistered Disease")
+            }
+            IconButton(onClick = { onEvent(DiagnosisResultFormEvent.Form.OnAddDiseaseClick) }) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = null)
+            }
         }
-        IconButton(onClick = { onEvent(DiagnosisResultFormEvent.Form.OnAddDiseaseClick) }) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = null)
-        }
-
     }
+
+
 
     DiseaseOptionsSearch(state, onEvent)
     if (state.disease == null) return
@@ -307,7 +341,7 @@ private fun MedicineOptionsSearch(
             onQueryChange = { onEvent(DiagnosisResultFormEvent.MedicineOptionSearch.OnQueryChange(it)) },
             onSearch = { onEvent(DiagnosisResultFormEvent.MedicineOptionSearch.OnQueryChange(it)) },
             active = true,
-            onActiveChange = {if(!it) onEvent(DiagnosisResultFormEvent.MedicineOptionSearch.Dismiss) },
+            onActiveChange = { if (!it) onEvent(DiagnosisResultFormEvent.MedicineOptionSearch.Dismiss) },
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text("Search Medicines") },
             leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
@@ -352,18 +386,15 @@ private fun ColumnScope.DiagnosisMedications(
     MedicineOptionsSearch(state = state, onEvent = onEvent)
     if (state.medications.isEmpty())
         Text(text = "No medications added", style = MaterialTheme.typography.bodyLarge)
-    else
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp / 4).dp)
-        ) {
-            items(state.medications) { medication ->
-                MedicineItem(medication, onEvent)
-            }
-            items(state.unRegisteredMedicines) {
-                UnRegisteredMedicineItem(medicineName = it, onEvent = onEvent)
-            }
+    else {
+        state.medications.forEach { medication ->
+            MedicineItem(medication, onEvent)
         }
+
+        state.unRegisteredMedicines.forEach {
+            UnRegisteredMedicineItem(medicineName = it, onEvent = onEvent)
+        }
+    }
 }
 
 @Composable
