@@ -72,7 +72,6 @@ fun VerticalTransactionsList(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionItem(
     transactionView: TransactionView,

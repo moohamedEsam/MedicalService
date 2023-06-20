@@ -16,5 +16,9 @@ sealed interface RegisterScreenEvent {
 
     object LoginClicked : RegisterScreenEvent
 
+    object ToggleTermsDialog : RegisterScreenEvent
+
+    data class TermsAgreed(val value: Boolean) : RegisterScreenEvent
+
     object LocationClicked : RegisterScreenEvent
 }

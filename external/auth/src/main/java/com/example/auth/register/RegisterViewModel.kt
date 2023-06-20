@@ -63,6 +63,8 @@ class RegisterViewModel(
             }
 
             RegisterScreenEvent.LoginClicked -> viewModelScope.launch { appNavigator.navigateBack() }
+            is RegisterScreenEvent.TermsAgreed -> _uiState.update { it.copy(agreedToTerms = event.value) }
+            RegisterScreenEvent.ToggleTermsDialog -> _uiState.update { it.copy(showTerms = !it.showTerms) }
         }
     }
 

@@ -7,8 +7,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,13 +22,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.composecomponents.OneTimeEventButton
 import com.example.composecomponents.textField.ValidationOutlinedTextField
+import com.example.medicalservice.R
 import com.example.model.app.donation.dummyDonationRequests
+import com.example.model.app.transaction.Transaction
+import com.example.model.app.transaction.empty
+import com.example.model.app.user.User
+import com.example.model.app.user.emptyDonor
+import com.example.model.app.user.emptyReceiver
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -145,6 +155,23 @@ private fun ColumnScope.DonationBody(
     ) {
         onEvent(DonationScreenEvent.OnDonateClick)
     }
+
+    if (state.userTransactions.isNotEmpty()) {
+        Text(text = "Previous donations", style = MaterialTheme.typography.headlineMedium)
+        state.userTransactions.forEach {
+            ListItem(
+                headlineContent = { Text(text = state.donationRequest.medicine.name) },
+                supportingContent = { Text(text = it.quantity.toString()) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.transaction),
+                        contentDescription = null,
+                        modifier = Modifier.size(36.dp)
+                    )
+                }
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
@@ -154,7 +181,9 @@ private fun DonationScreenPreview() {
         val donationRequests = dummyDonationRequests()
         DonationScreen(
             state = DonationScreenState(
-                donationRequest = donationRequests.random(),
+                donationRequest = donationRequests.random()
+                    .copy(transactions = listOf(Transaction.empty().copy(senderId = "1"))),
+                userId = "1",
             ),
             onEvent = {}
         )

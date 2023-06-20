@@ -1,6 +1,5 @@
 package com.example.auth.register
 
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -20,16 +19,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.ImageLoader
 import coil.compose.AsyncImage
+import com.example.auth.register.pages.DonePage
 import com.example.auth.register.pages.EmailAndUsernamePage
 import com.example.auth.register.pages.LocationPage
 import com.example.auth.register.pages.PasswordPage
@@ -193,21 +193,13 @@ private fun RegisterPager(
                     onLocationRequested = { onEvent(RegisterScreenEvent.LocationClicked) })
             }
 
-            RegisterPages.Done -> {
-                Box(
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        "You're all set press register to continue",
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                }
-            }
+            RegisterPages.Done -> DonePage(state, onEvent)
 
             null -> Unit
         }
     }
 }
+
 
 @Composable
 private fun LogoImage(logo: Any, imageLoader: ImageLoader) {
@@ -244,7 +236,7 @@ fun RegisterScreenPreview() {
         RegisterScreenContent(
             logo = "",
             imageLoader = ImageLoader(LocalContext.current),
-            state = RegisterScreenState(),
+            state = RegisterScreenState().copy(showTerms = true),
             onEvent = {}
         )
     }

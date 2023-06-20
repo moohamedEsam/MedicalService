@@ -17,10 +17,12 @@ data class RegisterScreenState(
     val phone: Phone = Phone(""),
     val location: Location = Location(0.0, 0.0),
     val userType: UserType? = null,
-    val isLoading: Boolean = false
+    val agreedToTerms:Boolean = false,
+    val isLoading: Boolean = false,
+    val showTerms: Boolean = false
 ) {
     val registerEnabled: Boolean
-        get() = validationResults().all { it is ValidationResult.Valid } && !isLoading && userType != null
+        get() = validationResults().all { it is ValidationResult.Valid } && !isLoading && userType != null && agreedToTerms
 
     val progress: Float
         get() {
@@ -36,6 +38,8 @@ data class RegisterScreenState(
         phone.validationResult,
         location.validationResult,
         if (userType != null) ValidationResult.Valid
-        else ValidationResult.Invalid("User type is required")
+        else ValidationResult.Invalid("User type is required"),
+        if (agreedToTerms) ValidationResult.Valid
+        else ValidationResult.Invalid("You must agree to the terms")
     )
 }

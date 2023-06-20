@@ -31,8 +31,12 @@ class DonationViewModel(
 
     private val _uiState = MutableStateFlow(DonationScreenState())
     val uiState = _uiState.asStateFlow()
-
+    private lateinit var userId : String
     init {
+        viewModelScope.launch {
+            userId = getCurrentUserIdUseCase()
+            _uiState.value = _uiState.value.copy(userId = userId)
+        }
         viewModelScope.launch(coroutineExceptionHandler) {
             getDonationRequestByIdUseCase(donationRequestId).collectLatest {
                 _uiState.value = _uiState.value.copy(donationRequest = it)
@@ -76,7 +80,7 @@ class DonationViewModel(
         medicineId = _uiState.value.donationRequest.medicine.id,
         quantity = _uiState.value.quantity.toInt(),
         receiverId = "",
-        senderId = getCurrentUserIdUseCase(),
+        senderId = userId,
         donationRequestId = _uiState.value.donationRequest.id
     )
 }

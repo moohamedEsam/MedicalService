@@ -3,9 +3,12 @@ package com.example.medicalservice.presentation.donation
 import com.example.common.models.ValidationResult
 import com.example.model.app.donation.DonationRequestView
 import com.example.model.app.donation.empty
+import com.example.model.app.user.User
+import com.example.model.app.user.emptyDonor
 
 data class DonationScreenState(
     val donationRequest: DonationRequestView = DonationRequestView.empty(),
+    val userId: String = "",
     val query: String = "",
     val quantity: String = "",
     val isLoading: Boolean = false,
@@ -27,4 +30,6 @@ data class DonationScreenState(
 
     val isDonateButtonEnabled: Boolean =
         quantityValidationResult is ValidationResult.Valid && !isLoading
+
+    val userTransactions = donationRequest.transactions.filter { it.senderId == userId }
 }
